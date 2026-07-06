@@ -1,0 +1,237 @@
+
+@extends('backend.layouts.master')
+
+@section('title')
+@lang('messages.Demande d achat des Articles') - @lang('messages.admin_panel')
+@endsection
+
+@section('styles')
+    <!-- Start datatable css -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.18/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.jqueryui.min.css">
+@endsection
+
+
+@section('admin-content')
+
+<!-- page title area start -->
+<div class="page-title-area">
+    <div class="row align-items-center">
+        <div class="col-sm-6">
+            <div class="breadcrumbs-area clearfix">
+                <h4 class="page-title pull-left">@lang('messages.Demande d achat des Articles')</h4>
+                <ul class="breadcrumbs pull-left">
+                    <li><a href="{{ route('admin.dashboard') }}">@lang('messages.dashboard')</a></li>
+                    <li><span>@lang('messages.list')</span></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-sm-6 clearfix">
+            @include('backend.layouts.partials.logout')
+        </div>
+    </div>
+</div>
+<!-- page title area end -->
+
+<div class="main-content-inner">
+    <div class="row">
+        <!-- data table start -->
+        <div class="col-12 mt-5">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="header-title float-left">@lang("messages.Demande d'achat des Articles")</h4>
+                    <p class="float-right mb-2">
+                        @if (Auth::guard('admin')->user()->can('material_purchase.create'))
+                            <a class="btn btn-primary text-white" href="{{ route('admin.material-purchases.create') }}">@lang('messages.new')</a>
+                        @endif
+                    </p>
+                    <div class="clearfix"></div>
+                    @include('backend.layouts.partials._index_filter_export', ['filterRoute' => 'admin.material-purchases.index', 'exportRoute' => 'admin.material-purchases.export-to-excel', 'useDateType' => 'datetime-local'])
+                    <div class="data-tables">
+                        @include('backend.layouts.partials.messages')
+                        <table id="dataTable" class="text-center">
+                            <thead class="bg-light text-capitalize">
+                                <tr>
+                                    <th width="5%">#</th>
+                                    <th width="10%">@lang('messages.date')</th>
+                                    <th width="10%">@lang('messages.purchase_request_no')</th>
+                                    <th width="10%">@lang('messages.Purchase Request Signature')</th>
+                                    <th width="10%">@lang('messages.status')</th>
+                                    <th width="10%">@lang('messages.Fournisseur')</th>
+                                    <th width="30%">
+                                        @lang('messages.description')</th>
+                                    <th width="10%">@lang('messages.created_by')</th>
+                                    <th width="15%">@lang('messages.Action')</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               @foreach ($purchases as $purchase)
+                               <tr>
+                                    <td>{{ $loop->index+1 }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($purchase->date)->format('d/m/Y') }}</td>
+                                    <td><a href="{{ route('admin.material-purchases.show',$purchase->purchase_no) }}">{{ $purchase->purchase_no }}</a></td>
+                                    <td>{{ $purchase->purchase_signature }}</td>
+                                    @if($purchase->status == 2)
+                                    <td><span class="badge badge-success">@lang('messages.purchase_status_validated')</span></td>
+                                    @elseif($purchase->status == -1)
+                                    <td><span class="badge badge-danger">@lang('messages.purchase_status_rejected')</span></td>
+                                    @elseif($purchase->status == 3)
+                                    <td><span class="badge badge-success">@lang('messages.purchase_status_confirmed')</span></td>
+                                    @elseif($purchase->status == 4)
+                                    <td><span class="badge badge-success">@lang('messages.purchase_status_approved')</span></td>
+                                    @elseif($purchase->status == 5)
+                                    <td><span class="badge badge-success">@lang('messages.purchase_status_ordered')</span></td>
+                                    @elseif($purchase->status == 6)
+                                    <td><span class="badge badge-success">@lang('messages.purchase_status_received')</span></td>
+                                    @elseif($purchase->status == -3)
+                                    <td><span class="badge badge-warning">@lang('messages.purchase_status_modified')</span></td>
+                                    @else
+                                    <td><span class="badge badge-primary">@lang('messages.purchase_status_in_progress')</span></td>
+                                    @endif
+                                    <td>@if($purchase->supplier_id){{ $purchase->supplier->supplier_name }} @endif</td>
+                                    <td>{{ $purchase->description }}</td>
+                                    <td>{{ $purchase->created_by }}</td>
+                                    <td>
+                                        @if (Auth::guard('admin')->user()->can('material_purchase.create'))
+                                        @if(in_array($purchase->status, [2, 3, 4, 5, 6, -3], true))
+                                        <a href="{{ route('admin.material-purchases.materialPurchase',$purchase->purchase_no) }}"><img src="{{ asset('img/ISSh.gif') }}" width="60" title="@lang('messages.requisition_pdf_title')"></a>
+                                        @endif
+                                        @endif
+                                        @if (Auth::guard('admin')->user()->can('material_purchase.validate'))
+                                        @if($purchase->status == 1 || $purchase->status == -1)
+                                            <a class="btn btn-primary text-white" href="{{ route('admin.material-purchases.validate', $purchase->purchase_no) }}"
+                                            onclick="event.preventDefault(); document.getElementById('validate-form-{{ $purchase->purchase_no }}').submit();">
+                                                @lang('messages.requisition_btn_validate')
+                                            </a>
+
+                                            <form id="validate-form-{{ $purchase->purchase_no }}" action="{{ route('admin.material-purchases.validate', $purchase->purchase_no) }}" method="POST" style="display: none;">
+                                                @method('PUT')
+                                                @csrf
+                                            </form>
+                                        @endif
+                                        @endif
+                                        @if (Auth::guard('admin')->user()->can('material_purchase.confirm'))
+                                        @if($purchase->status == 2)
+                                            <a class="btn btn-primary text-white" href="{{ route('admin.material-purchases.confirm', $purchase->purchase_no) }}"
+                                            onclick="event.preventDefault(); document.getElementById('confirm-form-{{ $purchase->purchase_no }}').submit();">
+                                                @lang('messages.requisition_btn_confirm')
+                                            </a>
+
+                                            <form id="confirm-form-{{ $purchase->purchase_no }}" action="{{ route('admin.material-purchases.confirm', $purchase->purchase_no) }}" method="POST" style="display: none;">
+                                                @method('PUT')
+                                                @csrf
+                                            </form>
+                                        @endif
+                                        @endif
+                                        @if (Auth::guard('admin')->user()->can('material_purchase.approuve'))
+                                        @if($purchase->status == 3)
+                                            <a class="btn btn-primary text-white" href="{{ route('admin.material-purchases.approuve', $purchase->purchase_no) }}"
+                                            onclick="event.preventDefault(); document.getElementById('approuve-form-{{ $purchase->purchase_no }}').submit();">
+                                                @lang('messages.requisition_btn_approve')
+                                            </a>
+
+                                            <form id="approuve-form-{{ $purchase->purchase_no }}" action="{{ route('admin.material-purchases.approuve', $purchase->purchase_no) }}" method="POST" style="display: none;">
+                                                @method('PUT')
+                                                @csrf
+                                            </form>
+                                        @endif
+                                        @endif
+                                        @if (Auth::guard('admin')->user()->can('material_purchase.reject'))
+                                            @if($purchase->status == 1 || $purchase->status == 2 || $purchase->status == 3)
+                                            <a class="btn btn-primary text-white" href="{{ route('admin.material-purchases.reject', $purchase->purchase_no) }}"
+                                            onclick="event.preventDefault(); document.getElementById('reject-form-{{ $purchase->purchase_no }}').submit();">
+                                                @lang('messages.requisition_btn_reject')
+                                            </a>
+                                            @endif
+                                            <form id="reject-form-{{ $purchase->purchase_no }}" action="{{ route('admin.material-purchases.reject', $purchase->purchase_no) }}" method="POST" style="display: none;">
+                                                @method('PUT')
+                                                @csrf
+                                            </form>
+                                        @endif
+                                        @if (Auth::guard('admin')->user()->can('material_purchase.reset'))
+                                            @if($purchase->status == -1 || $purchase->status == 2 || $purchase->status == 3 || $purchase->status == 4)
+                                            <a class="btn btn-primary text-white" href="{{ route('admin.material-purchases.reset', $purchase->purchase_no) }}"
+                                            onclick="event.preventDefault(); document.getElementById('reset-form-{{ $purchase->purchase_no }}').submit();">
+                                                @lang('messages.requisition_btn_cancel')
+                                            </a>
+                                            @endif
+                                            <form id="reset-form-{{ $purchase->purchase_no }}" action="{{ route('admin.material-purchases.reset', $purchase->purchase_no) }}" method="POST" style="display: none;">
+                                                @method('PUT')
+                                                @csrf
+                                            </form>
+                                        @endif
+                                        @if (Auth::guard('admin')->user()->can('material_supplier_order.create'))
+                                        @if($purchase->status == 4 && $purchase->flag1 == 0)
+                                        <a href="{{ route('admin.material-supplier-orders.create',$purchase->purchase_no)}}" class="btn btn-success">Faire une commande</a>
+                                        @endif
+                                        @endif
+                                        @if (Auth::guard('admin')->user()->can('material_supplier_order.edit'))
+                                        @if($purchase->status == 4 && $purchase->flag1 == 1)
+                                        <a href="{{ route('admin.material-supplier-orders.edit',$purchase->purchase_no)}}" class="btn btn-primary">Modifier la commande</a>
+                                        @endif
+                                        @endif
+                                        @if($purchase->status == 1 || $purchase->status == 0 || $purchase->status == 2 || $purchase->status == 3 || $purchase->status == 4 || $purchase->status == 5)
+                                        @if (Auth::guard('admin')->user()->can('material_purchase.edit'))
+                                            <a class="btn btn-success text-white" href="{{ route('admin.material-purchases.edit', $purchase->purchase_no) }}">@lang('messages.edit')</a>
+                                        @endif
+                                        @endif
+
+                                        @if (Auth::guard('admin')->user()->can('material_purchase.delete'))
+                                            <a class="btn btn-danger text-white" href="{{ route('admin.material-purchases.destroy', $purchase->purchase_no) }}"
+                                            onclick="event.preventDefault(); if(confirm('Are you sure you want to delete this item? This action is irreversible.')) { document.getElementById('delete-form-{{ $purchase->purchase_no }}').submit(); }">
+                                                @lang('messages.delete')
+                                            </a>
+
+                                            <form id="delete-form-{{ $purchase->purchase_no }}" action="{{ route('admin.material-purchases.destroy', $purchase->purchase_no) }}" method="POST" style="display: none;">
+                                                @method('DELETE')
+                                                @csrf
+                                            </form>
+                                        @endif
+                                    </td>
+                                </tr>
+                               @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- data table end -->
+        
+    </div>
+</div>
+@endsection
+
+
+@section('scripts')
+     <!-- Start datatable js -->
+     <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+     <script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
+     <script src="https://cdn.datatables.net/1.10.18/js/dataTables.bootstrap4.min.js"></script>
+     <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+     <script src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap.min.js"></script>
+     
+     <script>
+         /*================================
+        datatable active
+        ==================================*/
+        if ($('#dataTable').length) {
+            $('#dataTable').DataTable({
+                responsive: true,
+                pageLength: 100,
+                lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]]
+            });
+        }
+
+    function preventBack() {
+        window.history.forward();
+    }
+    setTimeout("preventBack()", 0);
+    window.onunload = function () {
+        null
+    };
+
+     </script>
+@endsection
