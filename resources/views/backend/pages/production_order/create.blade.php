@@ -135,13 +135,13 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="planned_start_time">@lang('messages.Planned Start Time')</label>
-                                    <input type="datetime-local" class="form-control" id="planned_start_time" name="planned_start_time">
+                                    <input type="datetime-local" class="form-control" id="planned_start_time" name="planned_start_time" value="{{ \Carbon\Carbon::now()->format('Y-m-d\TH:i') }}">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="planned_finish_time">@lang('messages.Planned Finish Time')</label>
-                                    <input type="datetime-local" class="form-control" id="planned_finish_time" name="planned_finish_time">
+                                    <input type="datetime-local" class="form-control" id="planned_finish_time" name="planned_finish_time" value="{{ \Carbon\Carbon::now()->addDay()->format('Y-m-d\TH:i') }}">
                                 </div>
                             </div>
                         </div>
@@ -260,18 +260,7 @@
         return { storeType: storeType, storeId: storeId };
     }
 
-    var itemDetails = [
-        @foreach($itemDetails as $itemDetail)
-        {
-            item_code: {!! json_encode($itemDetail->code) !!},
-            r_material_id: {{ $itemDetail->r_material_id ?? 0 }},
-            raw_material_name: {!! json_encode($itemDetail->rawMaterial ? $itemDetail->rawMaterial->name . ' (' . ($itemDetail->rawMaterial->rawMaterialMeasurement ? $itemDetail->rawMaterial->rawMaterialMeasurement->purchase_unit : 'N/A') . ')' : 'N/A') !!},
-            quantity: {{ $itemDetail->quantity ?? 0 }},
-            unit: {!! json_encode($itemDetail->rawMaterial && $itemDetail->rawMaterial->rawMaterialMeasurement ? $itemDetail->rawMaterial->rawMaterialMeasurement->purchase_unit : '') !!},
-            raw_material_cump: {{ $itemDetail->rawMaterial ? ($itemDetail->rawMaterial->cump ?? 0) : 0 }}
-        }@if(!$loop->last),@endif
-        @endforeach
-    ];
+    @include('backend.pages.partials.production_bom_data_and_helpers')
 
     var rawMaterials = [
         @foreach($raw_materials as $raw_material)
@@ -302,9 +291,7 @@
                 return '<div><strong>' + (item.text || item.label || '') + '</strong></div>';
             },
             onSelect: function(item) {
-                $wrap.find('.item_code').val(item.code || '');
-                recalculateAllRawMaterials();
-                calculateTotalCost();
+                onFinishedProductSelected($wrap, item);
             }
         });
         $wrap.find('.item_search').on('input.clearItem', function() {
@@ -417,43 +404,34 @@
                 return;
             }
             
-            var itemId = $(this).find('.item_id').val();
-            var itemCode = $(this).find('.item_code').val();
-            var itemQuantity = parseFloat($(this).find('input[name="item_quantity[]"]').val() || 0);
-            
-            // Include selected items even when quantity is still 0/empty:
-            // raw material rows will show with 0 quantities and update later when qty changes.
-            if (itemId) {
-                if (itemCode) {
-                    // Find all ItemDetails for this item code
-                    var details = itemDetails.filter(function(detail) {
-                        var detailCode = String(detail.item_code || '').trim();
-                        var searchCode = String(itemCode || '').trim();
-                        return detailCode.toLowerCase() === searchCode.toLowerCase();
-                    });
-                    
-                    // Process each raw material for this item
-                    details.forEach(function(detail) {
-                        if (detail.r_material_id && detail.r_material_id > 0) {
-                            var rMaterialId = parseInt(detail.r_material_id);
-                            var requiredQuantity = itemQuantity * (parseFloat(detail.quantity) || 0);
-                            
-                            if (materialsMap[rMaterialId]) {
-                                // Add to existing quantity if same raw material is used by multiple items
-                                materialsMap[rMaterialId].quantity += requiredQuantity;
-                            } else {
-                                // Create new entry
-                                materialsMap[rMaterialId] = {
-                                    quantity: requiredQuantity,
-                                    raw_material_name: detail.raw_material_name || '',
-                                    unit: detail.unit || '',
-                                    raw_material_cump: detail.raw_material_cump || 0
-                                };
-                            }
-                        }
-                    });
-                }
+            var $row = $(this);
+            var itemId = parseInt($row.find('.item_id').val() || 0, 10);
+            var itemCode = String($row.find('.item_code').val() || '').trim();
+
+            if (!itemId && !itemCode) {
+                return;
             }
+
+            var multiplier = getFinishedGoodsQtyMultiplier($row);
+            var details = findItemDetailsForRow($row);
+
+            details.forEach(function(detail) {
+                if (detail.r_material_id && detail.r_material_id > 0) {
+                    var rMaterialId = parseInt(detail.r_material_id, 10);
+                    var requiredQuantity = multiplier * (parseFloat(detail.quantity) || 0);
+
+                    if (materialsMap[rMaterialId]) {
+                        materialsMap[rMaterialId].quantity += requiredQuantity;
+                    } else {
+                        materialsMap[rMaterialId] = {
+                            quantity: requiredQuantity,
+                            raw_material_name: detail.raw_material_name || '',
+                            unit: detail.unit || '',
+                            raw_material_cump: detail.raw_material_cump || 0
+                        };
+                    }
+                }
+            });
         });
         
         // Clear existing raw materials rows (except header)
@@ -596,6 +574,21 @@
     $(document).on('input', 'input[name="cost_price[]"]', function() {
         var row = $(this).closest('tr');
         calculateRowTotal(row, 'item');
+    });
+
+    $('#production_date').on('change', function () {
+        var planDate = $(this).val();
+        if (!planDate) return;
+        var now = new Date();
+        var pad = function (n) { return String(n).padStart(2, '0'); };
+        var start = new Date(planDate + 'T' + pad(now.getHours()) + ':' + pad(now.getMinutes()));
+        var end = new Date(start.getTime());
+        end.setDate(end.getDate() + 1);
+        var fmt = function (d) {
+            return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + 'T' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+        };
+        $('#planned_start_time').val(fmt(start));
+        $('#planned_finish_time').val(fmt(end));
     });
 
     // Form submission confirmation

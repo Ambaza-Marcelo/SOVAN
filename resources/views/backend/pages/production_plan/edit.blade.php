@@ -223,18 +223,7 @@
     };
     var itemsSearchUrl = {!! json_encode(route('admin.production-plan.items-search')) !!};
 
-    var itemDetails = [
-        @foreach($itemDetails as $itemDetail)
-        {
-            item_code: {!! json_encode($itemDetail->code) !!},
-            r_material_id: {{ $itemDetail->r_material_id ?? 0 }},
-            raw_material_name: {!! json_encode($itemDetail->rawMaterial ? $itemDetail->rawMaterial->name . ' (' . ($itemDetail->rawMaterial->rawMaterialMeasurement ? $itemDetail->rawMaterial->rawMaterialMeasurement->purchase_unit : 'N/A') . ')' : 'N/A') !!},
-            quantity: {{ $itemDetail->quantity ?? 0 }},
-            unit: {!! json_encode($itemDetail->rawMaterial && $itemDetail->rawMaterial->rawMaterialMeasurement ? $itemDetail->rawMaterial->rawMaterialMeasurement->purchase_unit : '') !!},
-            raw_material_cump: {{ $itemDetail->rawMaterial ? ($itemDetail->rawMaterial->cump ?? 0) : 0 }}
-        }@if(!$loop->last),@endif
-        @endforeach
-    ];
+    @include('backend.pages.partials.production_bom_data_and_helpers')
 
     var rawMaterials = [
         @foreach($raw_materials as $raw_material)
@@ -257,9 +246,7 @@
                 return '<div><strong>' + (item.text || item.label || '') + '</strong></div>';
             },
             onSelect: function(item) {
-                $wrap.find('.item_code').val(item.code || '');
-                recalculateAllRawMaterials();
-                calculateTotalCost();
+                onFinishedProductSelected($wrap, item);
             }
         });
         $wrap.find('.item_search').on('input.clearItem', function() {
@@ -376,21 +363,21 @@
                 return;
             }
 
-            var itemCode = String($(this).find('.item_code').val() || '').trim();
-            var itemQuantity = parseFloat($(this).find('input[name="item_quantity[]"]').val() || 0);
+            var $row = $(this);
+            var itemId = parseInt($row.find('.item_id').val() || 0, 10);
+            var itemCode = String($row.find('.item_code').val() || '').trim();
 
-            if (!itemCode) {
+            if (!itemId && !itemCode) {
                 return;
             }
 
-            var details = itemDetails.filter(function(detail) {
-                return String(detail.item_code || '').trim().toLowerCase() === itemCode.toLowerCase();
-            });
+            var multiplier = getFinishedGoodsQtyMultiplier($row);
+            var details = findItemDetailsForRow($row);
 
             details.forEach(function(detail) {
                 if (detail.r_material_id && detail.r_material_id > 0) {
                     var rMaterialId = parseInt(detail.r_material_id, 10);
-                    var requiredQuantity = itemQuantity * (parseFloat(detail.quantity) || 0);
+                    var requiredQuantity = multiplier * (parseFloat(detail.quantity) || 0);
 
                     if (materialsMap[rMaterialId]) {
                         materialsMap[rMaterialId].quantity += requiredQuantity;
