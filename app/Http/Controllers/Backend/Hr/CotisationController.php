@@ -118,9 +118,10 @@ class CotisationController extends Controller
             abort(403, 'Pardon!! vous n\'avez pas l\'autorisation de modifier la cotisation! Mufise ico mubaza hamagara kuri 130 canke 122');
         }
         $type_cotisations = HrTypeCotisation::all();
+        $groupe_cotisations = HrGroupeCotisation::all();
         $cotisation = HrCotisation::where('code',$code)->first();
         $datas = HrCotisation::where('code',$code)->get();
-        return view('backend.pages.hr.cotisation.edit', compact('cotisation','type_cotisations','contrats','datas'));
+        return view('backend.pages.hr.cotisation.edit', compact('cotisation','type_cotisations','groupe_cotisations','datas'));
     }
 
     /**
@@ -169,7 +170,8 @@ class CotisationController extends Controller
                     'created_by' => $this->user->name,
                     'created_at' => \Carbon\Carbon::now()
                 );
-                HrCotisation::where('type_cotisation_id',$type_cotisation_id)
+                HrCotisation::where('code',$code)
+                        ->where('type_cotisation_id',$type_cotisation_id[$count])
                         ->update($data);
                 
             }

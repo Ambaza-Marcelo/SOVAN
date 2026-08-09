@@ -104,7 +104,8 @@ class PrimeController extends Controller
             abort(403, 'Pardon!! vous n\'avez pas l\'autorisation de modifier la prime! Mufise ico mubaza hamagara kuri 130 canke 122');
         }
         $type_primes = HrTypePrime::all();
-        $datas = HrPrime::findOrFail($id);
+        $prime = HrPrime::findOrFail($id);
+        $datas = collect([$prime]);
         return view('backend.pages.hr.prime.edit', compact('prime','type_primes','datas'));
     }
 
@@ -147,7 +148,7 @@ class PrimeController extends Controller
                     'created_by' => $this->user->name,
                     'created_at' => \Carbon\Carbon::now()
                 );
-                HrPrime::where('type_prime_id',$type_prime_id)
+                HrPrime::where('id',$id)
                         ->update($data);
                 
             }

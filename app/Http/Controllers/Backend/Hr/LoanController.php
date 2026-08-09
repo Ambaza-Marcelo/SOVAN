@@ -317,6 +317,110 @@ class LoanController extends Controller
     }
 
     /**
+     * Marquer la première tranche comme payée.
+     */
+    public function markFirstTranchePaid($id)
+    {
+        if (is_null($this->user) || !$this->user->can('hr_loan.edit')) {
+            abort(403, 'Sorry!! you are Unauthorized to edit loan payment status');
+        }
+
+        $loan = HrLoan::findOrFail($id);
+
+        $t1 = (float) ($loan->amount_to_pay_1m ?? 0);
+        $t2 = (float) ($loan->amount_to_pay_2m ?? 0);
+        $t3 = (float) ($loan->amount_to_pay_3m ?? 0);
+
+        if ($t1 <= 0) {
+            session()->flash('error', 'Aucune première tranche à marquer comme payée.');
+            return back();
+        }
+
+        $loan->flag1 = '1';
+        // Pour un prêt à une seule tranche, flag2 reste à 0.
+        if ($t2 == 0 && $t3 == 0) {
+            $loan->flag2 = '0';
+        }
+
+        $loan->save();
+
+        session()->flash('success', 'La première tranche de l\'avance sur salaire a été marquée comme payée.');
+        return back();
+    }
+
+    /**
+     * Marquer la deuxième tranche comme payée.
+     */
+    public function markSecondTranchePaid($id)
+    {
+        if (is_null($this->user) || !$this->user->can('hr_loan.edit')) {
+            abort(403, 'Sorry!! you are Unauthorized to edit loan payment status');
+        }
+
+        $loan = HrLoan::findOrFail($id);
+
+        $t1 = (float) ($loan->amount_to_pay_1m ?? 0);
+        $t2 = (float) ($loan->amount_to_pay_2m ?? 0);
+        $t3 = (float) ($loan->amount_to_pay_3m ?? 0);
+
+        if ($t2 <= 0) {
+            session()->flash('error', 'Aucune deuxième tranche à marquer comme payée.');
+            return back();
+        }
+
+        // On considère que la première tranche est déjà payée.
+        $loan->flag1 = '1';
+        $loan->flag2 = '1';
+
+        $loan->save();
+
+        session()->flash('success', 'La deuxième tranche de l\'avance sur salaire a été marquée comme payée.');
+        return back();
+    }
+
+    /**
+     * Marquer toutes les tranches comme payées (avance totalement remboursée).
+     */
+    public function markAllTranchesPaid($id)
+    {
+        if (is_null($this->user) || !$this->user->can('hr_loan.edit')) {
+            abort(403, 'Sorry!! you are Unauthorized to edit loan payment status');
+        }
+
+        $loan = HrLoan::findOrFail($id);
+
+        $t1 = (float) ($loan->amount_to_pay_1m ?? 0);
+        $t2 = (float) ($loan->amount_to_pay_2m ?? 0);
+        $t3 = (float) ($loan->amount_to_pay_3m ?? 0);
+
+        if ($t1 <= 0) {
+            session()->flash('error', 'Impossible de marquer le prêt comme totalement payé : montants invalides.');
+            return back();
+        }
+
+        // 1 tranche : flag1=1, flag2=0
+        if ($t1 > 0 && $t2 == 0 && $t3 == 0) {
+            $loan->flag1 = '1';
+            $loan->flag2 = '0';
+        }
+        // 2 tranches : flag1=1, flag2=1
+        elseif ($t1 > 0 && $t2 > 0 && $t3 == 0) {
+            $loan->flag1 = '1';
+            $loan->flag2 = '1';
+        }
+        // 3 tranches : flag1=1, flag2=2
+        elseif ($t1 > 0 && $t2 > 0 && $t3 > 0) {
+            $loan->flag1 = '1';
+            $loan->flag2 = '2';
+        }
+
+        $loan->save();
+
+        session()->flash('success', 'Toutes les tranches de l\'avance sur salaire ont été marquées comme payées.');
+        return back();
+    }
+
+    /**
      * Retourne les IDs des employés qui ont au moins une avance en cours (status 0,1,2,3,4) non totalement payée.
      * @param int|null $excludeLoanId Exclure ce prêt du calcul (pour l'édition).
      */

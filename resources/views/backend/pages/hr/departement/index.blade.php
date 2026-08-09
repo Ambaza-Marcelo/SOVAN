@@ -2,7 +2,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-@lang('messages.Département') - @lang('messages.admin_panel')
+@lang('Département') - @lang('messages.admin_panel')
 @endsection
 
 @section('styles')
@@ -21,7 +21,7 @@
     <div class="row align-items-center">
         <div class="col-sm-6">
             <div class="breadcrumbs-area clearfix">
-                <h4 class="page-title pull-left">@lang('messages.Département')</h4>
+                <h4 class="page-title pull-left">@lang('Département')</h4>
                 <ul class="breadcrumbs pull-left">
                     <li><a href="{{ route('admin.dashboard') }}">@lang('messages.dashboard')</a></li>
                     <li><span>@lang('messages.list')</span></li>
@@ -41,9 +41,9 @@
         <div class="col-12 mt-5">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title float-left">@lang('messages.Départements')</h4>
+                    <h4 class="header-title float-left">Départements</h4>
                     <p class="float-right mb-2">
-                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#departementModal" data-whatever="@mdo"><i class="fa fa-plus-square" title="{{ __('messages.Ajouter') }}" aria-hidden="false"></i></button>
+                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#departementModal" data-whatever="@mdo"><i class="fa fa-plus-square" title="Ajouter" aria-hidden="false"></i></button>
                     </p>
                     <div class="clearfix"></div>
                     <div class="data-tables">
@@ -51,9 +51,9 @@
                             <thead class="bg-light text-capitalize">
                                 <tr>
                                     <th width="5%">#</th>
-                                    <th width="10%">@lang('messages.Code')</th>
-                                    <th width="10%">@lang('messages.Désignation')</th>
-                                    <th width="15%">@lang('messages.Action')</th>
+                                    <th width="10%">Code</th>
+                                    <th width="10%">Désignation</th>
+                                    <th width="15%">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -64,13 +64,13 @@
                                     <td>{{ $departement->name }}</td>
                                     <td>
                                         @if (Auth::guard('admin')->user()->can('hr_departement.edit'))
-                                            <a class="btn btn-success text-white" href="{{ route('admin.hr-departements.edit', $departement->id) }}">@lang('messages.Editer')</a>
+                                            <a class="btn btn-success text-white" href="{{ route('admin.hr-departements.edit', $departement->id) }}">Editer</a>
                                         @endif
 
                                         @if (Auth::guard('admin')->user()->can('hr_departement.delete'))
                                             <a class="btn btn-danger text-white" href="{{ route('admin.hr-departements.destroy', $departement->id) }}"
-                                            onclick="event.preventDefault(); if(confirm(@json(__('messages.delete_confirm_irreversible')))) { document.getElementById('delete-form-{{ $departement->id }}').submit(); }">
-                                                @lang('messages.Supprimer')
+                                            onclick="event.preventDefault(); if(confirm('Are you sure you want to delete this item? This action is irreversible.')) { document.getElementById('delete-form-{{ $departement->id }}').submit(); }">
+                                                Supprimer
                                             </a>
 
                                             <form id="delete-form-{{ $departement->id }}" action="{{ route('admin.hr-departements.destroy', $departement->id) }}" method="POST" style="display: none;">

@@ -45,8 +45,8 @@ class JournalPaieController extends Controller
 
     public function index()
     {
-        if (is_null($this->user) || !$this->user->can('hr_employe.view')) {
-            abort(403, 'Pardon!! vous n\'avez pas l\'autorisation de visualiser les employés! Mufise ico mubaza hamagara kuri 130 canke 122');
+        if (is_null($this->user) || (!$this->user->can('hr_journal_paie.view') && !$this->user->can('hr_paiement.view'))) {
+            abort(403, 'Pardon!! vous n\'avez pas l\'autorisation de visualiser le journal de paie!');
         }
 
         $journal_paies = HrJournalPaie::all();
@@ -163,47 +163,86 @@ class JournalPaieController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($code,$company_id)
+    public function show($code, $company_id)
     {
-        //
         if (is_null($this->user) || !$this->user->can('hr_journal_paie.view')) {
             abort(403, 'Pardon!! vous n\'avez pas l\'autorisation de visualiser les paies! Mufise ico mubaza hamagara kuri 130 canke 122');
         }
-        $data = HrJournalPaie::where('code',$code)->first();
 
-        $journal_paies = HrPaiement::where('code',$code)->where('employe_id','!=','')->where('company_id',$company_id)->get();
-        /*
-        $journal_paies = HrPaiement::select(
-                        DB::raw('employe_id,somme_salaire_base,somme_impot,somme_cotisation_inss,inss_employeur,assurance_maladie_employe,assurance_maladie_employeur,indemnite_deplacement,indemnite_logement,allocation_familiale,soins_medicaux,prime_fonction,retenue_pret,autre_retenue'))->where('code',$code)->groupBy('employe_id','somme_salaire_base')->get();
-                        */
-        return view('backend.pages.hr.journal_paie.show',compact('journal_paies','data'));
-        
+        $data = HrJournalPaie::where('code', $code)->firstOrFail();
+
+        $journal_paies = HrPaiement::with('employe')
+            ->where('code', $code)
+            ->where('employe_id', '!=', '')
+            ->where('company_id', $company_id)
+            ->orderBy('id')
+            ->get();
+
+        return view('backend.pages.hr.journal_paie.show', compact('journal_paies', 'data', 'company_id'));
+    }
+
+    public function exportToPdf(Request $request, $code = null, $company_id = null)
+    {
+        if (is_null($this->user) || !$this->user->can('hr_journal_paie.view')) {
+            abort(403, 'Pardon!! vous n\'avez pas l\'autorisation de visualiser les paies!');
+        }
+
+        $code = $code ?: $request->input('code');
+        $company_id = $company_id ?: $request->input('company_id');
+
+        if (!$code) {
+            session()->flash('error', 'Code journal manquant.');
+            return redirect()->back();
+        }
+
+        $journal_paie = HrJournalPaie::where('code', $code)->firstOrFail();
+        $setting = DB::table('settings')->orderBy('created_at', 'desc')->first();
+
+        $query = HrPaiement::with('employe')
+            ->where('code', $code)
+            ->where('employe_id', '!=', '');
+
+        if (!empty($company_id)) {
+            $query->where('company_id', $company_id);
+        }
+
+        $datas = $query->orderBy('id')->get();
+
+        $pdf = PDF::setOptions([
+            'defaultFont' => 'Helvetica',
+            'isRemoteEnabled' => true,
+            'isHtml5ParserEnabled' => true,
+            'isFontSubsettingEnabled' => false,
+        ])->loadView('backend.pages.hr.document.journal_paie', compact('datas', 'setting', 'journal_paie'), [], 'UTF-8')
+          ->setPaper('a4', 'landscape');
+
+        $fileName = 'JOURNAL_PAIE_'.$code.'_'.now()->format('Ymd_His').'.pdf';
+
+        return $pdf->download($fileName);
     }
 
     public function journalPaie($code)
     {
-        if (is_null($this->user) || !$this->user->can('hr_journal_paie.create')) {
-            abort(403, 'Sorry !! You are Unauthorized!');
+        return $this->exportToPdf(request(), $code);
+    }
+
+    public function exportToExcel(Request $request)
+    {
+        if (is_null($this->user) || !$this->user->can('hr_journal_paie.view')) {
+            abort(403, 'Pardon!! vous n\'avez pas l\'autorisation d\'exporter le journal de paie!');
         }
-        $setting = DB::table('settings')->orderBy('created_at','desc')->first();
 
-        $datas = HrJournalPaieDetail::select(
-                        DB::raw('employe_id,somme_salaire_base,sum(somme_cotisation) as somme_cotisation,sum(somme_indemnite) as somme_indemnite,sum(somme_prime) as somme_prime,sum(somme_impot) as somme_impot,sum(avance_sur_salaire) as avance_sur_salaire,sum(autre_retenue) as autre_retenue'))->where('code',$code)->groupBy('employe_id','somme_salaire_base')->get();
+        $code = $request->input('code');
+        $companyId = $request->input('company_id');
 
-        $journal_paie = HrJournalPaie::where('code', $code)->first();
-        //$somme_indemnite = HrJournalPaieDetail::where('code',$code)->sum('somme_indemnite');
-        $pdf = PDF::loadView('backend.pages.document.journal_paie',compact('datas','setting','journal_paie'))->setPaper('a4', 'landscape');
+        if (!$code) {
+            session()->flash('error', 'Code journal manquant.');
+            return redirect()->back();
+        }
 
-        $currentTime = Carbon::now();
+        $fileName = 'JOURNAL_PAIE_'.$code.'_'.now()->format('Ymd_His').'.xlsx';
 
-        $dateT =  $currentTime->toDateTimeString();
-
-        $dateTime = str_replace([' ',':'], '_', $dateT);
-
-        Storage::put('public/journal-paie/'.$dateTime.'.pdf', $pdf->output());
-
-        // download pdf file
-        return $pdf->download($dateTime.'.pdf');
+        return Excel::download(new JournalPaieExport($code, $companyId), $fileName);
     }
 
     public function cloturer($code)
@@ -475,7 +514,7 @@ class JournalPaieController extends Controller
             //end medecine care fees credit operation
             //start loan salary credit operations
             // For each employee having an outstanding loan retention on salary (retenue_pret > 0 and etat = 0),
-            // credit the employee's own advance-on-salary account ($employe->account_id).
+            // credit the employee's own advance-on-salary account ($employe->account_id) and update loan flags.
             $insert_journal_loan_salary_credit_data = [];
 
             $loanSalaryPaiements = HrPaiement::where('code', $code)
@@ -491,7 +530,12 @@ class JournalPaieController extends Controller
                     continue;
                 }
 
-                $loanSalaryCreditLedgerState = $this->updateLedgerTotals($employe->account_id, 'credit', $loanPaiement->retenue_pret);
+                $retenuePret = (float) ($loanPaiement->retenue_pret ?? 0);
+                if ($retenuePret <= 0) {
+                    continue;
+                }
+
+                $loanSalaryCreditLedgerState = $this->updateLedgerTotals($employe->account_id, 'credit', $retenuePret);
 
                 $journalEntryLoanSalaryCreditdata = [
                     'date'        => $data->date_fin,
@@ -499,12 +543,66 @@ class JournalPaieController extends Controller
                     'description' => 'loan on salary',
                     'account_id'  => $employe->account_id,
                     'libelle'     => 'loan on salary',
-                    'credit'      => $loanPaiement->retenue_pret,
+                    'credit'      => $retenuePret,
                     'balance'     => $loanSalaryCreditLedgerState['balance'],
                     'created_at'  => \Carbon\Carbon::now(),
                 ];
 
                 $insert_journal_loan_salary_credit_data[] = $journalEntryLoanSalaryCreditdata;
+
+                // Mettre à jour les flags du prêt de l'employé en fonction de la tranche payée.
+                $loan = HrLoan::where('employe_id', $loanPaiement->employe_id)
+                    ->where('status', '3')
+                    ->orderBy('id', 'desc')
+                    ->first();
+
+                if ($loan) {
+                    $t1 = (float) ($loan->amount_to_pay_1m ?? 0);
+                    $t2 = (float) ($loan->amount_to_pay_2m ?? 0);
+                    $t3 = (float) ($loan->amount_to_pay_3m ?? 0);
+
+                    $flag1 = (int) ($loan->flag1 ?? 0);
+                    $flag2 = (int) ($loan->flag2 ?? 0);
+
+                    $newFlag1 = $flag1;
+                    $newFlag2 = $flag2;
+
+                    // 1 seule tranche : si le montant retenu correspond à la tranche,
+                    // on considère que le prêt est totalement payé.
+                    if ($t1 > 0 && $t2 == 0 && $t3 == 0) {
+                        if ($flag1 === 0 && $flag2 === 0 && $retenuePret === $t1) {
+                            $newFlag1 = 1;
+                            $newFlag2 = 0;
+                        }
+                    }
+                    // 2 tranches : flag1 pour la 1ère, flag2 pour la 2ème.
+                    elseif ($t1 > 0 && $t2 > 0 && $t3 == 0) {
+                        if ($flag1 === 0 && $flag2 === 0 && $retenuePret === $t1) {
+                            $newFlag1 = 1;
+                        } elseif ($flag1 === 1 && $flag2 === 0 && $retenuePret === $t2) {
+                            $newFlag1 = 1;
+                            $newFlag2 = 1;
+                        }
+                    }
+                    // 3 tranches : flag1 pour la 1ère, flag2 = 1 pour la 2ème, flag2 = 2 pour la 3ème.
+                    elseif ($t1 > 0 && $t2 > 0 && $t3 > 0) {
+                        if ($flag1 === 0 && $flag2 === 0 && $retenuePret === $t1) {
+                            $newFlag1 = 1;
+                        } elseif ($flag1 === 1 && $flag2 === 0 && $retenuePret === $t2) {
+                            $newFlag1 = 1;
+                            $newFlag2 = 1;
+                        } elseif ($flag1 === 1 && $flag2 === 1 && $retenuePret === $t3) {
+                            $newFlag1 = 1;
+                            $newFlag2 = 2;
+                        }
+                    }
+
+                    if ($newFlag1 !== $flag1 || $newFlag2 !== $flag2) {
+                        $loan->flag1 = (string) $newFlag1;
+                        $loan->flag2 = (string) $newFlag2;
+                        $loan->save();
+                    }
+                }
             }
 
             if (!empty($insert_journal_loan_salary_credit_data)) {
@@ -668,16 +766,11 @@ class JournalPaieController extends Controller
             return back();
         } catch (\Exception $e) {
             DB::rollBack();
-            session()->flash('error', __('messages.error_journal_modification') . $e->getMessage());
+            session()->flash('error', 'Erreur lors de la modification du journal : ' . $e->getMessage());
             return back();
         }
     }
 
-
-    public function exportToExcel(Request $request)
-    {
-        return Excel::download(new JournalPaieExport, 'journal_paie.xlsx');
-    }
 
     /**
      * Remove the specified resource from storage.
@@ -802,52 +895,57 @@ class JournalPaieController extends Controller
      */
     protected function computeLoanRetentionForPeriod(int $employeId, string $dateDebut): float
     {
-        if (empty($employeId) || empty($dateDebut)) {
+        if (empty($employeId)) {
             return 0.0;
         }
 
-        $paymentDate = Carbon::parse($dateDebut);
-        $paymentMonth = $paymentDate->month;
-        $paymentYear = $paymentDate->year;
-
-        // Avances approuvées (status = 3) ; on ignore les prêts déjà totalement payés (flag2 = '2')
         $loans = HrLoan::where('employe_id', $employeId)
-            ->where('status', '3')
-            ->where(function ($q) {
-                $q->whereNull('flag2')->orWhere('flag2', '!=', '2');
-            })
+            ->whereIn('status', [3, 4, '3', '4'])
+            ->orderBy('date', 'asc')
             ->get();
 
         foreach ($loans as $loan) {
-            if (empty($loan->date)) {
+            if ($loan->isFullyPaid()) {
                 continue;
             }
 
-            $loanDate = Carbon::parse($loan->date);
-            $loanMonth = $loanDate->month;
-            $loanYear = $loanDate->year;
+            $flag1 = (int) ($loan->flag1 ?? 0);
+            $flag2 = (int) ($loan->flag2 ?? 0);
+            $nb = (float) ($loan->nbre_tranche ?? 3);
+            $t1 = (float) ($loan->amount_to_pay_1m ?? 0);
+            $t2 = (float) ($loan->amount_to_pay_2m ?? 0);
+            $t3 = (float) ($loan->amount_to_pay_3m ?? 0);
 
-            // Mois de paie par rapport au mois du prêt : 0 = 1er mois, 1 = 2e, 2 = 3e
-            $monthDiff = (($paymentYear - $loanYear) * 12) + ($paymentMonth - $loanMonth);
+            $retenue = 0.0;
+            if ($flag1 === 0) {
+                $retenue = $t1;
+            } elseif ($nb >= 2 && $flag2 === 0 && $t2 > 0) {
+                $retenue = $t2;
+            } elseif ($nb >= 3 && $flag2 === 1 && $t3 > 0) {
+                $retenue = $t3;
+            } else {
+                continue;
+            }
 
-            // 1er mois : retenue = amount_to_pay_1m
-            if ($monthDiff === 0) {
-                if ($loan->flag1 == '0' || $loan->flag1 == 0) {
-                    return (float) ($loan->amount_to_pay_1m ?? 0);
+            if (!empty($dateDebut) && !empty($loan->date)) {
+                try {
+                    $paymentDate = Carbon::parse(str_replace('T', ' ', $dateDebut));
+                    $loanDate = Carbon::parse($loan->date);
+                    $monthDiff = (($paymentDate->year - $loanDate->year) * 12) + ($paymentDate->month - $loanDate->month);
+
+                    if ($monthDiff === 0 && $flag1 === 0) {
+                        $retenue = $t1;
+                    } elseif ($monthDiff === 1 && $flag1 === 1 && $flag2 === 0) {
+                        $retenue = $t2;
+                    } elseif ($monthDiff === 2 && $flag1 === 1 && $flag2 === 1) {
+                        $retenue = $t3;
+                    }
+                } catch (\Exception $e) {
+                    // keep next unpaid tranche
                 }
             }
-            // 2e mois (mois suivant) : retenue = amount_to_pay_2m
-            elseif ($monthDiff === 1) {
-                if (($loan->flag1 == '1' || $loan->flag1 == 1) && ($loan->flag2 == '0' || $loan->flag2 == 0)) {
-                    return (float) ($loan->amount_to_pay_2m ?? 0);
-                }
-            }
-            // 3e mois : retenue = amount_to_pay_3m jusqu'à dette totalement payée
-            elseif ($monthDiff === 2) {
-                if (($loan->flag1 == '1' || $loan->flag1 == 1) && ($loan->flag2 == '1' || $loan->flag2 == 1)) {
-                    return (float) ($loan->amount_to_pay_3m ?? 0);
-                }
-            }
+
+            return round($retenue, 2);
         }
 
         return 0.0;

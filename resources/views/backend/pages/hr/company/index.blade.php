@@ -2,7 +2,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-@lang('messages.companies') - @lang('messages.admin_panel')
+@lang('companies') - @lang('messages.admin_panel')
 @endsection
 
 @section('styles')
@@ -49,7 +49,7 @@
     <div class="row align-items-center">
         <div class="col-sm-6">
             <div class="breadcrumbs-area clearfix">
-                <h4 class="page-title pull-left">@lang('messages.companies')</h4>
+                <h4 class="page-title pull-left">@lang('companies')</h4>
                 <ul class="breadcrumbs pull-left">
                     <li><a href="{{ route('admin.dashboard') }}">@lang('messages.dashboard')</a></li>
                     <li><span>@lang('messages.list')</span></li>
@@ -68,7 +68,7 @@
         <div class="col-12 mt-5">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title float-left">@lang('messages.Companies')</h4>
+                    <h4 class="header-title float-left">Companies</h4>
                     <p class="float-right mb-2">
                         <a class="btn btn-primary text-white" href="{{ route('admin.hr-companies.create') }}">@lang('messages.new')</a>
                     </p>
@@ -91,7 +91,7 @@
                                         @endif
                                         @if (Auth::guard('admin')->user()->can('setting.edit'))
                                             <a class="btn btn-danger btn-sm text-white" href="{{ route('admin.hr-companies.destroy', $company->id) }}"
-                                            onclick="event.preventDefault(); if(confirm(@json(__('messages.delete_confirm_irreversible')))) { document.getElementById('delete-form-{{ $company->id }}').submit(); }">
+                                            onclick="event.preventDefault(); if(confirm('Are you sure you want to delete this item? This action is irreversible.')) { document.getElementById('delete-form-{{ $company->id }}').submit(); }">
                                                 <i class="fa fa-trash"></i> Delete
                                             </a>
                                             <form id="delete-form-{{ $company->id }}" action="{{ route('admin.hr-companies.destroy', $company->id) }}" method="POST" style="display: none;">
@@ -137,11 +137,11 @@
                                                 <div class="detail-section">
                                                     <div class="row">
                                                         <div class="col-md-6">
-                                                            <div class="info-label">@lang('messages.Nom de l\'entreprise')</div>
+                                                            <div class="info-label">Nom de l'entreprise</div>
                                                             <div class="info-value">{{ $company->name ?? 'N/A' }}</div>
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <div class="info-label">@lang('messages.Développeur')</div>
+                                                            <div class="info-label">Développeur</div>
                                                             <div class="info-value">{{ $company->developpeur ?? 'N/A' }}</div>
                                                         </div>
                                                     </div>
@@ -155,15 +155,15 @@
                                         <div class="detail-section">
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <div class="info-label">@lang('messages.NIF')</div>
+                                                    <div class="info-label">NIF</div>
                                                     <div class="info-value">{{ $company->nif ?? 'N/A' }}</div>
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <div class="info-label">@lang('messages.Registre Commerce (RC)')</div>
+                                                    <div class="info-label">Registre Commerce (RC)</div>
                                                     <div class="info-value">{{ $company->rc ?? 'N/A' }}</div>
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <div class="info-label">@lang('messages.Code')</div>
+                                                    <div class="info-label">Code</div>
                                                     <div class="info-value">{{ $company->code ?? 'N/A' }}</div>
                                                 </div>
                                             </div>
@@ -175,21 +175,21 @@
                                         <div class="detail-section">
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <div class="info-label">@lang('messages.Commune')</div>
+                                                    <div class="info-label">Commune</div>
                                                     <div class="info-value">{{ $company->commune ?? 'N/A' }}</div>
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <div class="info-label">@lang('messages.Zone')</div>
+                                                    <div class="info-label">Zone</div>
                                                     <div class="info-value">{{ $company->zone ?? 'N/A' }}</div>
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <div class="info-label">@lang('messages.Quartier')</div>
+                                                    <div class="info-label">Quartier</div>
                                                     <div class="info-value">{{ $company->quartier ?? 'N/A' }}</div>
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <div class="info-label">@lang('messages.Rue')</div>
+                                                    <div class="info-label">Rue</div>
                                                     <div class="info-value">{{ $company->rue ?? 'N/A' }}</div>
                                                 </div>
                                             </div>
@@ -201,7 +201,7 @@
                                         <div class="detail-section">
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <div class="info-label">@lang('messages.Téléphone 1')</div>
+                                                    <div class="info-label">Téléphone 1</div>
                                                     <div class="info-value">
                                                         @if($company->telephone1)
                                                             <a href="tel:{{ $company->telephone1 }}">{{ $company->telephone1 }}</a>
@@ -211,7 +211,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <div class="info-label">@lang('messages.Téléphone 2')</div>
+                                                    <div class="info-label">Téléphone 2</div>
                                                     <div class="info-value">
                                                         @if($company->telephone2)
                                                             <a href="tel:{{ $company->telephone2 }}">{{ $company->telephone2 }}</a>
@@ -221,7 +221,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <div class="info-label">@lang('messages.Email')</div>
+                                                    <div class="info-label">Email</div>
                                                     <div class="info-value">
                                                         @if($company->email)
                                                             <a href="mailto:{{ $company->email }}">{{ $company->email }}</a>
@@ -241,8 +241,8 @@
 
                     @if(count($companies) == 0)
                         <div class="alert alert-info text-center">
-                            <h5>@lang('messages.Aucune entreprise trouvée')</h5>
-                            <p>@lang('messages.Cliquez sur "Nouveau" pour créer une nouvelle entreprise.')</p>
+                            <h5>Aucune entreprise trouvée</h5>
+                            <p>Cliquez sur "Nouveau" pour créer une nouvelle entreprise.</p>
                         </div>
                     @endif
                 </div>

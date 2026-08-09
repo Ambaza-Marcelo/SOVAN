@@ -2,7 +2,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-@lang('messages.Liste des Stagiaires') - @lang('messages.admin_panel')
+@lang('Liste des Stagiaires') - @lang('messages.admin_panel')
 @endsection
 
 @section('styles')
@@ -21,7 +21,7 @@
     <div class="row align-items-center">
         <div class="col-sm-6">
             <div class="breadcrumbs-area clearfix">
-                <h4 class="page-title pull-left">@lang('messages.Liste des Stagiaires')</h4>
+                <h4 class="page-title pull-left">@lang('Liste des Stagiaires')</h4>
                 <ul class="breadcrumbs pull-left">
                     <li><a href="{{ route('admin.dashboard') }}">@lang('messages.dashboard')</a></li>
                     <li><span>@lang('messages.list')</span></li>
@@ -41,7 +41,7 @@
         <div class="col-12 mt-5">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title float-left">@lang('messages.Liste des Stagiaires')</h4>
+                    <h4 class="header-title float-left">Liste des Stagiaires</h4>
                     <p class="float-right mb-2">
                             <a class="btn btn-primary text-white" href="{{ route('admin.hr-stagiaires.create') }}">@lang('messages.new')</a>
                     </p>
@@ -52,27 +52,27 @@
                             <thead class="bg-light text-capitalize">
                                 <tr>
                                     <th width="5%">#</th>
-                                    <th width="10%">@lang('messages.Nom')</th>
-                                    <th width="10%">@lang('messages.Prenom')</th>
-                                    <th width="10%">@lang('messages.Telephone')</th>
-                                    <th width="10%">@lang('messages.Diplome')</th>
-                                    <th width="10%">@lang('messages.Departement')</th>
-                                    <th width="10%">@lang('messages.Service')</th>
-                                    <th width="10%">@lang('messages.Position')</th>
-                                    <th width="10%">@lang('messages.E-mail')</th>
-                                    <th width="10%">@lang('messages.Genre')</th>
-                                    <th width="10%">@lang('messages.Date Naissance')</th>
-                                    <th width="10%">@lang('messages.Groupe Sanguin')</th>
-                                    <th width="10%">@lang('messages.CNI')</th>
-                                    <th width="10%">@lang('messages.Province')</th>
-                                    <th width="10%">@lang('messages.Commune')</th>
-                                    <th width="10%">@lang('messages.Zone')</th>
-                                    <th width="10%">@lang('messages.Quartier')</th>
-                                    <th width="10%">@lang('messages.Nbre Enfants')</th>
-                                    <th width="10%">@lang('messages.Nom du Père')</th>
-                                    <th width="10%">@lang('messages.Nom du Mère')</th>
-                                    <th width="10%">@lang('messages.Residence Actuelle')</th>
-                                    <th width="15%">@lang('messages.Action')</th>
+                                    <th width="10%">Nom</th>
+                                    <th width="10%">Prenom</th>
+                                    <th width="10%">Telephone</th>
+                                    <th width="10%">Diplome</th>
+                                    <th width="10%">Departement</th>
+                                    <th width="10%">Service</th>
+                                    <th width="10%">Position</th>
+                                    <th width="10%">E-mail</th>
+                                    <th width="10%">Genre</th>
+                                    <th width="10%">Date Naissance</th>
+                                    <th width="10%">Groupe Sanguin</th>
+                                    <th width="10%">CNI</th>
+                                    <th width="10%">Province</th>
+                                    <th width="10%">Commune</th>
+                                    <th width="10%">Zone</th>
+                                    <th width="10%">Quartier</th>
+                                    <th width="10%">Nbre Enfants</th>
+                                    <th width="10%">Nom du Père</th>
+                                    <th width="10%">Nom du Mère</th>
+                                    <th width="10%">Residence Actuelle</th>
+                                    <th width="15%">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -101,13 +101,13 @@
                                     <td>{{ $stagiaire->quartier_residence_actuel }}</td>
                                     <td>
                                         @if (Auth::guard('admin')->user()->can('hr_stagiaire.edit'))
-                                            <a class="btn btn-success text-white" href="{{ route('admin.hr-stagiaires.edit', $stagiaire->id) }}">@lang('messages.Editer')</a>
+                                            <a class="btn btn-success text-white" href="{{ route('admin.hr-stagiaires.edit', $stagiaire->id) }}">Editer</a>
                                         @endif
 
                                         @if (Auth::guard('admin')->user()->can('hr_stagiaire.edit'))
                                             <a class="btn btn-danger text-white" href="{{ route('admin.hr-stagiaires.destroy', $stagiaire->id) }}"
-                                            onclick="event.preventDefault(); if(confirm(@json(__('messages.delete_confirm_irreversible')))) { document.getElementById('delete-form-{{ $stagiaire->id }}').submit(); }">
-                                                @lang('messages.Supprimer')
+                                            onclick="event.preventDefault(); if(confirm('Are you sure you want to delete this item? This action is irreversible.')) { document.getElementById('delete-form-{{ $stagiaire->id }}').submit(); }">
+                                                Supprimer
                                             </a>
 
                                             <form id="delete-form-{{ $stagiaire->id }}" action="{{ route('admin.hr-stagiaires.destroy', $stagiaire->id) }}" method="POST" style="display: none;">

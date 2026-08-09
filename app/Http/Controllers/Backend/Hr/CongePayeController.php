@@ -119,7 +119,7 @@ class CongePayeController extends Controller
         //
         $conge_paye = HrCongePaye::where('session',$session)->first();
         $datas = HrJournalCongePaye::where('session',$session)->get();
-        return view('backend.pages.journal_conge_paye.index', compact('conge_paye','datas'));
+        return view('backend.pages.hr.journal_conge_paye.index', compact('conge_paye','datas'));
     }
 
 

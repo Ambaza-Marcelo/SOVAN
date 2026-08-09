@@ -2,7 +2,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-@lang('messages.setting_edit') - @lang('messages.admin_panel')
+@lang('Modifier la cotation') - @lang('messages.admin_panel')
 @endsection
 
 @section('styles')
@@ -21,11 +21,11 @@
     <div class="row align-items-center">
         <div class="col-sm-6">
             <div class="breadcrumbs-area clearfix">
-                <h4 class="page-title pull-left">@lang('messages.setting_edit')</h4>
+                <h4 class="page-title pull-left">@lang('Modifier la cotation')</h4>
                 <ul class="breadcrumbs pull-left">
                     <li><a href="{{ route('admin.dashboard') }}">@lang('messages.dashboard')</a></li>
-                    <li><a href="{{ route('admin.settings.index') }}">@lang('messages.list')</a></li>
-                    <li><span>@lang('messages.setting_edit')</span></li>
+                    <li><a href="{{ route('admin.hr-cotations.index') }}">@lang('messages.list')</a></li>
+                    <li><span>@lang('Modifier la cotation')</span></li>
                 </ul>
             </div>
         </div>
@@ -42,101 +42,40 @@
         <div class="col-12 mt-5">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title">@lang('messages.Edit Setting')</h4>
+                    <h4 class="header-title">Modifier la cotation</h4>
                     @include('backend.layouts.partials.messages')
-                    
-                    <form action="{{ route('admin.settings.update', $setting->id) }}" method="POST" enctype="multipart/form-data">
+
+                    <form action="{{ route('admin.hr-cotations.update',$cotation->id) }}" method="POST">
                         @method('PUT')
                         @csrf
                         <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group has-feedback">
-                                        <label for="name">@lang('messages.Nom Entreprise')<span class="text-danger"></span></label>
-                                        <input autofocus type="text" class="form-control" name="name" value="{{$setting->name}} " required minlength="2" maxlength="255">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group has-feedback">
-                                        <label for="nif">@lang('messages.NIF')<span class="text-danger"></span></label>
-                                        <input autofocus type="text" class="form-control" name="nif" value="{{$setting->nif}} " required>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group has-feedback">
-                                        <label for="rc">@lang('messages.Registre Commerce')<span class="text-danger"></span></label>
-                                        <input autofocus type="text" class="form-control" name="rc" value="{{$setting->rc}} " required>
-                                    </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="employe_id">Employé *:</label>
+                                    <select name="employe_id" id="employe_id" class="form-control" required>
+                                        <option disabled value="">Merci de choisir</option>
+                                        @foreach ($employes as $employe)
+                                        <option value="{{ $employe->id }}" @selected($cotation->employe_id == $employe->id)>{{ $employe->firstname }} {{ $employe->lastname }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group has-feedback">
-                                        <label for="commune">@lang('messages.Commune')<span class="text-danger"></span></label>
-                                        <input autofocus type="text" class="form-control" name="commune" value="{{$setting->commune}} " required minlength="2" maxlength="255">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group has-feedback">
-                                        <label for="zone">@lang('messages.Zone')<span class="text-danger"></span></label>
-                                        <input autofocus type="text" class="form-control" name="zone" value="{{$setting->zone}} " required minlength="2" maxlength="255">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group has-feedback">
-                                        <label for="quartier">@lang('messages.Quartier')<span class="text-danger"></span></label>
-                                        <input autofocus type="text" class="form-control" name="quartier" value="{{$setting->quartier}} " required minlength="2" maxlength="255">
-                                    </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="somme_note_obtenu">Note obtenue *:</label>
+                                    <input type="number" step="any" min="0" name="somme_note_obtenu" class="form-control" id="somme_note_obtenu" value="{{ $cotation->somme_note_obtenu }}" required>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group has-feedback">
-                                        <label for="avenue">@lang('messages.Avenue')<span class="text-danger"></span></label>
-                                        <input autofocus type="text" class="form-control" name="avenue" value=" " required minlength="2" maxlength="255">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group has-feedback">
-                                        <label for="rue">@lang('messages.Rue')<span class="text-danger"></span></label>
-                                        <input autofocus type="text" class="form-control" name="rue" value="{{$setting->rue}} " required minlength="2" maxlength="255">
-                                    </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="somme_note_total">Note totale *:</label>
+                                    <input type="number" step="any" min="0" name="somme_note_total" class="form-control" id="somme_note_total" value="{{ $cotation->somme_note_total }}" required>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group has-feedback">
-                                        <label for="telephone1">@lang('messages.Telephone 1')<span class="text-danger"></span></label>
-                                        <input autofocus type="text" class="form-control" name="telephone1" value="{{$setting->telephone1}} " required minlength="6" maxlength="15">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group has-feedback">
-                                        <label for="telephone2">@lang('messages.Telephone 2')<span class="text-danger"></span></label>
-                                        <input autofocus type="text" class="form-control" name="telephone2" value="{{$setting->telephone2}} " " required minlength="6" maxlength="15">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group has-feedback">
-                                        <label for="email">@lang('messages.Email')<span class="text-danger"></span></label>
-                                        <input autofocus type="text" class="form-control" name="email" value="{{$setting->email}} " required minlength="5" maxlength="255">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group has-feedback">
-                                        <label for="logo">@lang('messages.Logo')<span class="text-danger"></span></label>
-                                        <input type="file" class="form-control" name="logo" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group has-feedback">
-                                        <label for="developpeur">@lang('messages.Developpeur')<span class="text-danger"></span></label>
-                                        <input autofocus type="text" class="form-control" name="developpeur" value="{{$setting->developpeur}} ">
-                                    </div>
-                                </div>
-                            </div>
-                        <button type="submit" class="btn btn-primary mt-4 pr-4 pl-4">@lang('messages.Modifier')</button>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-4 pr-4 pl-4">@lang('messages.update')</button>
                     </form>
                 </div>
             </div>

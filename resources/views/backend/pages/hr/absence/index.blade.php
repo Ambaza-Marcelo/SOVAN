@@ -2,7 +2,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-@lang('messages.Rapport de Présence') - @lang('messages.admin_panel')
+@lang('Rapport de Présence') - @lang('messages.admin_panel')
 @endsection
 
 @section('styles')
@@ -48,10 +48,10 @@
     <div class="row align-items-center">
         <div class="col-sm-6">
             <div class="breadcrumbs-area clearfix">
-                <h4 class="page-title pull-left">@lang('messages.Rapport de Présence')</h4>
+                <h4 class="page-title pull-left">@lang('Rapport de Présence')</h4>
                 <ul class="breadcrumbs pull-left">
                     <li><a href="{{ route('admin.dashboard') }}">@lang('messages.dashboard')</a></li>
-                    <li><span>@lang('messages.Rapport de Présence')</span></li>
+                    <li><span>@lang('Rapport de Présence')</span></li>
                 </ul>
             </div>
         </div>
@@ -69,10 +69,10 @@
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h4 class="header-title mb-0">@lang('messages.attendance_report') - @lang('messages.first_in_last_out')</h4>
+                        <h4 class="header-title mb-0">Rapport de Présence - First In Last Out</h4>
                         <div>
                             <a href="{{ route('admin.hr-absences.export-excel', request()->query()) }}" class="btn btn-success btn-sm">
-                                <i class="fa fa-file-excel-o"></i> @lang('messages.export_excel')
+                                <i class="fa fa-file-excel-o"></i> Export Excel
                             </a>
                         </div>
                     </div>
@@ -81,17 +81,17 @@
                     
                     @if(isset($error))
                         <div class="alert alert-danger">
-                            <strong>@lang('messages.Erreur:')</strong> {{ $error }}
+                            <strong>Erreur:</strong> {{ $error }}
                             <hr>
                             <small>
-                                <strong>@lang('messages.Vérifications à faire:')</strong><br>
-                                1. Vérifiez que les variables suivantes sont définies dans votre fichier <code>@lang('messages..env')</code>:<br>
-                                &nbsp;&nbsp;&nbsp;&nbsp;<code>@lang('messages.GUZZLE_BIOTIME_URL=http://192.168.88.2:8080')</code><br>
-                                &nbsp;&nbsp;&nbsp;&nbsp;<code>@lang('messages.BIOTIME_USERNAME=Marcellin')</code><br>
-                                &nbsp;&nbsp;&nbsp;&nbsp;<code>@lang('messages.BIOTIME_PASSWORD=marcelo@2001')</code><br>
+                                <strong>Vérifications à faire:</strong><br>
+                                1. Vérifiez que les variables suivantes sont définies dans votre fichier <code>.env</code>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<code>GUZZLE_BIOTIME_URL=http://192.168.88.2:8080</code><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<code>BIOTIME_USERNAME=Marcellin</code><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<code>BIOTIME_PASSWORD=marcelo@2001</code><br>
                                 2. Vérifiez que le serveur Biotime est accessible depuis votre serveur Laravel<br>
                                 3. Vérifiez les identifiants de connexion<br>
-                                4. Consultez les logs Laravel: <code>@lang('messages.storage/logs/laravel.log')</code>
+                                4. Consultez les logs Laravel: <code>storage/logs/laravel.log</code>
                             </small>
                         </div>
                     @endif
@@ -101,7 +101,7 @@
                         <form id="filterForm" method="GET" action="{{ route('admin.hr-absences.index') }}">
                             <div class="row">
                                 <div class="col-md-3">
-                                    <label>@lang('messages.Département')</label>
+                                    <label>Département</label>
                                     <select name="department_ids[]" id="departmentFilter" class="form-control" multiple>
                                         @if(isset($departments) && is_array($departments))
                                             @php
@@ -117,7 +117,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-3">
-                                    <label>@lang('messages.Employé')</label>
+                                    <label>Employé</label>
                                     <select name="employee_ids[]" id="employeeFilter" class="form-control" multiple>
                                         @if(isset($employees) && is_array($employees))
                                             @php
@@ -133,11 +133,11 @@
                                     </select>
                                 </div>
                                 <div class="col-md-2">
-                                    <label>@lang('messages.Date Début')</label>
+                                    <label>Date Début</label>
                                     <input type="date" name="start_date" id="startDate" class="form-control" value="{{ $startDate ?? date('Y-m-d', strtotime('-30 days')) }}">
                                 </div>
                                 <div class="col-md-2">
-                                    <label>@lang('messages.Date Fin')</label>
+                                    <label>Date Fin</label>
                                     <input type="date" name="end_date" id="endDate" class="form-control" value="{{ $endDate ?? date('Y-m-d') }}">
                                 </div>
                                 <div class="col-md-2">
@@ -154,15 +154,15 @@
                         <table id="attendanceTable" class="text-center table table-striped table-bordered">
                             <thead class="bg-light text-capitalize">
                                 <tr>
-                                    <th>@lang('messages.NO.')</th>
-                                    <th>@lang('messages.First Name')</th>
-                                    <th>@lang('messages.Last Name')</th>
-                                    <th>@lang('messages.Department')</th>
-                                    <th>@lang('messages.Position')</th>
-                                    <th>@lang('messages.Date')</th>
-                                    <th>@lang('messages.Weekday')</th>
-                                    <th>@lang('messages.Check In')</th>
-                                    <th>@lang('messages.Check Out')</th>
+                                    <th>NO.</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Department</th>
+                                    <th>Position</th>
+                                    <th>Date</th>
+                                    <th>Weekday</th>
+                                    <th>Check In</th>
+                                    <th>Check Out</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -195,7 +195,7 @@
                                     @endforeach
                                 @else
                                     <tr>
-                                        <td colspan="10" class="text-center">@lang('messages.Aucune donnée de présence disponible')</td>
+                                        <td colspan="10" class="text-center">Aucune donnée de présence disponible</td>
                                     </tr>
                                 @endif
                             </tbody>
@@ -300,7 +300,7 @@
          function loadEmployees(departmentIds) {
              // Clear current employees
              $('#employeeFilter').empty();
-             $('#employeeFilter').append('<option value="">@lang('messages.Chargement...')</option>');
+             $('#employeeFilter').append('<option value="">Chargement...</option>');
 
              var params = {};
              if (departmentIds && departmentIds.length > 0) {
@@ -327,7 +327,7 @@
                              );
                          });
                      } else {
-                         $('#employeeFilter').append('<option value="">@lang('messages.Aucun employé trouvé')</option>');
+                         $('#employeeFilter').append('<option value="">Aucun employé trouvé</option>');
                      }
                      
                      // Trigger change to update Select2
@@ -336,7 +336,7 @@
                  error: function(xhr, status, error) {
                      console.error('Erreur lors du chargement des employés:', error);
                      $('#employeeFilter').empty();
-                     $('#employeeFilter').append('<option value="">@lang('messages.Erreur de chargement')</option>');
+                     $('#employeeFilter').append('<option value="">Erreur de chargement</option>');
                  }
              });
          }

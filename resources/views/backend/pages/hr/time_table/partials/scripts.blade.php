@@ -17,7 +17,7 @@
             } else {
                 // Désactiver le select employé
                 employeSelect.prop('disabled', true);
-                employeSelect.html('<option value="">@lang('messages.Sélectionner un employé')</option>');
+                employeSelect.html('<option value="">Sélectionner un employé</option>');
             }
         });
 

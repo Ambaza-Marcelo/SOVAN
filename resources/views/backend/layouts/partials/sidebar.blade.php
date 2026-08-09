@@ -4,8 +4,12 @@
  <div class="sidebar-menu">
     <div class="sidebar-header">
         <div class="logo">
-            <a href="{{ route('admin.dashboard') }}">
-                <h2 class="text-white">@lang('messages.app_brand')</h2> 
+            <a href="{{ route('admin.dashboard') }}" class="sidebar-brand">
+                <span class="sidebar-brand-mark">SO</span>
+                <span class="sidebar-brand-text">
+                    <h2 class="sidebar-brand-name">@lang('messages.app_brand')</h2>
+                    <span class="sidebar-brand-tag">@lang('messages.app_brand_tagline')</span>
+                </span>
             </a>
         </div>
     </div>
@@ -20,10 +24,9 @@
                     </li>
                     @endif
                     @if ($usr->can('material.view'))
-                    <li>
-                        <li class="active"><a href="#"><i class="fa fa-leaf"></i>&nbsp;@lang('messages.SOVAN')</a></li>
+                    <li class="mm-static">
+                        <span class="sidebar-section-label"><i class="fa fa-industry"></i>@lang('messages.sidebar_company_section')</span>
                     </li>
-                    <hr>
                     @endif
                     @if ($usr->can('raw_material.create') || $usr->can('raw_material.view') ||  $usr->can('raw_material.edit') ||  $usr->can('raw_material.delete') || $usr->can('client.view') || $usr->can('material.create') || $usr->can('material.view') ||  $usr->can('material.edit') ||  $usr->can('material.delete') ||  $usr->can('employe.create') || $usr->can('employe.view') ||  $usr->can('employe.edit') ||  $usr->can('employe.delete') || $usr->can('supplier.create') || $usr->can('supplier.view') ||  $usr->can('supplier.edit') ||  $usr->can('item.view'))
                     <li>

@@ -3,7 +3,12 @@
     <div class="row align-items-center">
         <!-- nav and search button -->
         <div class="col-md-6 col-sm-8 clearfix">
-         <h2 class="pull-left" style="color:green;"><marquee> @lang('messages.app_header_product') <span style="color: pink;">| </span><strong style="color: black;">{{ Auth::guard('admin')->user()->name }}</strong></marquee></h2>
+         <div class="header-brand-strip pull-left">
+            <span class="dot"></span>
+            @lang('messages.app_header_product')
+            <span style="opacity:0.45;">|</span>
+            <strong>{{ Auth::guard('admin')->user()->name }}</strong>
+         </div>
         </div>
         <div class="col-md-6 col-sm-4 clearfix">
             <ul class="notification-area pull-right">

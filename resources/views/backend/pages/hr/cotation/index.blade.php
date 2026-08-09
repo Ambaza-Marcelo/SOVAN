@@ -2,7 +2,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-@lang('messages.setting') - @lang('messages.admin_panel')
+@lang('Cotations des employés') - @lang('messages.admin_panel')
 @endsection
 
 @section('styles')
@@ -21,7 +21,7 @@
     <div class="row align-items-center">
         <div class="col-sm-6">
             <div class="breadcrumbs-area clearfix">
-                <h4 class="page-title pull-left">@lang('messages.setting')</h4>
+                <h4 class="page-title pull-left">@lang('Cotations des employés')</h4>
                 <ul class="breadcrumbs pull-left">
                     <li><a href="{{ route('admin.dashboard') }}">@lang('messages.dashboard')</a></li>
                     <li><span>@lang('messages.list')</span></li>
@@ -41,9 +41,11 @@
         <div class="col-12 mt-5">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title float-left">@lang('messages.Setting')</h4>
+                    <h4 class="header-title float-left">Cotations des employés</h4>
                     <p class="float-right mb-2">
-                            <a class="btn btn-primary text-white" href="{{ route('admin.settings.create') }}">@lang('messages.Create New')</a>
+                        @if (Auth::guard('admin')->user()->can('hr_cotation.create'))
+                            <a class="btn btn-primary text-white" href="{{ route('admin.hr-cotations.create') }}">@lang('messages.new')</a>
+                        @endif
                     </p>
                     <div class="clearfix"></div>
                     <div class="data-tables">
@@ -52,49 +54,35 @@
                             <thead class="bg-light text-capitalize">
                                 <tr>
                                     <th width="5%">#</th>
-                                    <th width="30%">@lang('messages.logo')</th>
-                                    <th width="10%">@lang('messages.Nom')</th>
-                                    <th width="10%">@lang('messages.NIF')</th>
-                                    <th width="10%">@lang('messages.RC')</th>
-                                    <th width="10%">@lang('messages.Commune')</th>
-                                    <th width="10%">@lang('messages.Zone')</th>
-                                    <th width="10%">@lang('messages.Quartier')</th>
-                                    <th width="10%">@lang('messages.Rue')</th>
-                                    <th width="10%">@lang('messages.Telephone 1')</th>
-                                    <th width="10%">@lang('messages.Telephone 2')</th>
-                                    <th width="10%">@lang('messages.Email')</th>
-                                    <th width="10%">@lang('messages.Devloppeur')</th>
-                                    <th width="15%">@lang('messages.Action')</th>
+                                    <th width="20%">Employé</th>
+                                    <th width="10%">Note obtenue</th>
+                                    <th width="10%">Note totale</th>
+                                    <th width="10%">Pourcentage</th>
+                                    <th width="10%">Mention</th>
+                                    <th width="15%">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                               @foreach ($settings as $setting)
+                               @foreach ($cotations as $cotation)
                                <tr>
                                     <td>{{ $loop->index+1 }}</td>
-                                    <td> <img class="img-responsive" style="max-height: 50px;" src="{{ asset('storage/logo')}}/{{ $setting->logo }}" alt=""></td>
-                                    <td>{{ $setting->name }}</td>
-                                    <td>{{ $setting->nif }}</td>
-                                    <td>{{ $setting->rc }}</td>
-                                    <td>{{ $setting->commune }}</td>
-                                    <td>{{ $setting->zone }}</td>
-                                    <td>{{ $setting->quartier }}</td>
-                                    <td>{{ $setting->rue }}</td>
-                                    <td>{{ $setting->telephone1 }}</td>
-                                    <td>{{ $setting->telephone2 }}</td>
-                                    <td>{{ $setting->email }}</td>
-                                    <td>{{ $setting->developpeur }}</td>
+                                    <td>@if($cotation->employe){{ $cotation->employe->firstname }}&nbsp;{{ $cotation->employe->lastname }}@endif</td>
+                                    <td>{{ $cotation->somme_note_obtenu }}</td>
+                                    <td>{{ $cotation->somme_note_total }}</td>
+                                    <td>{{ $cotation->pourcentage }}%</td>
+                                    <td>{{ $cotation->mention }}</td>
                                     <td>
-                                        @if (Auth::guard('admin')->user()->can('setting.edit'))
-                                            <a class="btn btn-success text-white" href="{{ route('admin.settings.edit', $setting->id) }}">Edit</a>
+                                        @if (Auth::guard('admin')->user()->can('hr_cotation.edit'))
+                                            <a class="btn btn-success text-white" href="{{ route('admin.hr-cotations.edit', $cotation->id) }}"><i class="fa fa-edit" title="Modifier" aria-hidden="false"></i></a>
                                         @endif
 
-                                        @if (Auth::guard('admin')->user()->can('setting.edit'))
-                                            <a class="btn btn-danger text-white" href="{{ route('admin.settings.destroy', $setting->id) }}"
-                                            onclick="event.preventDefault(); if(confirm(@json(__('messages.delete_confirm_irreversible')))) { document.getElementById('delete-form-{{ $setting->id }}').submit(); }">
-                                                Delete
+                                        @if (Auth::guard('admin')->user()->can('hr_cotation.delete'))
+                                            <a class="btn btn-danger text-white" href="{{ route('admin.hr-cotations.destroy', $cotation->id) }}"
+                                            onclick="event.preventDefault(); if(confirm('Are you sure you want to delete this item? This action is irreversible.')) { document.getElementById('delete-form-{{ $cotation->id }}').submit(); }">
+                                                <i class="fa fa-trash" title="Supprimer" aria-hidden="false"></i>
                                             </a>
 
-                                            <form id="delete-form-{{ $setting->id }}" action="{{ route('admin.settings.destroy', $setting->id) }}" method="POST" style="display: none;">
+                                            <form id="delete-form-{{ $cotation->id }}" action="{{ route('admin.hr-cotations.destroy', $cotation->id) }}" method="POST" style="display: none;">
                                                 @method('DELETE')
                                                 @csrf
                                             </form>

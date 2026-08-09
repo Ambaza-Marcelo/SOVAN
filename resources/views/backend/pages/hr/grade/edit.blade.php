@@ -2,7 +2,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-@lang('messages.Modifier un Grade') - @lang('messages.admin_panel')
+@lang('Modifier un Grade') - @lang('messages.admin_panel')
 @endsection
 
 @section('styles')
@@ -21,11 +21,11 @@
     <div class="row align-items-center">
         <div class="col-sm-6">
             <div class="breadcrumbs-area clearfix">
-                <h4 class="page-title pull-left">@lang('messages.Modifier un Grade')</h4>
+                <h4 class="page-title pull-left">@lang('Modifier un Grade')</h4>
                 <ul class="breadcrumbs pull-left">
                     <li><a href="{{ route('admin.dashboard') }}">@lang('messages.dashboard')</a></li>
                     <li><a href="{{ route('admin.hr-grades.index') }}">@lang('messages.list')</a></li>
-                    <li><span>@lang('messages.Modifier un Grade')</span></li>
+                    <li><span>@lang('Modifier un Grade')</span></li>
                 </ul>
             </div>
         </div>
@@ -42,7 +42,7 @@
         <div class="col-12 mt-5">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title">@lang('messages.Modifier un Grade')</h4>
+                    <h4 class="header-title">Modifier un Grade</h4>
                     @include('backend.layouts.partials.messages')
                     
                     <form action="{{ route('admin.hr-grades.update',$grade->id) }}" method="POST">
@@ -51,7 +51,7 @@
                         <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group has-feedback">
-                                        <label for="name">@lang('messages.Nom Grade')<span class="text-danger"></span></label>
+                                        <label for="name">Nom Grade<span class="text-danger"></span></label>
                                         <input autofocus type="text" class="form-control" name="name" value="{{ $grade->name }}" required minlength="2" maxlength="255">
                                     </div>
                                 </div>

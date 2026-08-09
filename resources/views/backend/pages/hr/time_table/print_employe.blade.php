@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>{{ __('messages.schedule_individual_title', ['name' => $employe->lastname . ' ' . $employe->firstname]) }}</title>
+    <title>Horaire - {{ $employe->lastname }} {{ $employe->firstname }}</title>
     <style type="text/css">
         body {
             font-family: Arial, sans-serif;
@@ -81,55 +81,55 @@
 <body>
     <div class="header">
         @if($setting)
-            <h2>{{ $setting->name ?? config('app.name', 'Entreprise') }}</h2>
+            <h2>{{ $setting->name ?? 'Entreprise' }}</h2>
             <p>{{ $setting->commune ?? '' }}-{{ $setting->zone ?? '' }}, {{ $setting->rue ?? '' }}</p>
             <p>Tél: {{ $setting->telephone1 ?? '' }}-{{ $setting->telephone2 ?? '' }}</p>
         @endif
-        <h3>{{ __('messages.schedule_individual_weekly') }}</h3>
+        <h3>HORAIRE HEBDOMADAIRE INDIVIDUEL</h3>
     </div>
 
     <div class="no-print" style="margin-bottom: 10px;">
         <button onclick="window.print()" style="padding: 10px 20px; font-size: 14px; cursor: pointer;">
-            {{ __('messages.schedule_print') }}
+            Imprimer
         </button>
         <button onclick="window.close()" style="padding: 10px 20px; font-size: 14px; cursor: pointer; margin-left: 10px;">
-            {{ __('messages.schedule_close') }}
+            Fermer
         </button>
     </div>
 
     <table class="info-table">
         <tr>
-            <th>{{ __('messages.schedule_full_name') }}:</th>
+            <th>Nom et Prénom:</th>
             <td><strong>{{ strtoupper($employe->lastname . ' ' . $employe->firstname) }}</strong></td>
         </tr>
         <tr>
-            <th>{{ __('messages.schedule_matricule') }}:</th>
+            <th>Matricule:</th>
             <td>{{ $employe->matricule_no ?? 'N/A' }}</td>
         </tr>
         <tr>
-            <th>{{ __('messages.schedule_department') }}:</th>
+            <th>Département:</th>
             <td>{{ $employe->departement->name ?? 'N/A' }}</td>
         </tr>
         <tr>
-            <th>{{ __('messages.schedule_service') }}:</th>
+            <th>Service:</th>
             <td>{{ $employe->service->name ?? 'N/A' }}</td>
         </tr>
         <tr>
-            <th>{{ __('messages.schedule_function') }}:</th>
+            <th>Fonction:</th>
             <td>{{ $employe->fonction->name ?? 'N/A' }}</td>
         </tr>
         <tr>
-            <th>{{ __('messages.schedule_period') }}:</th>
-            <td>{{ __('messages.schedule_week_range', ['start' => $weekDates[0]->format('d/m/Y'), 'end' => $weekDates[6]->format('d/m/Y')]) }}</td>
+            <th>Période:</th>
+            <td>Semaine du {{ $weekDates[0]->format('d/m/Y') }} au {{ $weekDates[6]->format('d/m/Y') }}</td>
         </tr>
     </table>
 
     <table>
         <thead>
             <tr>
-                <th style="width: 30%;">{{ __('messages.schedule_day') }}</th>
-                <th style="width: 20%;">{{ __('messages.schedule_date') }}</th>
-                <th style="width: 50%;">@lang('messages.Shift')</th>
+                <th style="width: 30%;">Jour</th>
+                <th style="width: 20%;">Date</th>
+                <th style="width: 50%;">Shift</th>
             </tr>
         </thead>
         <tbody>
@@ -144,14 +144,14 @@
                     <td>
                         @if($timeTable)
                             @if($timeTable->shift_name == 'A')
-                                <span class="shift-a">@lang('messages.SHIFT A (7h30 - 16h00)')</span>
+                                <span class="shift-a">SHIFT A (7h30 - 16h00)</span>
                             @elseif($timeTable->shift_name == 'B')
-                                <span class="shift-b">@lang('messages.SHIFT B (15h00 - Fermeture)')</span>
+                                <span class="shift-b">SHIFT B (15h00 - Fermeture)</span>
                             @else
                                 <span class="shift-off">{{ $timeTable->shift_name }}</span>
                             @endif
                         @else
-                            <span class="shift-off">@lang('messages.OFF (Repos)')</span>
+                            <span class="shift-off">OFF (Repos)</span>
                         @endif
                     </td>
                 </tr>
@@ -162,13 +162,13 @@
     <div style="margin-top: 40px;">
         <table class="info-table">
             <tr>
-                <th>{{ __('messages.schedule_signature_employee') }}:</th>
+                <th>Signature de l'employé:</th>
                 <td style="border-bottom: 1px solid #000; min-height: 40px;">
                     <br><br>
                 </td>
             </tr>
             <tr>
-                <th>{{ __('messages.schedule_signature_date') }}:</th>
+                <th>Date:</th>
                 <td style="border-bottom: 1px solid #000;">
                     {{ date('d/m/Y') }}
                 </td>
@@ -177,11 +177,11 @@
     </div>
 
     <div style="margin-top: 30px; font-size: 11px; text-align: center;">
-        <p><strong>{{ __('messages.schedule_legend') }}:</strong></p>
+        <p><strong>Légende:</strong></p>
         <p>
-            <span class="shift-a">{{ __('messages.schedule_shift_a', ['start' => '7h30', 'end' => '16h00']) }}</span>
-            <span class="shift-b" style="margin-left: 10px;">{{ __('messages.schedule_shift_b', ['start' => '15h00', 'end' => 'Fermeture']) }}</span>
-            <span class="shift-off" style="margin-left: 10px;">{{ __('messages.schedule_off_with_rest') }}</span>
+            <span class="shift-a">SHIFT A (7h30-16h00)</span>
+            <span class="shift-b" style="margin-left: 10px;">SHIFT B (15h00-Fermeture)</span>
+            <span class="shift-off" style="margin-left: 10px;">OFF (Repos)</span>
         </p>
     </div>
 

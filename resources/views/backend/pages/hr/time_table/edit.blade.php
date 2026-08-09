@@ -2,7 +2,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-    @lang('messages.schedule_edit_title') - @lang('messages.admin_panel')
+@lang('Modifier un horaire') - @lang('messages.admin_panel')
 @endsection
 
 @section('styles')
@@ -62,10 +62,10 @@
     <div class="row align-items-center">
         <div class="col-sm-6">
             <div class="breadcrumbs-area clearfix">
-                <h4 class="page-title pull-left">@lang('messages.schedule_edit_title')</h4>
+                <h4 class="page-title pull-left">@lang('Modifier un horaire')</h4>
                 <ul class="breadcrumbs pull-left">
                     <li><a href="{{ route('admin.dashboard') }}">@lang('messages.dashboard')</a></li>
-                    <li><a href="{{ route('admin.hr-time-tables.index') }}">@lang('messages.Horaires')</a></li>
+                    <li><a href="{{ route('admin.hr-time-tables.index') }}">Horaires</a></li>
                     <li><span>@lang('messages.edit')</span></li>
                 </ul>
             </div>
@@ -82,20 +82,20 @@
         <div class="col-12 mt-5">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title">@lang('messages.schedule_edit_title')</h4>
+                    <h4 class="header-title">Modifier l'horaire hebdomadaire</h4>
 
                     <form method="GET" action="{{ route('admin.hr-time-tables.edit', $employe->id) }}" class="mb-4">
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="week">@lang('messages.schedule_week_label'):</label>
+                                    <label for="week">Semaine:</label>
                                     <input type="week" name="week" id="week" class="form-control" value="{{ $selectedWeek }}" required>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>&nbsp;</label><br>
-                                    <button type="submit" class="btn btn-primary">@lang('messages.schedule_load')</button>
+                                    <button type="submit" class="btn btn-primary">Charger</button>
                                 </div>
                             </div>
                         </div>
@@ -108,8 +108,8 @@
                         <input type="hidden" name="week" value="{{ $selectedWeek }}">
 
                         <div class="alert alert-info">
-                            <strong>@lang('messages.schedule_employee_label'):</strong> {{ $employe->lastname }} {{ $employe->firstname }}<br>
-                            <strong>@lang('messages.schedule_department_label'):</strong> {{ $employe->departement->name ?? 'N/A' }}
+                            <strong>Employé:</strong> {{ $employe->lastname }} {{ $employe->firstname }}<br>
+                            <strong>Département:</strong> {{ $employe->departement->name ?? 'N/A' }}
                         </div>
 
                         <div class="row">
@@ -129,17 +129,17 @@
                                         <div class="form-group">
                                             <label class="shift-option {{ $defaultShift == 'A' ? 'selected' : '' }}">
                                                 <input type="radio" name="schedules[{{ $index }}]" value="A" {{ $defaultShift == 'A' ? 'checked' : '' }}>
-                                                <span class="shift-a-badge">@lang('messages.SHIFT A')<br><small>@lang('messages.7h30-16h00')</small></span>
+                                                <span class="shift-a-badge">SHIFT A<br><small>7h30-16h00</small></span>
                                             </label>
                                             
                                             <label class="shift-option {{ $defaultShift == 'B' ? 'selected' : '' }}">
                                                 <input type="radio" name="schedules[{{ $index }}]" value="B" {{ $defaultShift == 'B' ? 'checked' : '' }}>
-                                                <span class="shift-b-badge">@lang('messages.SHIFT B')<br><small>@lang('messages.15h00-Close')</small></span>
+                                                <span class="shift-b-badge">SHIFT B<br><small>15h00-Close</small></span>
                                             </label>
                                             
                                             <label class="shift-option {{ $defaultShift == 'OFF' || !$defaultShift ? 'selected' : '' }}">
                                                 <input type="radio" name="schedules[{{ $index }}]" value="OFF" {{ $defaultShift == 'OFF' || !$defaultShift ? 'checked' : '' }}>
-                                                <span class="shift-off-badge">@lang('messages.OFF')</span>
+                                                <span class="shift-off-badge">OFF</span>
                                             </label>
                                         </div>
                                     </div>
@@ -149,10 +149,10 @@
 
                         <div class="form-group mt-4">
                             <button type="submit" class="btn btn-success">
-                                <i class="fa fa-save"></i> @lang('messages.schedule_save_changes')
+                                <i class="fa fa-save"></i> Enregistrer les modifications
                             </button>
                             <a href="{{ route('admin.hr-time-tables.index', ['week' => $selectedWeek, 'departement_id' => $employe->departement_id]) }}" class="btn btn-secondary">
-                                <i class="fa fa-times"></i> @lang('messages.schedule_cancel')
+                                <i class="fa fa-times"></i> Annuler
                             </a>
                         </div>
                     </form>

@@ -2,7 +2,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-@lang('messages.Nouvelle Fiche de Paie') - @lang('messages.admin_panel')
+@lang('Nouvelle Fiche de Paie') - @lang('messages.admin_panel')
 @endsection
 
 @section('styles')
@@ -19,10 +19,10 @@
     <div class="row align-items-center">
         <div class="col-sm-6">
             <div class="breadcrumbs-area clearfix">
-                <h4 class="page-title pull-left">@lang('messages.Nouvelle Fiche de Paie')</h4>
+                <h4 class="page-title pull-left">@lang('Nouvelle Fiche de Paie')</h4>
                 <ul class="breadcrumbs pull-left">
                     <li><a href="{{ route('admin.dashboard') }}">@lang('messages.dashboard')</a></li>
-                    <li><span>@lang('messages.Nouvelle Fiche de Paie')</span></li>
+                    <li><span>@lang('Nouvelle Fiche de Paie')</span></li>
                 </ul>
             </div>
         </div>
@@ -38,7 +38,7 @@
         <div class="col-12 mt-5">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title">@lang('messages.Nouvelle Fiche de Paie')</h4>
+                    <h4 class="header-title">Nouvelle Fiche de Paie</h4>
                     @include('backend.layouts.partials.messages')
                     
                     <form action="{{ route('admin.hr-paiements.store') }}" method="POST">
@@ -47,22 +47,23 @@
                     <div class="row">
                         <div class="col-sm-6">
                         <div class="form-group" style="position: relative;">
-                            <label for="employe_search">@lang('messages.Employé')</label>
-                            <input type="text" class="form-control" id="employe_search" placeholder="{{ __('messages.hr_loan_search_employee_placeholder') }}" autocomplete="off" required>
+                            <label for="employe_search">@lang('Employé')</label>
+                            <input type="text" class="form-control" id="employe_search" placeholder="Rechercher un employé..." autocomplete="off" required>
                             <input type="hidden" name="employe_id" id="employe_id" required>
+                            <ul id="employe_autocomplete_list" class="list-group" style="position: absolute; z-index: 1000; max-height: 200px; overflow-y: auto; display: none; width: 100%;"></ul>
                         </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="date_debut">@lang('messages.DU :')</label>
+                                <label for="date_debut">@lang('DU :')</label>
                                 <input type="datetime-local" class="form-control" name="date_debut" value="{{ $journal_paie->date_debut }}" required>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="date_fin">@lang('messages.AU :')</label>
+                                <label for="date_fin">@lang('AU :')</label>
                                 <input type="datetime-local" class="form-control" name="date_fin" value="{{ $journal_paie->date_fin }}" required>
                             </div>
                         </div>
@@ -128,28 +129,28 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="retenue_pret">@lang('messages.Retenue Prêt')</label>
-                                <input type="number" class="form-control" name="retenue_pret" placeholder="{{ __('messages.hr_retenue_pret_placeholder') }}" step="any" min="0" required>
+                                <label for="retenue_pret">@lang('Retenue Prêt')</label>
+                                <input type="number" class="form-control" id="retenue_pret" name="retenue_pret" value="0" step="any" min="0" required readonly title="Rempli automatiquement selon l'avance en cours de l'employé">
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="autre_retenue">@lang('messages.Autres Retenues')</label>
-                                <input type="number" class="form-control" placeholder="{{ __('messages.Saisir Autre Retenue ') }}" name="autre_retenue" step="any" min="0" required>
+                                <label for="autre_retenue">@lang('Autres Retenues')</label>
+                                <input type="number" class="form-control" id="autre_retenue" name="autre_retenue" value="0" step="any" min="0" required>
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="soins_medicaux">@lang('messages.Soins Medicaux')</label>
-                                <input type="number" class="form-control" name="soins_medicaux" placeholder="{{ __('messages.Saisir Soins Medicaux') }}" step="any" min="0" required>
+                                <label for="soins_medicaux">@lang('Soins Medicaux')</label>
+                                <input type="number" class="form-control" id="soins_medicaux" name="soins_medicaux" value="0" step="any" min="0" required>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="allocation_familiale">@lang('messages.Allocations Familiales')</label>
-                                <input type="number" class="form-control" placeholder="{{ __('messages.Saisir Allocations Familiales') }}" step="any" name="allocation_familiale" min="0" required>
+                                <label for="allocation_familiale">@lang('Allocations Familiales')</label>
+                                <input type="number" class="form-control" id="allocation_familiale" name="allocation_familiale" value="0" step="any" min="0" required>
                             </div>
                         </div>
                     </div>
@@ -163,16 +164,78 @@
         
 </div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-@include('backend.layouts.partials.ajax_autocomplete')
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript">
     $(document).ready(function() {
-        attachAjaxAutocomplete({
-            $input: $('#employe_search'),
-            $hidden: $('#employe_id'),
-            url: '{{ route("admin.autocomplete.employees") }}',
-            minChars: 1,
-            onSelect: function(item) {
-                fetchEmployeeData(item.id);
+        // Employee autocomplete data
+        var employes = [
+            @foreach ($employes as $employe)
+            {
+                id: {{ $employe->id }},
+                display: {!! json_encode($employe->matricule_no . ' - ' . $employe->firstname . ' ' . $employe->lastname) !!},
+                name: {!! json_encode($employe->firstname . ' ' . $employe->lastname) !!},
+                matricule: {!! json_encode($employe->matricule_no) !!}
+            },
+            @endforeach
+        ];
+
+        // Employee autocomplete functionality
+        $('#employe_search').on('input', function() {
+            var searchTerm = $(this).val().toLowerCase();
+            var $list = $('#employe_autocomplete_list');
+            
+            if (searchTerm.length === 0) {
+                $list.hide().empty();
+                $('#employe_id').val('');
+                return;
+            }
+            
+            var filtered = employes.filter(function(employe) {
+                var fullName = (employe.name || '').toLowerCase();
+                var matricule = (employe.matricule || '').toLowerCase();
+                var display = (employe.display || '').toLowerCase();
+                
+                return fullName.includes(searchTerm) ||
+                       matricule.includes(searchTerm) ||
+                       display.includes(searchTerm) ||
+                       fullName.split(' ').some(function(word) {
+                           return word.startsWith(searchTerm);
+                       });
+            });
+            
+            $list.empty();
+            
+            if (filtered.length > 0) {
+                filtered.forEach(function(employe) {
+                    var $item = $('<li class="list-group-item" style="cursor: pointer; padding: 8px 12px;"></li>')
+                        .html('<strong>' + employe.display + '</strong>')
+                        .data('employe', employe)
+                        .on('click', function() {
+                            var selected = $(this).data('employe');
+                            $('#employe_search').val(selected.display);
+                            $('#employe_id').val(selected.id);
+                            $list.hide().empty();
+                            // Trigger all AJAX calls
+                            fetchEmployeeData(selected.id);
+                        })
+                        .on('mouseenter', function() {
+                            $(this).css('background-color', '#f8f9fa');
+                        })
+                        .on('mouseleave', function() {
+                            $(this).css('background-color', 'white');
+                        });
+                    $list.append($item);
+                });
+                $list.show();
+            } else {
+                $list.hide();
+            }
+        });
+
+        // Hide dropdown when clicking outside
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('#employe_search, #employe_autocomplete_list').length) {
+                $('#employe_autocomplete_list').hide();
             }
         });
 
@@ -189,7 +252,7 @@
                 },
                 dataType: 'json',
                 success: function (result) {
-                    $('#matricule_no').html('<label>@lang('messages.Matricule No')</label>');
+                    $('#matricule_no').html('<label>Matricule No</label>');
                     $.each(result.data, function (key, value) {
                         $("#matricule_no").append('<input type="text" name="matricule_no" class="form-control" readonly value="' + value.matricule_no + '">');
                     });
@@ -207,7 +270,7 @@
                 },
                 dataType: 'json',
                 success: function (result) {
-                    $('#cni').html('<label>@lang('messages.CNI')</label>');
+                    $('#cni').html('<label>CNI</label>');
                     $.each(result.data, function (key, value) {
                         $("#cni").append('<input type="text" name="cni" class="form-control" readonly value="' + value.cni + '">');
                     });
@@ -225,7 +288,7 @@
                 },
                 dataType: 'json',
                 success: function (result) {
-                    $('#code_departement').html('<label>@lang('messages.Departement')</label>');
+                    $('#code_departement').html('<label>Departement</label>');
                     $.each(result.data, function (key, value) {
                         $("#code_departement").append('<input type="text" name="code_departement" class="form-control" readonly value="' + value.code_departement + '">');
                     });
@@ -243,7 +306,7 @@
                 },
                 dataType: 'json',
                 success: function (result) {
-                    $('#code_service').html('<label>@lang('messages.Code Service')</label>');
+                    $('#code_service').html('<label>Code Service</label>');
                     $.each(result.data, function (key, value) {
                         $("#code_service").append('<input type="text" name="code_service" class="form-control" readonly value="' + value.code_service + '">');
                     });
@@ -261,7 +324,7 @@
                 },
                 dataType: 'json',
                 success: function (result) {
-                    $('#code_banque').html('<label>@lang('messages.Code Banque')</label>');
+                    $('#code_banque').html('<label>Code Banque</label>');
                     $.each(result.data, function (key, value) {
                         $("#code_banque").append('<input type="text" name="code_banque" class="form-control" readonly value="' + value.code_banque + '">');
                     });
@@ -279,7 +342,7 @@
                 },
                 dataType: 'json',
                 success: function (result) {
-                    $('#somme_salaire_base').html('<label>@lang('messages.Salaire Base')</label>');
+                    $('#somme_salaire_base').html('<label>Salaire Base</label>');
                     $.each(result.data, function (key, value) {
                         $("#somme_salaire_base").append('<input type="number" class="form-control" name="somme_salaire_base" min="0" readonly value="' + value.somme_salaire_base + '">');
                     });
@@ -297,7 +360,7 @@
                 },
                 dataType: 'json',
                 success: function (result) {
-                    $('#numero_compte').html('<label>@lang('messages.Numero Compte')</label>');
+                    $('#numero_compte').html('<label>Numero Compte</label>');
                     $.each(result.data, function (key, value) {
                         $("#numero_compte").append('<input type="text" name="numero_compte" class="form-control" min="0" readonly value="' + value.numero_compte + '">');
                     });
@@ -315,7 +378,7 @@
                 },
                 dataType: 'json',
                 success: function (result) {
-                    $('#indemnite_deplacement').html('<label>@lang('messages.Indemnite de deplacement')</label>');
+                    $('#indemnite_deplacement').html('<label>Indemnite de deplacement</label>');
                     $.each(result.data, function (key, value) {
                         $("#indemnite_deplacement").append('<input type="number" name="indemnite_deplacement" class="form-control" min="0" readonly value="' + value.indemnite_deplacement + '">');
                     });
@@ -333,7 +396,7 @@
                 },
                 dataType: 'json',
                 success: function (result) {
-                    $('#indemnite_logement').html('<label>@lang('messages.Indemnite de logement')</label>');
+                    $('#indemnite_logement').html('<label>Indemnite de logement</label>');
                     $.each(result.data, function (key, value) {
                         $("#indemnite_logement").append('<input type="number" name="indemnite_logement" class="form-control" min="0" readonly value="' + value.indemnite_logement + '">');
                     });
@@ -351,7 +414,7 @@
                 },
                 dataType: 'json',
                 success: function (result) {
-                    $('#prime_fonction').html('<label>@lang('messages.Prime de fonction')</label>');
+                    $('#prime_fonction').html('<label>Prime de fonction</label>');
                     $.each(result.data, function (key, value) {
                         $("#prime_fonction").append('<input type="number" name="prime_fonction" class="form-control" min="0" readonly value="' + value.prime_fonction + '">');
                     });
@@ -364,10 +427,8 @@
 
         // Function to fetch loan data and auto-fill retenue_pret
         function fetchLoanData(idEmploye) {
-            var date_debut = $('input[name="date_debut"]').val();
-            
-            if (!date_debut) {
-                $('input[name="retenue_pret"]').val(0);
+            if (!idEmploye) {
+                $('#retenue_pret').val(0);
                 return;
             }
 
@@ -376,25 +437,21 @@
                 type: "POST",
                 data: {
                     employe_id: idEmploye,
-                    date_debut: date_debut,
+                    date_debut: $('input[name="date_debut"]').val() || '',
                     _token: '{{csrf_token()}}'
                 },
                 dataType: 'json',
                 success: function (result) {
-                    if (result.retenue_pret !== undefined) {
-                        $('input[name="retenue_pret"]').val(result.retenue_pret || 0);
-                    } else {
-                        $('input[name="retenue_pret"]').val(0);
-                    }
+                    $('#retenue_pret').val(result.retenue_pret != null ? result.retenue_pret : 0);
                 },
                 error: function() {
-                    $('input[name="retenue_pret"]').val(0);
+                    $('#retenue_pret').val(0);
                 }
             });
         }
 
-        // Auto-fill retenue_pret when date_debut changes
-        $('input[name="date_debut"]').on('change', function() {
+        // Auto-fill retenue_pret when date_debut / date_fin changes
+        $('input[name="date_debut"], input[name="date_fin"]').on('change', function() {
             var employe_id = $('#employe_id').val();
             if (employe_id) {
                 fetchLoanData(employe_id);

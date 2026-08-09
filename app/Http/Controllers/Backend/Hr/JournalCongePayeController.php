@@ -10,11 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use App\Models\HrCongePaye;
 use App\Models\HrJournalCongePaye;
-use App\Models\TakeCongePaye;
-
-use Validator;
 
 class JournalCongePayeController extends Controller
 {
@@ -35,9 +31,9 @@ class JournalCongePayeController extends Controller
             abort(403, 'Pardon!! vous n\'avez pas l\'autorisation de modifier l\'indemnité! Mufise ico mubaza hamagara kuri 130 canke 122');
         }
         //
-        $journalCongePaye = HrJournalCongePaye::where('id',$id)->first();
+        $journal_conge_paye = HrJournalCongePaye::where('id',$id)->firstOrFail();
 
-        return view('backend.pages.hr.journal_conge_paye.edit', compact('journalCongePaye'));
+        return view('backend.pages.hr.journal_conge_paye.edit', compact('journal_conge_paye'));
     }
 
     /**

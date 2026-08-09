@@ -2,7 +2,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-@lang('messages.modifier entreprise') - @lang('messages.admin_panel')
+@lang('modifier entreprise') - @lang('messages.admin_panel')
 @endsection
 
 @section('styles')
@@ -21,11 +21,11 @@
     <div class="row align-items-center">
         <div class="col-sm-6">
             <div class="breadcrumbs-area clearfix">
-                <h4 class="page-title pull-left">@lang('messages.modifier entreprise')</h4>
+                <h4 class="page-title pull-left">@lang('modifier entreprise')</h4>
                 <ul class="breadcrumbs pull-left">
                     <li><a href="{{ route('admin.dashboard') }}">@lang('messages.dashboard')</a></li>
                     <li><a href="{{ route('admin.hr-companies.index') }}">@lang('messages.list')</a></li>
-                    <li><span>@lang('messages.modifier entreprise')</span></li>
+                    <li><span>@lang('modifier entreprise')</span></li>
                 </ul>
             </div>
         </div>
@@ -42,7 +42,7 @@
         <div class="col-12 mt-5">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title">@lang('messages.modifier entreprise')</h4>
+                    <h4 class="header-title">modifier entreprise</h4>
                     @include('backend.layouts.partials.messages')
                     
                     <form action="{{ route('admin.hr-companies.update', $company->id) }}" method="POST" enctype="multipart/form-data">
@@ -51,19 +51,19 @@
                         <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group has-feedback">
-                                        <label for="name">@lang('messages.Nom Entreprise')<span class="text-danger"></span></label>
+                                        <label for="name">Nom Entreprise<span class="text-danger"></span></label>
                                         <input autofocus type="text" class="form-control" name="name" value="{{$company->name}} " required minlength="2" maxlength="255">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group has-feedback">
-                                        <label for="nif">@lang('messages.NIF')<span class="text-danger"></span></label>
+                                        <label for="nif">NIF<span class="text-danger"></span></label>
                                         <input autofocus type="text" class="form-control" name="nif" value="{{$company->nif}} " required>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group has-feedback">
-                                        <label for="rc">@lang('messages.Registre Commerce')<span class="text-danger"></span></label>
+                                        <label for="rc">Registre Commerce<span class="text-danger"></span></label>
                                         <input autofocus type="text" class="form-control" name="rc" value="{{$company->rc}} " required>
                                     </div>
                                 </div>
@@ -71,19 +71,19 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group has-feedback">
-                                        <label for="commune">@lang('messages.Commune')<span class="text-danger"></span></label>
+                                        <label for="commune">Commune<span class="text-danger"></span></label>
                                         <input autofocus type="text" class="form-control" name="commune" value="{{$company->commune}} " required minlength="2" maxlength="255">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group has-feedback">
-                                        <label for="zone">@lang('messages.Zone')<span class="text-danger"></span></label>
+                                        <label for="zone">Zone<span class="text-danger"></span></label>
                                         <input autofocus type="text" class="form-control" name="zone" value="{{$company->zone}} " required minlength="2" maxlength="255">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group has-feedback">
-                                        <label for="quartier">@lang('messages.Quartier')<span class="text-danger"></span></label>
+                                        <label for="quartier">Quartier<span class="text-danger"></span></label>
                                         <input autofocus type="text" class="form-control" name="quartier" value="{{$company->quartier}} " required minlength="2" maxlength="255">
                                     </div>
                                 </div>
@@ -91,13 +91,13 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group has-feedback">
-                                        <label for="avenue">@lang('messages.Avenue')<span class="text-danger"></span></label>
+                                        <label for="avenue">Avenue<span class="text-danger"></span></label>
                                         <input autofocus type="text" class="form-control" name="avenue" value=" " required minlength="2" maxlength="255">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group has-feedback">
-                                        <label for="rue">@lang('messages.Rue')<span class="text-danger"></span></label>
+                                        <label for="rue">Rue<span class="text-danger"></span></label>
                                         <input autofocus type="text" class="form-control" name="rue" value="{{$company->rue}} " required minlength="2" maxlength="255">
                                     </div>
                                 </div>
@@ -105,19 +105,19 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group has-feedback">
-                                        <label for="telephone1">@lang('messages.Telephone 1')<span class="text-danger"></span></label>
+                                        <label for="telephone1">Telephone 1<span class="text-danger"></span></label>
                                         <input autofocus type="text" class="form-control" name="telephone1" value="{{$company->telephone1}} " required minlength="6" maxlength="15">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group has-feedback">
-                                        <label for="telephone2">@lang('messages.Telephone 2')<span class="text-danger"></span></label>
+                                        <label for="telephone2">Telephone 2<span class="text-danger"></span></label>
                                         <input autofocus type="text" class="form-control" name="telephone2" value="{{$company->telephone2}} " required minlength="6" maxlength="15">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group has-feedback">
-                                        <label for="email">@lang('messages.Email')<span class="text-danger"></span></label>
+                                        <label for="email">Email<span class="text-danger"></span></label>
                                         <input autofocus type="text" class="form-control" name="email" value="{{$company->email}} " required minlength="5" maxlength="255">
                                     </div>
                                 </div>
@@ -125,18 +125,18 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group has-feedback">
-                                        <label for="logo">@lang('messages.Logo')<span class="text-danger"></span></label>
+                                        <label for="logo">Logo<span class="text-danger"></span></label>
                                         <input type="file" class="form-control" name="logo">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group has-feedback">
-                                        <label for="developpeur">@lang('messages.Developpeur')<span class="text-danger"></span></label>
+                                        <label for="developpeur">Developpeur<span class="text-danger"></span></label>
                                         <input autofocus type="text" class="form-control" name="developpeur" value="{{$company->developpeur}} ">
                                     </div>
                                 </div>
                             </div>
-                        <button type="submit" class="btn btn-primary mt-4 pr-4 pl-4">@lang('messages.Modifier')</button>
+                        <button type="submit" class="btn btn-primary mt-4 pr-4 pl-4">Modifier</button>
                     </form>
                 </div>
             </div>

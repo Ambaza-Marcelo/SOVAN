@@ -18,21 +18,20 @@
     <div>
         <div>
             <div>
+                @php
+                    $setting = $setting ?? \DB::table('settings')->orderBy('created_at', 'desc')->first();
+                @endphp
+                @include('backend.pages.document.partials.standard_document_header_contact', ['setting' => $setting])
                 <div>
-                   <img src="{{ asset('img/eden_logo.png')}}" width="200" height="85">
-                </div><br>
-                <div>
-                    <div style="float: right; border-top-right-radius: 10px solid black;border-top-left-radius: 10px solid black;border-bottom-right-radius: 10px solid black;border-bottom-left-radius: 10px solid black; background-color: rgb(150,150,150);width: 242px;padding: 10px;">
+                                        <div style="float: right; border-top-right-radius: 10px solid black;border-top-left-radius: 10px solid black;border-bottom-right-radius: 10px solid black;border-bottom-left-radius: 10px solid black;background-color: rgb(150,150,150);width: 242px;padding: 10px;">
                         <small>
-                           &nbsp;&nbsp;@if($data->employe_id) {!! QrCode::size(50)->backgroundColor(255,255,255)->generate('MATRICULE'.$data->employe->matricule_no.', Designed by AMBAZA' ) !!} @endif
-                        </small><br>
-                        <small>
-                            {{ \Carbon\Carbon::parse($data->date_fin)->format('M,Y') }}
+                           &nbsp;&nbsp; @if($data->employe_id) {!! QrCode::size(50)->backgroundColor(255,255,255)->generate('MATRICULE'.$data->employe->matricule_no.', Designed by AMBAZA' ) !!} @endif
                         </small>
                     </div>
-                    <br><br><br>
-                    <br>
-                    <div>
+
+
+@include('backend.pages.document.partials.standard_document_header_spacer')
+<div>
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
@@ -41,21 +40,21 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <th>@lang('messages.NOM ET PRENOM')</th>
+                                    <th>NOM ET PRENOM</th>
                                     <td>@if($data->employe_id){{ $data->employe->firstname }} {{ $data->employe->lastname }} @endif</td>
-                                    <th>@lang('messages.MATRICULE')</th>
+                                    <th>MATRICULE</th>
                                     <td>@if($data->employe_id){{ $data->employe->matricule_no }} @endif</td>
                                 </tr>
                                 <tr>
-                                    <th>@lang('messages.NUMERO DE COMPTE')</th>
+                                    <th>NUMERO DE COMPTE</th>
                                     <td>@if($data->employe_id){{ $data->employe->numero_compte }} @endif</td>
-                                    <th>@lang('messages.CNI')</th>
+                                    <th>CNI</th>
                                     <td>@if($data->employe_id){{ $data->employe->cni }} @endif</td>
                                 </tr>
                                 <tr>
-                                    <th>@lang('messages.FONCTION')</th>
+                                    <th>FONCTION</th>
                                     <td>@if($data->employe_id){{ $data->employe->fonction->name }} @endif</td>
-                                    <th>@lang('messages.ANCIENNETE')</th>
+                                    <th>ANCIENNETE</th>
                                     @php
                                         $time1 = strftime(strtotime($data->employe->date_debut));
                                         $time2 = strftime(strtotime(\Carbon\Carbon::now()));
@@ -65,18 +64,18 @@
  
                                         $jours = ($diff / 3600)/24; 
                                     @endphp
-                                    <td>@if($jours <= 30)<strong>{{ number_format($jours,0)}}</strong> @lang('messages.jour(s)') @elseif($jours >= 365.25)<strong>{{ number_format($jours/365.25,0)}}</strong> @lang('messages.an(s)') @else {{ number_format(($jours / 30),0) }} @lang('messages.mois') @endif</td>
+                                    <td>@if($jours <= 30)<strong>{{ number_format($jours,0)}}</strong> jour(s) @elseif($jours >= 365.25)<strong>{{ number_format($jours/365.25,0)}} an(s)</strong> @else {{ number_format(($jours / 30),0) }} mois @endif</td>
                                 </tr>
                                 <tr>
-                                    <th>@lang('messages.GENRE')</th>
+                                    <th>GENRE</th>
                                     <td>@if($data->employe->gender === '1') MASCULIN @else FEMININ @endif</td>
-                                    <th>@lang('messages.Nbre de personnes a charges')</th>
+                                    <th>Nbre de personnes a charges</th>
                                     <td>@if($data->employe->statut_matrimonial === '1') {{ $data->employe->children_number + 1 }} @elseif($data->employe->statut_matrimonial === '2') {{ $data->employe->children_number }} @elseif($data->employe->statut_matrimonial === '3') {{ $data->employe->children_number }} @else 0 @endif</td>
                                 </tr>
                                 <tr>
-                                    <th>@lang('messages.DATE D\'EMBAUCHE')</th>
+                                    <th>DATE D'EMBAUCHE</th>
                                     <td>@if($data->employe_id){{ \Carbon\Carbon::parse($data->employe->date_debut)->format('d/m/Y') }} @endif</td>
-                                    <th>@lang('messages.DATE DE FIN')</th>
+                                    <th>DATE DE FIN</th>
                                     <td></td>
                                 </tr>
                             </tbody>
@@ -84,16 +83,16 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr style="text-align: left;background-color: #027789;">
-                                    <th>@lang('messages.RUBRIQUES')</th>
-                                    <th>@lang('messages.BASE')</th>
-                                    <th>@lang('messages.TAUX(PART EMPLOYE)')</th>
-                                    <th>@lang('messages.MONTANT(PART EMPLOYE)')</th>
-                                    <th>@lang('messages.MONTANT(PART EMPLOYEUR)')</th>
+                                    <th>RUBRIQUES</th>
+                                    <th>BASE</th>
+                                    <th>TAUX(PART EMPLOYE)</th>
+                                    <th>MONTANT(PART EMPLOYE)</th>
+                                    <th>MONTANT(PART EMPLOYEUR)</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>@lang('messages.SALAIRE DE BASE')</td>
+                                    <td>SALAIRE DE BASE</td>
                                     <td>@if($data->employe_id){{ number_format($data->somme_salaire_base,0,',',' ') }} @endif</td>
                                     <td></td>
                                     <td></td>
@@ -102,7 +101,7 @@
                             </tbody>
                             <tbody>
                                 <tr>
-                                    <td>@lang('messages.ALLOCATIONS FAMILIALES')</td>
+                                    <td>ALLOCATIONS FAMILIALES</td>
                                     <td></td>
                                     <td></td>
                                     <td>{{ number_format($data->allocation_familiale,0,',',' ') }}</td>
@@ -111,7 +110,7 @@
                             </tbody>
                             <tbody>
                                 <tr>
-                                    <td>@lang('messages.INDEMNITE DE DEPLACEMENT')</td>
+                                    <td>INDEMNITE DE DEPLACEMENT</td>
                                     <td>{{ number_format($data->somme_salaire_base,0,',',' ') }}</td>
                                     <td>15%</td>
                                     <td>{{ number_format($data->indemnite_deplacement,0,',',' ') }}</td>
@@ -120,7 +119,7 @@
                             </tbody>
                             <tbody>
                                 <tr>
-                                    <td>@lang('messages.INDEMNITE DE LOGEMENT')</td>
+                                    <td>INDEMNITE DE LOGEMENT</td>
                                     <td>{{ number_format($data->somme_salaire_base,0,',',' ') }}</td>
                                     <td>60%</td>
                                     <td>{{ number_format($data->indemnite_logement,0,',',' ') }}</td>
@@ -129,7 +128,7 @@
                             </tbody>
                             <tbody>
                                 <tr>
-                                    <td>@lang('messages.PRIME DE FONCTION')</td>
+                                    <td>PRIME DE FONCTION</td>
                                     <td></td>
                                     <td></td>
                                     <td>{{ number_format($data->prime_fonction,0,',',' ') }}</td>
@@ -138,7 +137,7 @@
                             </tbody>
                             <tbody>
                                 <tr style="background-color: #027789;">
-                                    <td>@lang('messages.SALAIRE BRUT')</td>
+                                    <td>SALAIRE BRUT</td>
                                     <td>{{ number_format($data->somme_salaire_base,0,',',' ') }}</td>
                                     <td></td>
                                     @php
@@ -150,7 +149,7 @@
                             </tbody>
                             <tbody>
                                 <tr>
-                                    <td>@lang('messages.INSS')</td>
+                                    <td>INSS</td>
                                     <td>@if($salaire_brut < 450000){{ number_format($salaire_brut,0,',',' ') }} @else 450 000 @endif</td>
                                     <td>4%</td>
                                     <td>{{ number_format($data->somme_cotisation_inss,0,',',' ') }}</td>
@@ -159,20 +158,20 @@
                             </tbody>
                             <tbody>
                                 <tr>
-                                    <td>@lang('messages.ASSURANCE MALADIE')</td>
+                                    <td>ASSURANCE MALADIE</td>
                                     @php
 
                                         if ($salaire_brut >= 2000000) {
                                             $base_assurance_maladie = 2000000;
-                                        }elseif ($salaire_brut >@lang('messages.= 1000000 && $salaire_brut') < 2000000)                           {
+                                        }elseif ($salaire_brut >= 1000000 && $salaire_brut < 2000000)                           {
                                             $base_assurance_maladie = 1000000;
-                                        }elseif ($salaire_brut >@lang('messages.= 500000 && $salaire_brut') < 1000000) {
+                                        }elseif ($salaire_brut >= 500000 && $salaire_brut < 1000000) {
                                             $base_assurance_maladie = 500000;
-                                        }elseif ($salaire_brut >@lang('messages.= 400000 && $salaire_brut') < 500000) {
+                                        }elseif ($salaire_brut >= 400000 && $salaire_brut < 500000) {
                                             $base_assurance_maladie = 400000;
-                                        }elseif ($salaire_brut >@lang('messages.= 300000 && $salaire_brut') < 400000) {
+                                        }elseif ($salaire_brut >= 300000 && $salaire_brut < 400000) {
                                             $base_assurance_maladie = 300000;
-                                        }elseif ($salaire_brut >@lang('messages.= 250000 && $salaire_brut') < 300000) {
+                                        }elseif ($salaire_brut >= 250000 && $salaire_brut < 300000) {
                                             $base_assurance_maladie = 250000;
                                         }else{
                                             $base_assurance_maladie = 200000;
@@ -186,7 +185,7 @@
                             </tbody>
                             <tbody>
                                 <tr>
-                                    <td>@lang('messages.SOINS MEDICAUX')</td>
+                                    <td>SOINS MEDICAUX</td>
                                     <td></td>
                                     <td></td>
                                     <td>{{ number_format($data->soins_medicaux,0,',',' ') }}</td>
@@ -208,24 +207,24 @@
 
                                         $base_imposable = $salaire_brut - $data->indemnite_deplacement - $data->indemnite_logement - $data->somme_cotisation_inss - $data->assurance_maladie_employe; 
 
-                                        if ($base_imposable >@lang('messages.= 0 && $base_imposable') <= 150000) {
+                                        if ($base_imposable >= 0 && $base_imposable <= 150000) {
                                         $somme_impot = 0;
-                                        }elseif ($base_imposable > @lang('messages.150000  && $base_imposable') <= 300000) {
+                                        }elseif ($base_imposable > 150000  && $base_imposable <= 300000) {
                                             $somme_impot = (($base_imposable - 150000) * 20)/100;
                                         }elseif ($base_imposable > 300000) {
                                         $somme_impot = 30000 + (($base_imposable - 300000) * 30)/100;    
                                         }
                                     @endphp
-                                    <td>@lang('messages.IMPOT SUR REVENU')</td>
+                                    <td>IMPOT SUR REVENU</td>
                                     <td>{{ number_format($base_imposable,0,',',' ') }}</td>
-                                    <td>@if($base_imposable >= 0 && $base_imposable <= 150000) 0% @elseif($base_imposable > 150000 && $base_imposable <= 300000) 20% @else 30% @endif</td>
+                                    <td>@if($base_imposable >= 0 && $base_imposable <= 150000) 0% @elseif($base_imposable >= 150000 && $base_imposable <= 300000) 20% @else 30% @endif</td>
                                     <td>{{ number_format($somme_impot,0,',',' ') }}</td>
                                     <td></td>
                                 </tr>
                             </tbody>
                             <tbody>
                                 <tr>
-                                    <td>@lang('messages.RETENUE PRET')</td>
+                                    <td>RETENUE PRET</td>
                                     <td>{{ number_format($salaire_brut,0,',',' ') }}</td>
                                     <td></td>
                                     <td>{{ number_format($data->retenue_pret,0,',',' ') }}</td>
@@ -234,7 +233,7 @@
                             </tbody>
                             <tbody>
                                 <tr>
-                                    <td>@lang('messages.AUTRES RETENUES')</td>
+                                    <td>AUTRES RETENUES</td>
                                     <td>{{ number_format($salaire_brut,0,',',' ') }}</td>
                                     <td></td>
                                     <td>{{ number_format($data->autre_retenue,0,',',' ') }}</td>
@@ -243,7 +242,7 @@
                             </tbody>
                             <tbody>
                                 <tr style="background-color: #027789;">
-                                    <td>@lang('messages.TOTAL DES DEDUCTIONS')</td>
+                                    <td>TOTAL DES DEDUCTIONS</td>
                                     <td>{{ number_format($salaire_brut,0,',',' ') }}</td>
                                     <td></td>
                                     @php
@@ -255,7 +254,7 @@
                             </tbody>
                             <tbody>
                                 <tr>
-                                    <td>@lang('messages.SALAIRE NET')</td>
+                                    <td>SALAIRE NET</td>
                                     <td>{{ number_format($salaire_brut,0,',',' ') }}</td>
                                     <td></td>
                                     <td>{{ number_format(($salaire_brut - $total_deductions),0,',',' ') }}</td>
@@ -268,14 +267,14 @@
                             <thead>
                                 <tr>
                                     <th></th>
-                                    <th>@lang('messages.REMUNERATION BRUTE')</th>
-                                    <th>@lang('messages.TOTAL DEDUCTIONS')</th>
-                                    <th>@lang('messages.NET A PAYER')</th>
+                                    <th>REMUNERATION BRUTE</th>
+                                    <th>TOTAL DEDUCTIONS</th>
+                                    <th>NET A PAYER</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>@lang('messages.MENSUEL')</td>
+                                    <td>MENSUEL</td>
                                     <td>{{ number_format($salaire_brut,0,',',' ') }}</td>
                                     <td>{{ number_format($total_deductions,0,',',' ') }}</td>
                                     <td>{{ number_format(($salaire_brut - $total_deductions),0,',',' ') }}</td>
@@ -284,7 +283,9 @@
                         </table><br>
                     </div>
                     <div style="float: right;">
-                        <a href="{{ route('admin.hr-fiche-paie.print',$data->id) }}" class="btnprn"><img src="{{ asset('img/ISSh.gif') }}" width="60" title="{{ __('messages.hr_loan_print_hint') }}"></a> 
+                        <a href="{{ route('admin.hr-fiche-paie.print',$data->id) }}" target="_blank" rel="noopener">
+                            <img src="{{ asset('img/ISSh.gif') }}" width="60" title="Telecharger le bulletin de paie PDF">
+                        </a>
                     </div>
                 </div>
             </div>
@@ -293,9 +294,4 @@
 </div>
 </body>
 </html>
-<script type="text/javascript">
-$(document).ready(function(){
-$('.btnprn').printPage();
-});
-</script>
 

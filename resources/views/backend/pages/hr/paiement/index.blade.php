@@ -54,10 +54,10 @@
                                     <th width="10%">@lang('messages.Employé')</th>
                                     <th width="10%">@lang('messages.Fonction')</th>
                                     <th width="10%">@lang('messages.Somme S.Base')</th>
-                                    <th width="10%">@lang('messages.Salaire Brut IMposable')</th>
-                                    <th width="10%">@lang('messages.Salaire Brut Non IMposable')</th>
-                                    <th width="10%">@lang('messages.Salaire Net IMposable')</th>
-                                    <th width="10%">@lang('messages.Salaire Net Non IMposable')</th>
+                                    <th width="10%">@lang('messages.Salaire Brut Imposable')</th>
+                                    <th width="10%">@lang('messages.Salaire Brut Non Imposable')</th>
+                                    <th width="10%">@lang('messages.Salaire Net Imposable')</th>
+                                    <th width="10%">@lang('messages.Salaire Net Non Imposable')</th>
                                     <th width="15%">@lang('messages.Action')</th>
                                 </tr>
                             </thead>
@@ -65,36 +65,49 @@
                                @foreach ($paiements as $paiement)
                                <tr>
                                     <td>{{ $loop->index+1 }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($paiement->date_debut)->format('m/Y') }}
-                                        @if($paiement->etat == 0) <span class="badge badge-primary">@lang('messages.Encours...')</span>
-                                        @elseif($paiement->etat == 1) <span class="badge badge-success">@lang('messages.Déjà clôturé')</span>
+                                    <td>
+                                        {{ $paiement->date_debut ? \Carbon\Carbon::parse($paiement->date_debut)->format('m/Y') : 'N/A' }}
+                                        @if($paiement->etat == 0)
+                                            <span class="badge badge-primary">@lang('messages.Encours...')</span>
+                                        @elseif($paiement->etat == 1)
+                                            <span class="badge badge-success">@lang('messages.Déjà clôturé')</span>
                                         @endif
                                     </td>
                                     <td>
-                                        @if($paiement->employe_id)
-                                            <a href="{{ route('admin.hr-paiements.show',$paiement->id) }}">{{ $paiement->employe->matricule_no }}</a>
+                                        @if($paiement->employe_id && $paiement->employe)
+                                            <a href="{{ route('admin.hr-paiements.show', $paiement->id) }}">
+                                                {{ $paiement->employe->matricule_no }}
+                                            </a>
                                         @endif
                                     </td>
-                                    <td>@if($paiement->employe_id){{ $paiement->employe->firstname }}&nbsp;{{ $paiement->employe->lastname }} @endif</td>
-                                    <td>@if($paiement->employe_id){{ $paiement->employe->fonction->name }} @endif</td>
-                                    <td>{{ number_format($paiement->somme_salaire_base,0,',',' ') }}</td>
-                                    <td>{{ number_format($paiement->somme_salaire_brut_imposable,0,',',' ') }}</td>
-                                    <td>{{ number_format($paiement->somme_salaire_brut_non_imposable,0,',',' ') }}</td>
-                                    <td>{{ number_format($paiement->somme_salaire_net_imposable,0,',',' ') }}</td>
-                                    <td>{{ number_format($paiement->somme_salaire_net_non_imposable,0,',',' ') }}</td>
                                     <td>
-                                       @if (Auth::guard('admin')->user()->can('hr_paiement.create'))
-                                        <a href="" width="60" title="{{ __('messages.hr_loan_print_hint') }}"></a>
+                                        @if($paiement->employe)
+                                            {{ $paiement->employe->firstname }}&nbsp;{{ $paiement->employe->lastname }}
                                         @endif
-                                        @if (Auth::guard('admin')->user()->can('hr_paiement.edit'))
-                                        @if($paiement->etat != 1)
-                                        @if($paiement->employe_id)<a href="{{ route('admin.hr-paiements.edit',[$paiement->id,$paiement->company_id]) }}" class="btn btn-success">@lang('messages.Modifier')</a>@endif
+                                    </td>
+                                    <td>{{ optional(optional($paiement->employe)->fonction)->name }}</td>
+                                    <td>{{ number_format($paiement->somme_salaire_base ?? 0, 0, ',', ' ') }}</td>
+                                    <td>{{ number_format($paiement->somme_salaire_brut_imposable ?? 0, 0, ',', ' ') }}</td>
+                                    <td>{{ number_format($paiement->somme_salaire_brut_non_imposable ?? 0, 0, ',', ' ') }}</td>
+                                    <td>{{ number_format($paiement->somme_salaire_net_imposable ?? 0, 0, ',', ' ') }}</td>
+                                    <td>{{ number_format($paiement->somme_salaire_net_non_imposable ?? 0, 0, ',', ' ') }}</td>
+                                    <td>
+                                        @if (Auth::guard('admin')->user()->can('hr_paiement.create'))
+                                            <a href="{{ route('admin.hr-fiche-paie.print', $paiement->id) }}"
+                                               class="btn btn-info btn-sm text-white"
+                                               target="_blank"
+                                               title="@lang('messages.Imprimer')">
+                                                <i class="fa fa-print"></i>
+                                            </a>
                                         @endif
+                                        @if (Auth::guard('admin')->user()->can('hr_paiement.edit') && $paiement->etat != 1 && $paiement->employe_id)
+                                            <a href="{{ route('admin.hr-paiements.edit', [$paiement->id, $paiement->company_id]) }}" class="btn btn-success btn-sm">
+                                                @lang('messages.Modifier')
+                                            </a>
                                         @endif
-                                        @if (Auth::guard('admin')->user()->can('hr_paiement.delete'))
-                                            @if($paiement->etat != 1)
-                                            <a class="btn btn-danger text-white" href="{{ route('admin.hr-paiements.destroy', $paiement->id) }}"
-                                            onclick="event.preventDefault(); if(confirm(@json(__('messages.delete_confirm_irreversible')))) { document.getElementById('delete-form-{{ $paiement->id }}').submit(); }">
+                                        @if (Auth::guard('admin')->user()->can('hr_paiement.delete') && $paiement->etat != 1)
+                                            <a class="btn btn-danger btn-sm text-white" href="{{ route('admin.hr-paiements.destroy', $paiement->id) }}"
+                                            onclick="event.preventDefault(); if(confirm(@json(__('messages.Êtes-vous sûr de vouloir supprimer cet élément ?')))) { document.getElementById('delete-form-{{ $paiement->id }}').submit(); }">
                                                 @lang('messages.Supprimer')
                                             </a>
 
@@ -102,7 +115,6 @@
                                                 @method('DELETE')
                                                 @csrf
                                             </form>
-                                            @endif
                                         @endif
                                     </td>
                                 </tr>

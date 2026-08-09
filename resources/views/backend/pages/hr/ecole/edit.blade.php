@@ -2,7 +2,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-@lang('messages.Modifier un Ecole') - @lang('messages.admin_panel')
+@lang('Modifier un Ecole') - @lang('messages.admin_panel')
 @endsection
 
 @section('styles')
@@ -21,11 +21,11 @@
     <div class="row align-items-center">
         <div class="col-sm-6">
             <div class="breadcrumbs-area clearfix">
-                <h4 class="page-title pull-left">@lang('messages.Modifier un Ecole')</h4>
+                <h4 class="page-title pull-left">@lang('Modifier un Ecole')</h4>
                 <ul class="breadcrumbs pull-left">
                     <li><a href="{{ route('admin.dashboard') }}">@lang('messages.dashboard')</a></li>
                     <li><a href="{{ route('admin.hr-ecoles.index') }}">@lang('messages.list')</a></li>
-                    <li><span>@lang('messages.Modifier un Ecole')</span></li>
+                    <li><span>@lang('Modifier un Ecole')</span></li>
                 </ul>
             </div>
         </div>
@@ -42,7 +42,7 @@
         <div class="col-12 mt-5">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title">@lang('messages.Modifier un Ecole')</h4>
+                    <h4 class="header-title">Modifier un Ecole</h4>
                     @include('backend.layouts.partials.messages')
                     
                     <form action="{{ route('admin.hr-ecoles.update',$ecole->id) }}" method="POST">
@@ -51,23 +51,23 @@
                         <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group has-feedback">
-                                        <label for="nom">@lang('messages.Nom Ecole')<span class="text-danger"></span></label>
+                                        <label for="nom">Nom Ecole<span class="text-danger"></span></label>
                                         <input autofocus type="text" class="form-control" name="nom" value="{{ $ecole->nom }}" required minlength="2" maxlength="255">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group has-feedback">
-                                        <label for="etat">@lang('messages.Etat')<span class="text-danger"></span></label>
+                                        <label for="etat">Etat<span class="text-danger"></span></label>
                                         <select class="form-control" name="etat">
-                                            <option selected disabled>@lang('messages.merci de choisir')</option>
-                                            <option value="0">@lang('messages.Privé')</option>
-                                            <option value="1">@lang('messages.Publique')</option>
+                                            <option selected disabled>merci de choisir</option>
+                                            <option value="0">Privé</option>
+                                            <option value="1">Publique</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group has-feedback">
-                                        <label for="adresse">@lang('messages.Adresse')<span class="text-danger"></span></label>
+                                        <label for="adresse">Adresse<span class="text-danger"></span></label>
                                         <input autofocus type="text" class="form-control" name="adresse" value="{{ $ecole->adresse }}" required minlength="2" maxlength="255">
                                     </div>
                                 </div>
@@ -75,7 +75,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group has-feedback">
-                                        <label for="description">@lang('messages.Description')<span class="text-danger"></span></label>
+                                        <label for="description">Description<span class="text-danger"></span></label>
                                         <textarea name="description" class="form-control">{{ $ecole->description }}</textarea>
                                     </div>
                                 </div>

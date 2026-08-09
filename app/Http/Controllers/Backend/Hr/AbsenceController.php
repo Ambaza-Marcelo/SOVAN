@@ -212,7 +212,7 @@ class AbsenceController extends Controller
 
         } catch (\Exception $e) {
             Log::error('Biotime API Error: ' . $e->getMessage());
-            return ['error' => __('messages.error_fetch_data') . $e->getMessage()];
+            return ['error' => 'Erreur lors de la récupération des données: ' . $e->getMessage()];
         }
     }
 

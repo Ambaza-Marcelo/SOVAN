@@ -112,4 +112,16 @@ class HrEmploye extends Model
     public function paiement(){
         return $this->hasMany('App\Models\HrPaiement','employe_id');
     }
+
+    public function getDisplayLabelAttribute()
+    {
+        $matricule = trim((string) ($this->matricule_no ?? ''));
+        $name = trim(trim((string) ($this->firstname ?? '')) . ' ' . trim((string) ($this->lastname ?? '')));
+
+        if ($matricule !== '' && $name !== '') {
+            return $matricule . ' - ' . $name;
+        }
+
+        return $name !== '' ? $name : ($matricule !== '' ? $matricule : ('#' . $this->id));
+    }
 }

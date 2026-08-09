@@ -2,7 +2,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-@lang('messages.Fiche des paies') - @lang('messages.admin_panel')
+@lang('Fiche des paies') - @lang('messages.admin_panel')
 @endsection
 
 @section('styles')
@@ -21,7 +21,7 @@
     <div class="row align-items-center">
         <div class="col-sm-6">
             <div class="breadcrumbs-area clearfix">
-                <h4 class="page-title pull-left">@lang('messages.Fiche des paies')</h4>
+                <h4 class="page-title pull-left">@lang('Fiche des paies')</h4>
                 <ul class="breadcrumbs pull-left">
                     <li><a href="{{ route('admin.dashboard') }}">@lang('messages.dashboard')</a></li>
                     <li><span>@lang('messages.list')</span></li>
@@ -39,18 +39,18 @@
         <div class="main-content-inner">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title float-left">@lang('messages.Journal de paies')</h4>
+                    <h4 class="header-title float-left">Journal de paies</h4>
                     @if (Auth::guard('admin')->user()->can('hr_journal_paie.create'))
                     @if($journal_paie_encours <= 0)
                     <p class="float-right mb-2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <button type="button" title="{{ __('messages.hr_new_journal') }}" class="btn btn-success" data-toggle="modal" data-target="#journalPaieModal" data-whatever="@mdo"><i class="fa fa-plus-square" aria-hidden="false"></i></button>
+                        <button type="button" title="Nouveau journal" class="btn btn-success" data-toggle="modal" data-target="#journalPaieModal" data-whatever="@mdo"><i class="fa fa-plus-square" aria-hidden="false"></i></button>
                     </p>
                     @endif
                     @endif
                     @if (Auth::guard('admin')->user()->can('hr_paiement.create'))
                     @if($journal_paie_encours > 0)
                     <p class="float-right mb-2">
-                            <a class="btn btn-success text-white" title="{{ __('messages.hr_new_payroll_sheet') }}" href="{{ route('admin.hr-paiement.createByCompany') }}"><i class="fa fa-plus-square" aria-hidden="false"></i></a>
+                            <a class="btn btn-success text-white" title="Nouvelle Fiche de Paie" href="{{ route('admin.hr-paiement.createByCompany') }}"><i class="fa fa-plus-square" aria-hidden="false"></i></a>
                     </p>
                     @endif
                     @endif
@@ -60,12 +60,12 @@
                             <thead class="bg-light text-capitalize">
                                 <tr>
                                     <th width="5%">#</th>
-                                    <th width="20%">@lang('messages.Code')</th>
-                                    <th width="20%">@lang('messages.Titre')</th>
-                                    <th width="20%">@lang('messages.Date Debut')</th>
-                                    <th width="20%">@lang('messages.Date de Clôture')</th>
-                                    <th width="20%">@lang('messages.Etat')</th>
-                                    <th width="20%">@lang('messages.Action')</th>
+                                    <th width="20%">Code</th>
+                                    <th width="20%">Titre</th>
+                                    <th width="20%">Date Debut</th>
+                                    <th width="20%">Date de Clôture</th>
+                                    <th width="20%">Etat</th>
+                                    <th width="20%">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -76,13 +76,13 @@
                                     <td>{{ $journal_paie->title }}</td>
                                     <td>{{ \Carbon\Carbon::parse($journal_paie->date_debut)->format('d/m/Y') }}</td>
                                     <td>{{ \Carbon\Carbon::parse($journal_paie->date_fin)->format('d/m/Y') }}</td>
-                                    <td>@if($journal_paie->etat == 0) <span class="badge badge-primary">@lang('messages.Encours...')</span> @elseif($journal_paie->etat == 1) <span class="badge badge-success">@lang('messages.Déjà clôturé')</span> @endif</td>
+                                    <td>@if($journal_paie->etat == 0) <span class="badge badge-primary">Encours...</span> @elseif($journal_paie->etat == 1) <span class="badge badge-success">Déjà clôturé</span> @endif</td>
                                     <td>
                                     @if($journal_paie->etat != 1)
                                         @if (Auth::guard('admin')->user()->can('hr_journal_paie.cloturer'))
-                                        <a class="btn btn-success text-white" href="{{ route('admin.hr-journal-paies.cloturer', $journal_paie->code) }}" title="{{ __('messages.hr_close_payroll_journal') }}" 
+                                        <a class="btn btn-success text-white" href="{{ route('admin.hr-journal-paies.cloturer', $journal_paie->code) }}" title="clôturer le journal de paie" 
                                             onclick="event.preventDefault(); document.getElementById('validate-form-{{ $journal_paie->code }}').submit();">
-                                                @lang('messages.hr_btn_close')
+                                                clôturer
                                             </a>&nbsp;&nbsp;
 
                                         <form id="validate-form-{{ $journal_paie->code }}" action="{{ route('admin.hr-journal-paies.cloturer', $journal_paie->code) }}" method="POST" style="display: none;">
@@ -98,13 +98,13 @@
                                                data-id="{{ $journal_paie->id }}"
                                                data-date-debut="{{ \Carbon\Carbon::parse($journal_paie->date_debut)->format('Y-m-d') }}"
                                                data-date-fin="{{ \Carbon\Carbon::parse($journal_paie->date_fin)->format('Y-m-d') }}">
-                                                <i class="fa fa-edit" title="{{ __('messages.Modifier') }}" aria-hidden="false"></i>
+                                                <i class="fa fa-edit" title="Modifier" aria-hidden="false"></i>
                                             </a>
                                         @endif
                                         @if (Auth::guard('admin')->user()->can('hr_journal_paie.delete'))
                                             <a class="btn btn-danger text-white" href="{{ route('admin.hr-journal-paies.destroy', $journal_paie->code) }}"
-                                            onclick="event.preventDefault(); if(confirm(@json(__('messages.delete_confirm_irreversible')))) { document.getElementById('delete-form-{{ $journal_paie->code }}').submit(); }">
-                                                <i class="fa fa-trash" title="{{ __('messages.Supprimer') }}" aria-hidden="false"></i>
+                                            onclick="event.preventDefault(); if(confirm('Are you sure you want to delete this item? This action is irreversible.')) { document.getElementById('delete-form-{{ $journal_paie->code }}').submit(); }">
+                                                <i class="fa fa-trash" title="Supprimer" aria-hidden="false"></i>
                                             </a>
 
                                             <form id="delete-form-{{ $journal_paie->code }}" action="{{ route('admin.hr-journal-paies.destroy', $journal_paie->code) }}" method="POST" style="display: none;">
@@ -113,11 +113,19 @@
                                             </form>
                                         @endif
                                     @endif
-                                        <form action="{{ route('admin.hr-journal-paies.export-to-excel') }}" method="GET">
-                                        <button type="submit" title="{{ __('messages.hr_export_excel_hint') }}" class="btn btn-primary">@lang('messages.Exporter En Excel')</button>
-                                        <input type="hidden" name="code" class="form-control" value="{{ $journal_paie->code }}">
-
+                                        <form action="{{ route('admin.hr-journal-paies.export-to-excel') }}" method="GET" style="display:inline-block;margin:2px;">
+                                            <input type="hidden" name="code" value="{{ $journal_paie->code }}">
+                                            <button type="submit" title="Exporter en Excel" class="btn btn-primary btn-sm">
+                                                <i class="fa fa-file-excel-o"></i> Excel
+                                            </button>
                                         </form>
+                                        <a href="{{ route('admin.hr-journal-paies.export-to-pdf', $journal_paie->code) }}"
+                                           class="btn btn-info btn-sm text-white"
+                                           target="_blank"
+                                           title="Exporter en PDF"
+                                           style="margin:2px;">
+                                            <i class="fa fa-file-pdf-o"></i> PDF
+                                        </a>
                                     </td>
                                 </tr>
                                @endforeach

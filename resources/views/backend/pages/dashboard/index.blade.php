@@ -20,7 +20,7 @@
         min-width: 120px;
         text-align: center;
         text-decoration: none !important;
-        color: #027789;
+        color: #1f6b52;
         cursor: pointer;
         display: flex;
         flex-direction: column;
@@ -28,16 +28,16 @@
         transition: transform 0.2s ease, color 0.2s ease;
     }
     .procurement-step:hover {
-        color: #e9b820;
+        color: #c9a227;
         transform: translateY(-3px);
         text-decoration: none !important;
     }
     .procurement-step:hover .procurement-step-label {
-        color: #e9b820;
+        color: #c9a227;
     }
     .procurement-step:focus {
         outline: none;
-        color: #015a66;
+        color: #154a39;
     }
     .procurement-icon-wrap {
         position: relative;
@@ -46,14 +46,14 @@
         height: 72px;
         line-height: 72px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #f8f9fa 0%, #eef6f7 100%);
-        border: 2px solid #027789;
+        background: linear-gradient(135deg, #ffffff 0%, #f4f0e6 100%);
+        border: 2px solid #1f6b52;
         margin-bottom: 8px;
         font-size: 28px;
     }
     .procurement-step:hover .procurement-icon-wrap {
-        border-color: #e9b820;
-        box-shadow: 0 6px 16px rgba(233, 184, 32, 0.25);
+        border-color: #c9a227;
+        box-shadow: 0 6px 16px rgba(201, 162, 39, 0.28);
     }
     .procurement-badge {
         position: absolute;
@@ -68,7 +68,7 @@
         font-weight: 700;
     }
     .procurement-arrow {
-        color: #027789;
+        color: #1f6b52;
         font-size: 22px;
         flex-shrink: 0;
     }
@@ -76,12 +76,12 @@
         display: block;
         font-size: 13px;
         font-weight: 600;
-        color: #333;
+        color: #2c2416;
         line-height: 1.3;
     }
     .payment-link-note {
-        background: #f8f9fa;
-        border-left: 4px solid #027789;
+        background: #f7f4ec;
+        border-left: 4px solid #1f6b52;
         padding: 10px 14px;
         margin-bottom: 16px;
         font-size: 13px;
@@ -101,16 +101,16 @@
         gap: 8px;
         padding: 8px 14px;
         border-radius: 20px;
-        background: #eef6f7;
-        color: #027789;
+        background: rgba(31, 107, 82, 0.08);
+        color: #154a39;
         text-decoration: none !important;
         font-size: 13px;
         font-weight: 600;
         transition: background 0.2s ease;
     }
     .payment-source-link:hover {
-        background: #dceef0;
-        color: #015a66;
+        background: rgba(201, 162, 39, 0.18);
+        color: #1a2e28;
     }
     .payment-source-badge {
         min-width: 22px;
@@ -156,35 +156,86 @@ Auth::guard('admin')->user()->can('proforma_invoice.view') || Auth::guard('admin
     <div class="col-md-2" id="side-navbar">
     </div>
     <div class="col-lg-12">
+        <div class="flour-hero">
+            <div class="flour-hero-inner">
+                <div>
+                    <div class="flour-hero-status">
+                        <span class="pulse"></span>
+                        @lang('messages.flour_mill_status_active')
+                    </div>
+                    <h2>@lang('messages.flour_mill_hero_title')</h2>
+                    <p>@lang('messages.flour_mill_hero_subtitle')</p>
+                </div>
+                <form method="GET" action="{{ url()->current() }}">
+                    <label for="exercise" class="sr-only">@lang('messages.fiscal_year')</label>
+                    <select name="exercise" id="exercise" class="flour-hero-select" onchange="this.form.submit()">
+                        @foreach($exercises as $exercise)
+                            <option value="{{ $exercise }}" {{ $exercise == $selectedExercise ? 'selected' : '' }}>
+                                @lang('messages.fiscal_year') {{ $exercise }}
+                            </option>
+                        @endforeach
+                    </select>
+                </form>
+            </div>
+        </div>
+
+        <div class="flour-kpi-row">
+            <div class="flour-kpi">
+                <div>
+                    <span class="flour-kpi-label">@lang('messages.flour_kpi_production_plans')</span>
+                    <p class="flour-kpi-value">{{ number_format($flourKpis['plans_year'] ?? 0, 0, ',', ' ') }}</p>
+                    <span class="flour-kpi-hint">{{ $selectedExercise }}</span>
+                </div>
+                <div class="flour-kpi-icon"><i class="fa fa-calendar"></i></div>
+            </div>
+            <div class="flour-kpi">
+                <div>
+                    <span class="flour-kpi-label">@lang('messages.flour_kpi_production_orders')</span>
+                    <p class="flour-kpi-value">{{ number_format($flourKpis['orders_created'] ?? 0, 0, ',', ' ') }}</p>
+                    <span class="flour-kpi-hint">@lang('messages.flour_kpi_orders_created_hint')</span>
+                </div>
+                <div class="flour-kpi-icon"><i class="fa fa-industry"></i></div>
+            </div>
+            <div class="flour-kpi">
+                <div>
+                    <span class="flour-kpi-label">@lang('messages.flour_kpi_orders_approved')</span>
+                    <p class="flour-kpi-value">{{ number_format($flourKpis['orders_approved'] ?? 0, 0, ',', ' ') }}</p>
+                    <span class="flour-kpi-hint">@lang('messages.flour_kpi_orders_approved_hint')</span>
+                </div>
+                <div class="flour-kpi-icon"><i class="fa fa-check-circle"></i></div>
+            </div>
+            <div class="flour-kpi">
+                <div>
+                    <span class="flour-kpi-label">@lang('messages.flour_kpi_in_chain')</span>
+                    <p class="flour-kpi-value">{{ number_format($flourKpis['in_chain'] ?? 0, 0, ',', ' ') }}</p>
+                    <span class="flour-kpi-hint">@lang('messages.flour_kpi_in_chain_hint')</span>
+                </div>
+                <div class="flour-kpi-icon"><i class="fa fa-cogs"></i></div>
+            </div>
+        </div>
+
     @if (Auth::guard('admin')->user()->can('raw_material_purchase.view') || Auth::guard('admin')->user()->can('material_purchase.view'))
         <div class="row">
             <div class="col-md-12">
                 <div class="card" style="border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.05);">
-                    <div class="card-header d-flex justify-content-between align-items-center" style="background: linear-gradient(90deg,#027789,#e9b820); color: #ffffff;">
+                    <div class="card-header d-flex justify-content-between align-items-center" style="background: linear-gradient(90deg,#154a39,#c9a227); color: #ffffff;">
                         <h4 class="mb-0">@lang('messages.profitability_dashboard')</h4>
-                        <form method="GET" action="{{ url()->current() }}" class="form-inline">
-                            <label for="exercise" class="mr-2 mb-0"><strong>@lang('messages.fiscal_year')</strong></label>
-                            <select name="exercise" id="exercise" class="form-control form-control-sm" onchange="this.form.submit()">
-                                @foreach($exercises as $exercise)
-                                    <option value="{{ $exercise }}" {{ $exercise == $selectedExercise ? 'selected' : '' }}>{{ $exercise }}</option>
-                                @endforeach
-                            </select>
-                        </form>
+                        <span style="opacity:.9;font-weight:600;">{{ $selectedExercise }}</span>
                     </div>
-                    <div class="card-body" style="background-color:#ffffff;">
+                    <div class="card-body" style="background-color:#fbf8f1;">
                         <div class="row">
                             <!-- Rentabilité globale -->
                             <div class="col-md-4 mb-3">
                                 <div class="card h-100" style="border-radius:8px; border:1px solid #e5e5e5;">
                                     <div class="card-body">
-                                        <h5 style="color:#027789;">@lang('messages.company_profitability')</h5>
+                                        <h5 style="color:#1f6b52;">@lang('messages.company_profitability')</h5>
                                         <p class="mb-1 text-muted">@lang('messages.products_accounts_7')</p>
-                                        <h4 style="color:#027789;">{{ number_format($products,0,',',' ') }}</h4>
+                                        <h4 style="color:#1f6b52;">{{ number_format($products,0,',',' ') }}</h4>
                                         <p class="mb-1 text-muted mt-3">@lang('messages.charges_accounts_6')</p>
                                         <h4 style="color:#e74c3c;">{{ number_format($charges,0,',',' ') }}</h4>
                                         <hr>
                                         <p class="mb-1 font-weight-bold">@lang('messages.profit')</p>
-                                        <h3 style="color:#e9b820;">{{ number_format($profit,0,',',' ') }}</h3>
+                                        <h3 style="color:#c9a227;">{{ number_format($profit,0,',',' ') }}</h3>
                                     </div>
                                 </div>
                             </div>
@@ -193,13 +244,13 @@ Auth::guard('admin')->user()->can('proforma_invoice.view') || Auth::guard('admin
                             <div class="col-md-4 mb-3">
                                 <div class="card h-100" style="border-radius:8px; border:1px solid #e5e5e5;">
                                     <div class="card-body">
-                                        <h5 style="color:#027789;">@lang('messages.sales')</h5>
+                                        <h5 style="color:#1f6b52;">@lang('messages.sales')</h5>
                                         <div class="mb-3">
                                             <span class="badge badge-success mb-1">@lang('messages.cash')</span>
                                             <p class="mb-0 text-muted">@lang('messages.invoice_count')</p>
                                             <h4>{{ number_format($cashSales['count'],0,',',' ') }}</h4>
                                             <p class="mb-0 text-muted">@lang('messages.total_amount')</p>
-                                            <h4 style="color:#027789;">{{ number_format($cashSales['sum'],0,',',' ') }}</h4>
+                                            <h4 style="color:#1f6b52;">{{ number_format($cashSales['sum'],0,',',' ') }}</h4>
                                         </div>
                                         <hr>
                                         <div>
@@ -207,7 +258,7 @@ Auth::guard('admin')->user()->can('proforma_invoice.view') || Auth::guard('admin
                                             <p class="mb-0 text-muted">@lang('messages.invoice_count')</p>
                                             <h4>{{ number_format($creditSales['count'],0,',',' ') }}</h4>
                                             <p class="mb-0 text-muted">@lang('messages.total_amount')</p>
-                                            <h4 style="color:#e9b820;">{{ number_format($creditSales['sum'],0,',',' ') }}</h4>
+                                            <h4 style="color:#c9a227;">{{ number_format($creditSales['sum'],0,',',' ') }}</h4>
                                         </div>
                                     </div>
                                 </div>
@@ -217,15 +268,15 @@ Auth::guard('admin')->user()->can('proforma_invoice.view') || Auth::guard('admin
                             <div class="col-md-4 mb-3">
                                 <div class="card h-100" style="border-radius:8px; border:1px solid #e5e5e5;">
                                     <div class="card-body">
-                                        <h5 style="color:#027789;">@lang('messages.purchases_by_category')</h5>
+                                        <h5 style="color:#1f6b52;">@lang('messages.purchases_by_category')</h5>
                                         <div class="mb-2">
-                                            <p class="mb-0 font-weight-bold" style="color:#027789;">@lang('messages.raw_materials')</p>
+                                            <p class="mb-0 font-weight-bold" style="color:#1f6b52;">@lang('messages.raw_materials')</p>
                                             <small class="text-muted">@lang('messages.paid'): {{ number_format($rawMaterialPurchases['paid_count'],0,',',' ') }} ({{ number_format($rawMaterialPurchases['paid_sum'],0,',',' ') }})</small><br>
                                             <small class="text-muted">@lang('messages.unpaid'): {{ number_format($rawMaterialPurchases['unpaid_count'],0,',',' ') }} ({{ number_format($rawMaterialPurchases['unpaid_sum'],0,',',' ') }})</small>
                                         </div>
                                         <hr>
                                         <div>
-                                            <p class="mb-0 font-weight-bold" style="color:#027789;">@lang('messages.materials')</p>
+                                            <p class="mb-0 font-weight-bold" style="color:#1f6b52;">@lang('messages.materials')</p>
                                             <small class="text-muted">@lang('messages.paid'): {{ number_format($materialPurchases['paid_count'],0,',',' ') }} ({{ number_format($materialPurchases['paid_sum'],0,',',' ') }})</small><br>
                                             <small class="text-muted">@lang('messages.unpaid'): {{ number_format($materialPurchases['unpaid_count'],0,',',' ') }} ({{ number_format($materialPurchases['unpaid_sum'],0,',',' ') }})</small>
                                         </div>
@@ -245,7 +296,7 @@ Auth::guard('admin')->user()->can('proforma_invoice.view') || Auth::guard('admin
             @if (Auth::guard('admin')->user()->can('material_purchase.view') || Auth::guard('admin')->user()->can('material_supplier_order.view') || Auth::guard('admin')->user()->can('material_reception.view'))
             <div class="col-lg-6 mb-3">
                 <div class="card h-100" style="border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.05);">
-                    <div class="card-header" style="background: linear-gradient(90deg,#027789,#5ba3ad); color: #ffffff;">
+                    <div class="card-header" style="background: linear-gradient(90deg,#154a39,#3d8f72); color: #ffffff;">
                         <h5 class="mb-0"><i class="fa fa-wrench mr-2"></i>@lang('messages.dashboard_procurement_supplies')</h5>
                     </div>
                     <div class="card-body">
@@ -292,7 +343,7 @@ Auth::guard('admin')->user()->can('proforma_invoice.view') || Auth::guard('admin
             @if (Auth::guard('admin')->user()->can('raw_material_purchase.view') || Auth::guard('admin')->user()->can('raw_material_supplier_order.view') || Auth::guard('admin')->user()->can('raw_material_reception.view'))
             <div class="col-lg-6 mb-3">
                 <div class="card h-100" style="border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.05);">
-                    <div class="card-header" style="background: linear-gradient(90deg,#027789,#e9b820); color: #ffffff;">
+                    <div class="card-header" style="background: linear-gradient(90deg,#154a39,#c9a227); color: #ffffff;">
                         <h5 class="mb-0"><i class="fa fa-cutlery mr-2"></i>@lang('messages.dashboard_procurement_raw_materials')</h5>
                     </div>
                     <div class="card-body">
@@ -343,7 +394,7 @@ Auth::guard('admin')->user()->can('proforma_invoice.view') || Auth::guard('admin
         <div class="row mt-2">
             <div class="col-lg-12 mb-3">
                 <div class="card" style="border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.05);">
-                    <div class="card-header" style="background: linear-gradient(90deg,#027789,#34495e); color: #ffffff;">
+                    <div class="card-header" style="background: linear-gradient(90deg,#154a39,#243d35); color: #ffffff;">
                         <h5 class="mb-0"><i class="fa fa-money mr-2"></i>@lang('messages.dashboard_payment_process_title')</h5>
                     </div>
                     <div class="card-body">
@@ -437,7 +488,7 @@ Auth::guard('admin')->user()->can('proforma_invoice.view') || Auth::guard('admin
         <div class="row mt-2">
             <div class="col-lg-12 mb-3">
                 <div class="card" style="border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.05);">
-                    <div class="card-header" style="background: linear-gradient(90deg,#027789,#e9b820); color: #ffffff;">
+                    <div class="card-header" style="background: linear-gradient(90deg,#154a39,#c9a227); color: #ffffff;">
                         <h5 class="mb-0"><i class="fa fa-cogs mr-2"></i>@lang('messages.dashboard_production_process_title')</h5>
                     </div>
                     <div class="card-body">
@@ -499,7 +550,7 @@ Auth::guard('admin')->user()->can('proforma_invoice.view') || Auth::guard('admin
         <div class="row mt-2">
             <div class="col-lg-12 mb-3">
                 <div class="card" style="border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.05);">
-                    <div class="card-header" style="background: linear-gradient(90deg,#027789,#34495e); color: #ffffff;">
+                    <div class="card-header" style="background: linear-gradient(90deg,#154a39,#243d35); color: #ffffff;">
                         <h5 class="mb-0"><i class="fa fa-shopping-bag mr-2"></i>@lang('messages.dashboard_sales_process_title')</h5>
                     </div>
                     <div class="card-body">

@@ -71,7 +71,7 @@ class CompanyController extends Controller
 
         HrCompany::create($data);
 
-        return redirect()->route('admin.hr-companies.index')->with('success', __('messages.company_created'));
+        return redirect()->route('admin.hr-companies.index')->with('success', 'company has been created.');
     }
 
 

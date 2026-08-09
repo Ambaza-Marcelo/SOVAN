@@ -37,13 +37,13 @@
         $docDate = now()->format('d/m/Y H:i');
     }
 
-    $publicLogoPath = public_path('img/logo.jpeg');
+    $publicLogoPath = public_path('img/logo.png');
 @endphp
 <table style="width:100%; border:none; border-bottom:1px solid #333; margin-bottom:12px;">
     <tr>
         <td style="border:none; width:22%; vertical-align:top;">
             @if(file_exists($publicLogoPath))
-                <img src="{{ asset('img/logo.jpeg') }}" alt="MUSUMBA ELCOM" style="max-width:300px; max-height:150px; object-fit:contain;">
+                <img src="{{ asset('img/logo.png') }}" alt="MUSUMBA ELCOM" style="max-width:300px; max-height:150px; object-fit:contain;">
             @endif
         </td>
         <td style="border:none; width:33%; vertical-align:top;">

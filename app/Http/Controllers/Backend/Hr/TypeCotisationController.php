@@ -25,6 +25,16 @@ class TypeCotisationController extends Controller
         });
     }
 
+    public function index()
+    {
+        if (is_null($this->user) || !$this->user->can('hr_cotisation.view')) {
+            abort(403, 'Pardon!! vous n\'avez pas l\'autorisation de visualiser la cotisation! Mufise ico mubaza hamagara kuri 130 canke 122');
+        }
+
+        $type_cotisations = HrTypeCotisation::all();
+        return view('backend.pages.hr.type_cotisation.index',compact('type_cotisations'));
+    }
+
     public function create()
     {
         if (is_null($this->user) || !$this->user->can('hr_cotisation.create')) {

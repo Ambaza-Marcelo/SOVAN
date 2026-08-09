@@ -2,7 +2,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="typeCongeModalLabel">@lang('messages.Nouveau Type Congé')</h5>
+        <h5 class="modal-title" id="typeCongeModalLabel">Nouveau Type Congé</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -11,11 +11,11 @@
         @csrf
       <div class="modal-body">
           <div class="form-group">
-            <label for="libelle" class="col-form-label">@lang('messages.Designation:')</label>
+            <label for="libelle" class="col-form-label">Designation:</label>
             <input type="text" name="libelle" class="form-control" id="libelle">
           </div>
           <div class="form-group">
-            <label for="description" class="col-form-label">@lang('messages.Description:')</label>
+            <label for="description" class="col-form-label">Description:</label>
             <input type="text" name="description" class="form-control" id="description">
           </div>
       </div>

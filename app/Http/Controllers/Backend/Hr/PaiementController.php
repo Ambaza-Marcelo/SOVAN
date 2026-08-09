@@ -50,8 +50,13 @@ class PaiementController extends Controller
             abort(403, 'Pardon!! vous n\'avez pas l\'autorisation de visualiser les employés! Mufise ico mubaza hamagara kuri 130 canke 122');
         }
 
-        $paiements = HrPaiement::where('employe_id','!=','')->where('company_id',$company_id)->get();
-        return view('backend.pages.hr.paiement.index',compact('paiements'));
+        $paiements = HrPaiement::with(['employe.fonction'])
+            ->where('employe_id', '!=', '')
+            ->where('company_id', $company_id)
+            ->orderByDesc('date_debut')
+            ->orderByDesc('id')
+            ->get();
+        return view('backend.pages.hr.paiement.index', compact('paiements'));
     }
 
     public function selectByCompany()
@@ -81,6 +86,10 @@ class PaiementController extends Controller
         }
 
         $journal_paie = HrJournalPaie::where('etat', 0)->first();
+        if (!$journal_paie) {
+            session()->flash('error', 'Aucun journal de paie ouvert. Veuillez d\'abord créer ou ouvrir un journal de paie.');
+            return redirect()->route('admin.hr-journal-paies.index');
+        }
 
         $employes = HrEmploye::where('company_id',$company_id)->whereNotIn('id', function($q){
         $q->select('employe_id')->where('code','0001')->where('employe_id','!=','')->from('hr_paiements');
@@ -100,68 +109,71 @@ class PaiementController extends Controller
     public function fetchLoan(Request $request)
     {
         $employe_id = $request->employe_id;
-        $date_debut = $request->date_debut; // Format: Y-m-d H:i:s or Y-m-d
-        
-        if (!$employe_id || !$date_debut) {
-            return response()->json(['retenue_pret' => 0]);
+        $date_debut = $request->date_debut;
+
+        if (!$employe_id) {
+            return response()->json(['retenue_pret' => 0, 'loan_id' => null]);
         }
 
-        // Get the month from date_debut
-        $paymentDate = Carbon::parse($date_debut);
-        $paymentMonth = $paymentDate->month;
-        $paymentYear = $paymentDate->year;
-
-        // Avances approuvées (status = 3) ; on ignore les prêts déjà totalement payés (flag2 = '2')
+        // Avances approuvées / sortie fonds créée ; ignorer les prêts totalement soldés
         $loans = HrLoan::where('employe_id', $employe_id)
-            ->where('status', '3')
-            ->where(function ($q) {
-                $q->whereNull('flag2')->orWhere('flag2', '!=', '2');
-            })
+            ->whereIn('status', [3, 4, '3', '4'])
+            ->orderBy('date', 'asc')
             ->get();
 
         $retenue_pret = 0;
         $loanId = null;
 
         foreach ($loans as $loan) {
-            if (!$loan->date) {
+            if ($loan->isFullyPaid()) {
                 continue;
             }
 
-            $loanDate = Carbon::parse($loan->date);
-            $loanMonth = $loanDate->month;
-            $loanYear = $loanDate->year;
+            $flag1 = (int) ($loan->flag1 ?? 0);
+            $flag2 = (int) ($loan->flag2 ?? 0);
+            $nb = (float) ($loan->nbre_tranche ?? 3);
+            $t1 = (float) ($loan->amount_to_pay_1m ?? 0);
+            $t2 = (float) ($loan->amount_to_pay_2m ?? 0);
+            $t3 = (float) ($loan->amount_to_pay_3m ?? 0);
 
-            // Mois de paie par rapport au mois du prêt : 0 = 1er mois, 1 = 2e mois, 2 = 3e mois
-            $monthDiff = (($paymentYear - $loanYear) * 12) + ($paymentMonth - $loanMonth);
+            // Prochaine tranche due selon les flags déjà payés
+            if ($flag1 === 0) {
+                $retenue_pret = $t1;
+            } elseif ($nb >= 2 && $flag2 === 0 && $t2 > 0) {
+                $retenue_pret = $t2;
+            } elseif ($nb >= 3 && $flag2 === 1 && $t3 > 0) {
+                $retenue_pret = $t3;
+            } else {
+                continue;
+            }
 
-            if ($monthDiff == 0) {
-                // 1er mois : déduction amount_to_pay_1m (engagement 1, 2 ou 3 mois)
-                if ($loan->flag1 == '0' || $loan->flag1 == 0) {
-                    $retenue_pret = $loan->amount_to_pay_1m ?? 0;
-                    $loanId = $loan->id;
-                    break;
-                }
-            } elseif ($monthDiff == 1) {
-                // 2e mois : déduction amount_to_pay_2m (après que le 1er soit payé)
-                if (($loan->flag1 == '1' || $loan->flag1 == 1) && ($loan->flag2 == '0' || $loan->flag2 == 0)) {
-                    $retenue_pret = $loan->amount_to_pay_2m ?? 0;
-                    $loanId = $loan->id;
-                    break;
-                }
-            } elseif ($monthDiff == 2) {
-                // 3e mois : déduction amount_to_pay_3m (après que les 2 premiers soient payés)
-                if (($loan->flag1 == '1' || $loan->flag1 == 1) && ($loan->flag2 == '1' || $loan->flag2 == 1)) {
-                    $retenue_pret = $loan->amount_to_pay_3m ?? 0;
-                    $loanId = $loan->id;
-                    break;
+            // Si une date de paie est fournie, on privilégie l'alignement mois prêt / mois paie
+            if (!empty($date_debut) && !empty($loan->date)) {
+                try {
+                    $paymentDate = Carbon::parse(str_replace('T', ' ', $date_debut));
+                    $loanDate = Carbon::parse($loan->date);
+                    $monthDiff = (($paymentDate->year - $loanDate->year) * 12) + ($paymentDate->month - $loanDate->month);
+
+                    if ($monthDiff === 0 && $flag1 === 0) {
+                        $retenue_pret = $t1;
+                    } elseif ($monthDiff === 1 && $flag1 === 1 && $flag2 === 0) {
+                        $retenue_pret = $t2;
+                    } elseif ($monthDiff === 2 && $flag1 === 1 && $flag2 === 1) {
+                        $retenue_pret = $t3;
+                    }
+                    // Sinon on garde la prochaine tranche due (ci-dessus)
+                } catch (\Exception $e) {
+                    // garder la prochaine tranche due
                 }
             }
-            // Si monthDiff > 2 ou dette déjà totalement payée (flag2 = '2'), on ne déduit plus
+
+            $loanId = $loan->id;
+            break;
         }
 
         return response()->json([
-            'retenue_pret' => $retenue_pret,
-            'loan_id' => $loanId
+            'retenue_pret' => round((float) $retenue_pret, 2),
+            'loan_id' => $loanId,
         ]);
     }
 
@@ -404,7 +416,7 @@ class PaiementController extends Controller
         $company = HrCompany::where('id',$company_id)->first();
         $code = HrPaiement::where('id',$id)->where('employe_id','!=','')->value('code');
         $matricule_no = HrEmploye::where('id',$employe_id)->value('matricule_no');
-        $data = HrPaiement::where('code',$code)->where('employe_id','!=','')->where('employe_id',$employe_id)->first();
+        $data = HrPaiement::with(['employe.fonction'])->where('code',$code)->where('employe_id','!=','')->where('employe_id',$employe_id)->first();
 
         $setting = DB::table('settings')->orderBy('created_at','desc')->first();
 
@@ -412,7 +424,13 @@ class PaiementController extends Controller
         $dateT =  $currentTime->toDateTimeString();
         $dateTime = str_replace([' ',':'], '_', $dateT);
 
-        $pdf = PDF::loadView('backend.pages.hr.document.fiche_salaire',compact('data','setting','company'));
+        $pdf = PDF::setOptions([
+            'defaultFont' => 'Helvetica',
+            'isRemoteEnabled' => true,
+            'isHtml5ParserEnabled' => true,
+            'isFontSubsettingEnabled' => false,
+        ])->loadView('backend.pages.hr.document.fiche_salaire', compact('data', 'setting', 'company'), [], 'UTF-8')
+          ->setPaper('a4', 'portrait');
 
         Storage::put('public/'.$company->name.'/hr/bulletin-salaire/'.$matricule_no.'_'.$dateTime.'.pdf', $pdf->output());
 

@@ -2,7 +2,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-@lang('messages.Fiche des paies') - @lang('messages.admin_panel')
+@lang('Fiche des paies') - @lang('messages.admin_panel')
 @endsection
 
 @section('styles')
@@ -21,7 +21,7 @@
     <div class="row align-items-center">
         <div class="col-sm-6">
             <div class="breadcrumbs-area clearfix">
-                <h4 class="page-title pull-left">@lang('messages.Fiche des paies')</h4>
+                <h4 class="page-title pull-left">@lang('Fiche des paies')</h4>
                 <ul class="breadcrumbs pull-left">
                     <li><a href="{{ route('admin.dashboard') }}">@lang('messages.dashboard')</a></li>
                     <li><span>@lang('messages.list')</span></li>
@@ -40,7 +40,7 @@
         <div class="col-12 mt-5">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title float-left">@lang('messages.Fiche des paies')</h4>
+                    <h4 class="header-title float-left">Fiche des paies</h4>
                     <div class="clearfix"></div>
                     <div class="data-tables">
                         @include('backend.layouts.partials.messages')
@@ -48,15 +48,15 @@
                             <thead class="bg-light text-capitalize">
                                 <tr>
                                     <th width="5%">#</th>
-                                    <th width="10%">@lang('messages.No Matricule')</th>
-                                    <th width="10%">@lang('messages.Nom')</th>
-                                    <th width="10%">@lang('messages.Prenom')</th>
-                                    <th width="10%">@lang('messages.Departement')</th>
-                                    <th width="10%">@lang('messages.Fonction')</th>
-                                    <th width="10%">@lang('messages.Banque')</th>
-                                    <th width="10%">@lang('messages.Numero Compte')</th>
-                                    <th width="10%">@lang('messages.Salaire Net')</th>
-                                    <th width="15%">@lang('messages.Action')</th>
+                                    <th width="10%">No Matricule</th>
+                                    <th width="10%">Nom</th>
+                                    <th width="10%">Prenom</th>
+                                    <th width="10%">Departement</th>
+                                    <th width="10%">Fonction</th>
+                                    <th width="10%">Banque</th>
+                                    <th width="10%">Numero Compte</th>
+                                    <th width="10%">Salaire Net</th>
+                                    <th width="15%">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -95,7 +95,7 @@
         <div class="main-content-inner">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title float-left">@lang('messages.Journal de paies')</h4>
+                    <h4 class="header-title float-left">Journal de paies</h4>
                     <p class="float-right mb-2">
                         <button type="button" class="btn btn-success" data-toggle="modal" data-target="#journalPaieModal" data-whatever="@mdo"><i class="fa fa-plus-square" title="Ajouter" aria-hidden="false"></i></button>
                     </p>
@@ -105,12 +105,12 @@
                             <thead class="bg-light text-capitalize">
                                 <tr>
                                     <th width="5%">#</th>
-                                    <th width="20%">@lang('messages.Code')</th>
-                                    <th width="20%">@lang('messages.Titre')</th>
-                                    <th width="20%">@lang('messages.Date Debut')</th>
-                                    <th width="20%">@lang('messages.Date Cloture')</th>
-                                    <th width="20%">@lang('messages.Etat')</th>
-                                    <th width="20%">@lang('messages.Action')</th>
+                                    <th width="20%">Code</th>
+                                    <th width="20%">Titre</th>
+                                    <th width="20%">Date Debut</th>
+                                    <th width="20%">Date Cloture</th>
+                                    <th width="20%">Etat</th>
+                                    <th width="20%">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -129,7 +129,7 @@
 
                                         @if (Auth::guard('admin')->user()->can('hr_journal_paie.delete'))
                                             <a class="btn btn-danger text-white" href="{{ route('admin.hr-journal-paies.destroy', $journal_paie->id) }}"
-                                            onclick="event.preventDefault(); if(confirm(@json(__("messages.delete_confirm_irreversible")))) { document.getElementById('delete-form-{{ $journal_paie->id }}').submit(); }">
+                                            onclick="event.preventDefault(); if(confirm('Are you sure you want to delete this item? This action is irreversible.')) { document.getElementById('delete-form-{{ $journal_paie->id }}').submit(); }">
                                                 <i class="fa fa-trash" title="Supprimer" aria-hidden="false"></i>
                                             </a>
 

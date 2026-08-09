@@ -184,7 +184,7 @@ class TimeTableController extends Controller
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            session()->flash('error', __('messages.error_schedule_creation') . $e->getMessage());
+            session()->flash('error', 'Erreur lors de la création de l\'horaire: ' . $e->getMessage());
             return redirect()->back();
         }
     }
@@ -296,7 +296,7 @@ class TimeTableController extends Controller
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            session()->flash('error', __('messages.error_schedule_update') . $e->getMessage());
+            session()->flash('error', 'Erreur lors de la modification de l\'horaire: ' . $e->getMessage());
             return redirect()->back();
         }
     }

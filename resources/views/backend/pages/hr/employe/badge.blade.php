@@ -343,7 +343,7 @@
         
         <!-- Staff Section -->
         <div class="staff-section">
-            <div class="staff-label">@lang('messages.STAFF')</div>
+            <div class="staff-label">STAFF</div>
         </div>
         
         <!-- ID Number Section -->

@@ -2,7 +2,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-@lang('messages.Thank You To Choose') - @lang('messages.admin_panel')
+@lang('Thank You To Choose') - @lang('messages.admin_panel')
 @endsection
 
 @section('styles')
@@ -21,10 +21,10 @@
     <div class="row align-items-center">
         <div class="col-sm-6">
             <div class="breadcrumbs-area clearfix">
-                <h4 class="page-title pull-left">@lang('messages.Thank You To Choose')</h4>
+                <h4 class="page-title pull-left">@lang('Thank You To Choose')</h4>
                 <ul class="breadcrumbs pull-left">
                     <li><a href="{{ route('admin.dashboard') }}">@lang('messages.dashboard')</a></li>
-                    <li><span>@lang('messages.Thank You To Choose')</span></li>
+                    <li><span>@lang('Thank You To Choose')</span></li>
                 </ul>
             </div>
         </div>
@@ -40,7 +40,7 @@
         <div class="col-12 mt-5">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title">@lang('messages.Thank You To Choose')</h4>
+                    <h4 class="header-title">@lang('Thank You To Choose')</h4>
                     @include('backend.layouts.partials.messages')
             <div class="row">
                 @foreach($companies as $company)

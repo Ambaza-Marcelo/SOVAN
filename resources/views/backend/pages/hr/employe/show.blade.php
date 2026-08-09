@@ -1,7 +1,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-@lang('messages.Détails Employé') - @lang('messages.admin_panel')
+@lang('Détails Employé') - @lang('messages.admin_panel')
 @endsection
 
 @section('styles')
@@ -143,10 +143,10 @@
     <div class="row align-items-center">
         <div class="col-sm-6">
             <div class="breadcrumbs-area clearfix">
-                <h4 class="page-title pull-left">@lang('messages.Détails Employé')</h4>
+                <h4 class="page-title pull-left">@lang('Détails Employé')</h4>
                 <ul class="breadcrumbs pull-left">
                     <li><a href="{{ route('admin.dashboard') }}">@lang('messages.dashboard')</a></li>
-                    <li><span>@lang('messages.Détails Employé')</span></li>
+                    <li><span>@lang('Détails Employé')</span></li>
                 </ul>
             </div>
         </div>
@@ -163,7 +163,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-3 no-print">
-                        <h4 class="header-title">@lang('messages.Détails de l\'Employé')</h4>
+                        <h4 class="header-title">Détails de l'Employé</h4>
 <div>
                             @if (Auth::guard('admin')->user()->can('hr_employe.edit'))
                                 <a href="{{ route('admin.hr-employes.edit', $data->id) }}" class="btn btn-primary">
@@ -177,7 +177,7 @@
                                 <i class="fa fa-print"></i> Imprimer
                             </button>
                             <a href="{{ route('admin.hr-employes.index', $data->company_id) }}" class="btn btn-secondary">
-                                <i class="fa fa-arrow-left"></i> @lang('messages.back_to_list')
+                                <i class="fa fa-arrow-left"></i> @lang('Back to List')
                             </a>
                 </div>
                     </div>
@@ -190,26 +190,26 @@
                                 <div class="employee-image-placeholder" style="display: none;">
                                     <div class="text-center">
                                         <i class="fa fa-user fa-5x"></i>
-                                        <p class="mt-2 mb-0">@lang('messages.Photo')</p>
+                                        <p class="mt-2 mb-0">Photo</p>
                                     </div>
                                 </div>
                             @else
                                 <div class="employee-image-placeholder">
                                     <div class="text-center">
                                         <i class="fa fa-user fa-5x"></i>
-                                        <p class="mt-2 mb-0">@lang('messages.Photo')</p>
+                                        <p class="mt-2 mb-0">Photo</p>
                                     </div>
                                 </div>
                             @endif
                         </div>
                         <div class="col-md-9">
                             <h3>{{ $data->firstname }} {{ $data->lastname }}</h3>
-                            <p class="text-muted">@lang('messages.Matricule:') <strong>{{ $data->matricule_no }}</strong></p>
+                            <p class="text-muted">Matricule: <strong>{{ $data->matricule_no }}</strong></p>
                             @if($data->departement)
-                                <p class="text-muted">@lang('messages.Département:') <strong>{{ $data->departement->name }}</strong></p>
+                                <p class="text-muted">Département: <strong>{{ $data->departement->name }}</strong></p>
                             @endif
                             @if($data->service)
-                                <p class="text-muted">@lang('messages.Service:') <strong>{{ $data->service->name }}</strong></p>
+                                <p class="text-muted">Service: <strong>{{ $data->service->name }}</strong></p>
                             @endif
                     </div>
                     </div>
@@ -245,13 +245,13 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.Nom:')</label>
+                                        <label class="info-label">Nom:</label>
                                         <div class="info-value">{{ $data->firstname }}</div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.Prénom:')</label>
+                                        <label class="info-label">Prénom:</label>
                                         <div class="info-value">{{ $data->lastname }}</div>
                                     </div>
                                 </div>
@@ -259,13 +259,13 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.Numéro Matricule:')</label>
+                                        <label class="info-label">Numéro Matricule:</label>
                                         <div class="info-value">{{ $data->matricule_no }}</div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.CNI:')</label>
+                                        <label class="info-label">CNI:</label>
                                         <div class="info-value">{{ $data->cni }}</div>
                                     </div>
                                 </div>
@@ -273,7 +273,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.Date de Naissance:')</label>
+                                        <label class="info-label">Date de Naissance:</label>
                                         <div class="info-value">
                                             @if($data->birthdate)
                                                 {{ \Carbon\Carbon::parse($data->birthdate)->format('d/m/Y') }}
@@ -285,7 +285,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.Genre:')</label>
+                                        <label class="info-label">Genre:</label>
                                         <div class="info-value">
                                             @if($data->gender == 1)
                                                 Masculin
@@ -301,13 +301,13 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.Groupe Sanguin:')</label>
+                                        <label class="info-label">Groupe Sanguin:</label>
                                         <div class="info-value">{{ $data->bloodgroup ?: 'N/A' }}</div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.État Civil:')</label>
+                                        <label class="info-label">État Civil:</label>
                                         <div class="info-value">
                                             @if($data->statut_matrimonial == 1)
                                                 Marié(e)
@@ -327,13 +327,13 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.Nombre d\'Enfants:')</label>
+                                        <label class="info-label">Nombre d'Enfants:</label>
                                         <div class="info-value">{{ $data->children_number ?: '0' }}</div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.Conjoint(e):')</label>
+                                        <label class="info-label">Conjoint(e):</label>
                                         <div class="info-value">{{ $data->wife_or_husband ?: 'N/A' }}</div>
                                     </div>
                                 </div>
@@ -341,13 +341,13 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.Téléphone:')</label>
+                                        <label class="info-label">Téléphone:</label>
                                         <div class="info-value">{{ $data->phone_no ?: 'N/A' }}</div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.Email:')</label>
+                                        <label class="info-label">Email:</label>
                                         <div class="info-value">{{ $data->mail ?: 'N/A' }}</div>
                                     </div>
                                 </div>
@@ -355,7 +355,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.Lieu de Naissance:')</label>
+                                        <label class="info-label">Lieu de Naissance:</label>
                                         <div class="info-value">
                                             {{ $data->pays }}{{ $data->province ? ', ' . $data->province : '' }}{{ $data->commune ? ', ' . $data->commune : '' }}{{ $data->zone ? ', ' . $data->zone : '' }}{{ $data->quartier ? ', ' . $data->quartier : '' }}
                                         </div>
@@ -365,7 +365,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.Résidence Actuelle:')</label>
+                                        <label class="info-label">Résidence Actuelle:</label>
                                         <div class="info-value">
                                             {{ $data->quartier_residence_actuel }}{{ $data->zone_residence_actuel ? ', ' . $data->zone_residence_actuel : '' }}{{ $data->commune_residence_actuel ? ', ' . $data->commune_residence_actuel : '' }}{{ $data->province_residence_actuel ? ', ' . $data->province_residence_actuel : '' }}
                                         </div>
@@ -379,7 +379,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.Date d\'Entrée:')</label>
+                                        <label class="info-label">Date d'Entrée:</label>
                                         <div class="info-value">
                                             @if($data->date_debut)
                                                 {{ \Carbon\Carbon::parse($data->date_debut)->format('d/m/Y') }}
@@ -391,7 +391,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.Date de Fin:')</label>
+                                        <label class="info-label">Date de Fin:</label>
                                         <div class="info-value">
                                             @if($data->date_fin)
                                                 {{ \Carbon\Carbon::parse($data->date_fin)->format('d/m/Y') }}
@@ -405,13 +405,13 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.Type de Contrat:')</label>
+                                        <label class="info-label">Type de Contrat:</label>
                                         <div class="info-value">{{ $data->type_contrat ?: 'N/A' }}</div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.Département:')</label>
+                                        <label class="info-label">Département:</label>
                                         <div class="info-value">
                                             @if($data->departement)
                                                 {{ $data->departement->name }}
@@ -425,7 +425,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.Service:')</label>
+                                        <label class="info-label">Service:</label>
                                         <div class="info-value">
                                             @if($data->service)
                                                 {{ $data->service->name }}
@@ -437,7 +437,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.Fonction:')</label>
+                                        <label class="info-label">Fonction:</label>
                                         <div class="info-value">
                                             @if($data->fonction)
                                                 {{ $data->fonction->name }}
@@ -451,7 +451,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.Grade:')</label>
+                                        <label class="info-label">Grade:</label>
                                         <div class="info-value">
                                             @if($data->grade)
                                                 {{ $data->grade->name }}
@@ -463,12 +463,12 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.État:')</label>
+                                        <label class="info-label">État:</label>
                                         <div class="info-value">
                                             @if($data->etat == 0)
-                                                <span class="badge badge-success">@lang('messages.Actif')</span>
+                                                <span class="badge badge-success">Actif</span>
                                             @else
-                                                <span class="badge badge-danger">@lang('messages.Inactif')</span>
+                                                <span class="badge badge-danger">Inactif</span>
                                             @endif
                                         </div>
                                     </div>
@@ -481,13 +481,13 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.Salaire de Base:')</label>
+                                        <label class="info-label">Salaire de Base:</label>
                                         <div class="info-value">{{ number_format($data->somme_salaire_base, 0, ',', ' ') }} FBU</div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.Prime de Fonction:')</label>
+                                        <label class="info-label">Prime de Fonction:</label>
                                         <div class="info-value">{{ number_format($data->prime_fonction, 0, ',', ' ') }} FBU</div>
                                     </div>
                                 </div>
@@ -495,13 +495,13 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.Indemnité de Déplacement:')</label>
+                                        <label class="info-label">Indemnité de Déplacement:</label>
                                         <div class="info-value">{{ number_format($data->indemnite_deplacement, 0, ',', ' ') }} FBU</div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.Indemnité de Logement:')</label>
+                                        <label class="info-label">Indemnité de Logement:</label>
                                         <div class="info-value">{{ number_format($data->indemnite_logement, 0, ',', ' ') }} FBU</div>
                                     </div>
                                 </div>
@@ -509,7 +509,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.Rémunération Brute:')</label>
+                                        <label class="info-label">Rémunération Brute:</label>
                                         <div class="info-value">
                                             <strong>{{ number_format(($data->somme_salaire_base + $data->indemnite_deplacement + $data->indemnite_logement + $data->prime_fonction), 0, ',', ' ') }} FBU</strong>
                                         </div>
@@ -517,7 +517,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.Salaire Net:')</label>
+                                        <label class="info-label">Salaire Net:</label>
                                         <div class="info-value">{{ number_format($data->somme_salaire_net, 0, ',', ' ') }} FBU</div>
                                     </div>
                                 </div>
@@ -525,7 +525,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.Banque:')</label>
+                                        <label class="info-label">Banque:</label>
                                         <div class="info-value">
                                             @if($data->banque)
                                                 {{ $data->banque->name }}
@@ -537,7 +537,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.Numéro de Compte:')</label>
+                                        <label class="info-label">Numéro de Compte:</label>
                                         <div class="info-value">{{ $data->numero_compte ?: 'N/A' }}</div>
                                     </div>
                                 </div>
@@ -545,7 +545,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.Compte Avance:')</label>
+                                        <label class="info-label">Compte Avance:</label>
                                         <div class="info-value">
                                             @if($data->account)
                                                 {{ $data->account->account_number }} - {{ $data->account->account_name }}
@@ -557,7 +557,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="info-label">@lang('messages.Compte Sortie de fonds:')</label>
+                                        <label class="info-label">Compte Sortie de fonds:</label>
                                         <div class="info-value">
                                             @if($data->cashOutAccount)
                                                 {{ $data->cashOutAccount->account_number }} - {{ $data->cashOutAccount->account_name }}
@@ -574,7 +574,7 @@
                         <div class="tab-pane fade" id="documents" role="tabpanel">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <h5 class="mb-4">@lang('messages.Documents de l\'Employé')</h5>
+                                    <h5 class="mb-4">Documents de l'Employé</h5>
                                     @if($data->document)
                                         @php
                                             $documents = json_decode($data->document, true);
@@ -612,10 +612,10 @@
                                                                 <span class="document-name">{{ $doc }}</span>
                                                             </div>
                                                             <div class="document-actions">
-                                                                <a href="{{ $fileUrl }}" target="_blank" class="btn-view" title="{{ __('messages.hr_view_document') }}">
+                                                                <a href="{{ $fileUrl }}" target="_blank" class="btn-view" title="Voir le document">
                                                                     <i class="fa fa-eye"></i> Voir
                                                                 </a>
-                                                                <a href="{{ $fileUrl }}?download=1" class="btn-download" title="{{ __('messages.hr_download_document') }}">
+                                                                <a href="{{ $fileUrl }}?download=1" class="btn-download" title="Télécharger le document">
                                                                     <i class="fa fa-download"></i> Télécharger
                                                                 </a>
                                                             </div>
@@ -624,7 +624,7 @@
                                                         <li style="opacity: 0.6;">
                                                             <div class="document-info">
                                                                 <i class="fa fa-file document-icon text-muted"></i>
-                                                                <span class="document-name text-muted">{{ $doc }} <small>@lang('messages.(Fichier non trouvé)')</small></span>
+                                                                <span class="document-name text-muted">{{ $doc }} <small>(Fichier non trouvé)</small></span>
                                                             </div>
                                                         </li>
                                                     @endif

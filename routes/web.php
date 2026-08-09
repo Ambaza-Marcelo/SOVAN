@@ -1116,6 +1116,8 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('hr-take-conge-payes/fetch-min-date-debut', 'Backend\Hr\TakeCongePayeController@fetchMinDateDebut')->name('admin.hr-take-conge-payes.fetch-min-date-debut');
 
     Route::get('hr-take-conge-payes/lettre-Demande-Conge/{id}', 'Backend\Hr\TakeCongePayeController@lettreDemandeConge')->name('admin.hr-take-conge-payes.lettreDemandeConge');
+    Route::get('hr-take-conge-payes/export-excel/{company_id}', 'Backend\Hr\TakeCongePayeController@exportToExcel')->name('admin.hr-take-conge-payes.export-excel');
+    Route::get('hr-take-conge-payes/export-pdf/{company_id}', 'Backend\Hr\TakeCongePayeController@exportToPdf')->name('admin.hr-take-conge-payes.export-pdf');
 
     Route::put('hr-take-conge-paye/valider/{id}', 'Backend\Hr\TakeCongePayeController@validerConge')->name('admin.hr-take-conge-paye.valider');
     Route::put('hr-take-conge-paye/confirmer/{id}', 'Backend\Hr\TakeCongePayeController@confirmerConge')->name('admin.hr-take-conge-paye.confirmer');
@@ -1189,6 +1191,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('hr-journal-paie/select-by-company/{code}', 'Backend\Hr\JournalPaieController@selectByCompany')->name('admin.hr-journal-paie.select-by-company');
     Route::get('hr-journal-paies/index', 'Backend\Hr\JournalPaieController@index')->name('admin.hr-journal-paies.index');
     Route::get('hr-journal-paies/export-to-excel', 'Backend\Hr\JournalPaieController@exportToExcel')->name('admin.hr-journal-paies.export-to-excel');
+    Route::get('hr-journal-paies/export-to-pdf/{code?}/{company_id?}', 'Backend\Hr\JournalPaieController@exportToPdf')->name('admin.hr-journal-paies.export-to-pdf');
     Route::get('hr-journal-paies/create', 'Backend\Hr\JournalPaieController@create')->name('admin.hr-journal-paies.create');
     Route::post('hr-journal-paies/store', 'Backend\Hr\JournalPaieController@store')->name('admin.hr-journal-paies.store');
     Route::get('hr-journal-paies/edit/{id}', 'Backend\Hr\JournalPaieController@edit')->name('admin.hr-journal-paies.edit');

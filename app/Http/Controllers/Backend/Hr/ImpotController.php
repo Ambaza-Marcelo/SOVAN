@@ -125,7 +125,16 @@ class ImpotController extends Controller
             abort(403, 'Pardon!! vous n\'avez pas l\'autorisation de modifier l\'indemnité! Mufise ico mubaza hamagara kuri 130 canke 122');
         }
         //
-        
+        $request->validate([
+            'groupe_impot_id' => 'required',
+            'pourcentage_impot' => 'required',
+        ]);
+
+        $impot = HrImpot::findOrFail($id);
+        $impot->groupe_impot_id = $request->groupe_impot_id;
+        $impot->pourcentage_impot = $request->pourcentage_impot;
+        $impot->created_by = $this->user->name;
+        $impot->save();
 
         session()->flash('success', 'Impot est modifié !!');
         return redirect()->back();

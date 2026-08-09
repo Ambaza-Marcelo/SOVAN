@@ -2,7 +2,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-@lang('messages.Modifier le congé') - @lang('messages.admin_panel')
+@lang('Modifier le congé') - @lang('messages.admin_panel')
 @endsection
 
 @section('styles')
@@ -19,11 +19,11 @@
     <div class="row align-items-center">
         <div class="col-sm-6">
             <div class="breadcrumbs-area clearfix">
-                <h4 class="page-title pull-left">@lang('messages.Modifier le congé')</h4>
+                <h4 class="page-title pull-left">@lang('Modifier le congé')</h4>
                 <ul class="breadcrumbs pull-left">
                     <li><a href="{{ route('admin.dashboard') }}">@lang('messages.dashboard')</a></li>
-                    <li><a href="{{ route('admin.primes.index') }}">@lang('messages.list')</a></li>
-                    <li><span>@lang('messages.Modifier le congé')</span></li>
+                    <li><a href="{{ route('admin.hr-take-conges.index',$take_conge->company_id) }}">@lang('messages.list')</a></li>
+                    <li><span>@lang('Modifier le congé')</span></li>
                 </ul>
             </div>
         </div>
@@ -39,43 +39,83 @@
         <div class="col-12 mt-5">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title">@lang('messages.Modifier le congé')</h4>
+                    <h4 class="header-title">Modifier le congé</h4>
                     @include('backend.layouts.partials.messages')
                     
-                    <form action="{{ route('admin.primes.store') }}" method="POST">
+                    <form action="{{ route('admin.hr-take-conges.update',$take_conge->id) }}" method="POST">
+                        @method('PUT')
                         @csrf
                     <div class="row">
-                        <div class="col-sm-6" id="dynamicDiv">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="employe_id">@lang('Employé')</label>
+                                <select class="form-control" name="employe_id" id="employe_id">
+                                    <option disabled>Merci de choisir</option>
+                                    @foreach($employes as $employe)
+                                    <option value="{{ $employe->id }}" @selected($take_conge->employe_id == $employe->id)>{{ $employe->firstname }} {{ $employe->lastname }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="stagiaire_id">@lang('Stagiaire')</label>
+                                <select class="form-control" name="stagiaire_id" id="stagiaire_id">
+                                    <option value="">--</option>
+                                    @foreach($stagiaires as $stagiaire)
+                                    <option value="{{ $stagiaire->id }}" @selected($take_conge->stagiaire_id == $stagiaire->id)>{{ $stagiaire->firstname }} {{ $stagiaire->lastname }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
                         <div class="form-group">
-                            <label for="contrat_id">@lang('messages.Employé')</label>
-                            <select class="form-control" name="contrat_id">
-                                <option disabled selected>@lang('messages.Merci de choisir')</option>
-                                @foreach($contrats as $contrat)
-                                <option value="{{ $contrat->id }}">{{ $contrat->employe->firstname}}&nbsp;{{ $contrat->employe->lastname}}/{{ $contrat->employe->position->name }}</option>
+                            <label for="type_conge_id">@lang('Type Congé')</label>
+                            <select class="form-control" name="type_conge_id" id="type_conge_id">
+                                <option disabled>Merci de choisir</option>
+                                @foreach($type_conges as $type_conge)
+                                <option value="{{ $type_conge->id }}" @selected($take_conge->type_conge_id == $type_conge->id)>{{ $type_conge->libelle}}</option>
                                 @endforeach
                             </select>
                         </div>
                         </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="etat">@lang('Etat')</label>
+                                <input type="text" class="form-control" id="etat" name="etat" value="{{ $take_conge->etat }}">
+                            </div>
+                        </div>
                     </div>
-
-                         <table class="table table-bordered" id="dynamicTable">  
-                            <tr class="bg-secondary">
-                                <th>@lang('messages.Type Prime')</th>
-                                <th>@lang('messages.Pourcentage Prime')</th>
-                                <th>@lang('messages.Action')</th>
-                            </tr>
-                            <tr>  
-                                <td> <select class="form-control" name="type_prime_id[]" id="type_prime_id">
-                                <option disabled="disabled" selected="selected">@lang('messages.merci de choisir')</option>
-                                @foreach ($type_primes as $type_prime)
-                                <option value="{{ $type_prime->id }}" class="form-control">{{ $type_prime->name }}</option>
-                                @endforeach
-                                </select></td> 
-                                <td><input type="number" name="pourcentage_prime[]" placeholder="{{ __('messages.Entrer % prime') }}" class="form-control" step="any" min="0"/></td>     
-                                <td><button type="button" name="add" id="add" class="btn btn-success">@lang('messages.Ajouter')</button></td>  
-                            </tr>  
-                        </table> 
-                        <button type="button" name="add" id="add" class="btn btn-success">@lang('messages.Ajouter')</button>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="date_heure_debut">@lang('Date de départ')</label>
+                                <input type="datetime-local" class="form-control" id="date_heure_debut" name="date_heure_debut" value="{{ \Carbon\Carbon::parse($take_conge->date_heure_debut)->format('Y-m-d\TH:i') }}">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="date_heure_fin">@lang('Date de retour')</label>
+                                <input type="datetime-local" class="form-control" id="date_heure_fin" name="date_heure_fin" value="{{ \Carbon\Carbon::parse($take_conge->date_heure_fin)->format('Y-m-d\TH:i') }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="nbre_jours_conge_pris">@lang('Nombre de jours pris')</label>
+                                <input type="number" class="form-control" id="nbre_jours_conge_pris" name="nbre_jours_conge_pris" value="{{ $take_conge->nbre_jours_conge_pris }}" step="any" min="0">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="nbre_heures_conge_pris">@lang('Nombre d\'heures prises')</label>
+                                <input type="number" class="form-control" id="nbre_heures_conge_pris" name="nbre_heures_conge_pris" value="{{ $take_conge->nbre_heures_conge_pris }}" step="any" min="0">
+                            </div>
+                        </div>
+                    </div>
                         <div style="margin-top: 15px;margin-left: 15px;">
                             <button type="submit" class="btn btn-primary">@lang('messages.update')</button>
                         </div>
@@ -85,38 +125,4 @@
         </div>
         
 </div>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script type="text/javascript">
-    var i = 0;
-       
-    $("#add").click(function(){
-   
-        ++i;
-
-         var primeI18n = { enterPercent: @json(__('messages.Entrer % prime')), delete: @json(__('messages.delete')) };
-         var markup = "<tr'>"+
-                      "<td>"+
-                         "<select class='form-control' name='type_prime_id[]'"+
-                            "<option>@lang('messages.merci de choisir')</option>"+
-                             "@foreach($type_primes as $type_prime)"+
-                                 "<option value='{{ $type_prime->id }}'>{{ $type_prime->name }}</option>"+
-                             "@endforeach>"+
-                          "</select>"+
-                        "</td>"+
-                        "<td>"+
-                          "<input type='number' name='pourcentage_prime[]' placeholder='" + primeI18n.enterPercent + "' class='form-control' step='any' min='0'/>"+
-                        "</td>"+
-                        "<td>"+
-                          "<button type='button' class='btn btn-danger remove-tr'>" + primeI18n.delete + "</button>"+
-                        "</td>"+
-                    "</tr>";
-   
-        $("#dynamicTable").append(markup);
-    });
-   
-    $(document).on('click', '.remove-tr', function(){  
-         $(this).parents('tr').remove();
-    }); 
-
-</script>
 @endsection

@@ -194,6 +194,25 @@ class DashboardController extends Controller
             'production_orders' => ProductionOrder::whereIn('status', [0, 1, 2])->count(),
         ];
 
+        $flourKpis = [
+            'plans_year' => ProductionPlan::where(function ($q) use ($selectedExercise) {
+                $q->whereYear('production_plan_date', $selectedExercise)
+                    ->orWhereYear('created_at', $selectedExercise);
+            })->count(),
+            'orders_created' => ProductionOrder::where(function ($q) use ($selectedExercise) {
+                $q->whereYear('production_date', $selectedExercise)
+                    ->orWhereYear('created_at', $selectedExercise);
+            })->count(),
+            'orders_approved' => ProductionOrder::whereIn('status', [4, '4'])->where(function ($q) use ($selectedExercise) {
+                $q->whereYear('production_date', $selectedExercise)
+                    ->orWhereYear('created_at', $selectedExercise);
+            })->count(),
+            'in_chain' => ($productionProcess['production_plans'] ?? 0)
+                + ($productionProcess['requisitions'] ?? 0)
+                + ($productionProcess['transfers'] ?? 0)
+                + ($productionProcess['production_orders'] ?? 0),
+        ];
+
         $salesProcess = [
             'proforma_invoices' => ProformaInvoice::whereIn('etat', ['0', '1', '2'])->count(),
             'sales_orders' => SalesOrder::whereIn('etat', ['0', '1', '2'])->count(),
@@ -220,7 +239,8 @@ class DashboardController extends Controller
                 'paymentProcess',
                 'awaitingPayment',
                 'productionProcess',
-                'salesProcess'
+                'salesProcess',
+                'flourKpis'
             ));
     }
 

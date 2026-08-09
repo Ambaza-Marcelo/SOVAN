@@ -124,8 +124,7 @@ class IndemniteController extends Controller
         $groupe_indemnites = HrGroupeIndemnite::all();
         $indemnite = HrIndemnite::where('code',$code)->first();
         $datas = HrIndemnite::where('code',$code)->get();
-        $contrats = Contrat::all();
-        return view('backend.pages.hr.indemnite.edit', compact('indemnite','type_indemnites','groupe_indemnites','datas','contrats'));
+        return view('backend.pages.hr.indemnite.edit', compact('indemnite','type_indemnites','groupe_indemnites','datas'));
     }
 
     /**
@@ -174,7 +173,8 @@ class IndemniteController extends Controller
                     'updated_at' => \Carbon\Carbon::now()
                 );
 
-                HrIndemnite::where('type_indemnite_id',$type_indemnite_id[$count])
+                HrIndemnite::where('code',$code)
+                        ->where('type_indemnite_id',$type_indemnite_id[$count])
                         ->update($data);
                 
             }

@@ -2,7 +2,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-@lang('messages.Modifier les jours des conges payes') - @lang('messages.admin_panel')
+@lang('Modifier les jours des conges payes') - @lang('messages.admin_panel')
 @endsection
 
 @section('styles')
@@ -21,11 +21,11 @@
     <div class="row align-items-center">
         <div class="col-sm-6">
             <div class="breadcrumbs-area clearfix">
-                <h4 class="page-title pull-left">@lang('messages.Modifier les jours des conges payes')</h4>
+                <h4 class="page-title pull-left">@lang('Modifier les jours des conges payes')</h4>
                 <ul class="breadcrumbs pull-left">
                     <li><a href="{{ route('admin.dashboard') }}">@lang('messages.dashboard')</a></li>
                     <li><a href="{{ route('admin.hr-ecoles.index') }}">@lang('messages.list')</a></li>
-                    <li><span>@lang('messages.Modifier les jours des conges payes')</span></li>
+                    <li><span>@lang('Modifier les jours des conges payes')</span></li>
                 </ul>
             </div>
         </div>
@@ -42,7 +42,7 @@
         <div class="col-12 mt-5">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title">@lang('messages.Modifier les jours des conges payes')</h4>
+                    <h4 class="header-title">Modifier les jours des conges payes</h4>
                     @include('backend.layouts.partials.messages')
                     
                     <form action="{{ route('admin.hr-journal-conge-paye.update',$journal_conge_paye->id) }}" method="POST">
@@ -51,13 +51,13 @@
                         <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="employe_id">@lang('messages.Employé')</label>
+                                        <label for="employe_id">@lang('Employé')</label>
                                         <input autofocus type="text" class="form-control" name="employe_id" value="{{ $journal_conge_paye->employe->firstname }} {{ $journal_conge_paye->employe->lastname }}" >
                                 </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group has-feedback">
-                                        <label for="nom">@lang('messages.Session')<span class="text-danger"></span></label>
+                                        <label for="nom">Session<span class="text-danger"></span></label>
                                         <input autofocus type="number" class="form-control" name="session" value="{{ $journal_conge_paye->session }}" required min="2022">
                                     </div>
                                 </div>
@@ -65,19 +65,19 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group has-feedback">
-                                        <label for="nom">@lang('messages.Nbre Jrs Congé Payé')<span class="text-danger"></span></label>
+                                        <label for="nom">Nbre Jrs Congé Payé<span class="text-danger"></span></label>
                                         <input autofocus type="number" class="form-control" name="nbre_jours_conge_paye" value="{{ $journal_conge_paye->nbre_jours_conge_paye }}" required min="2022">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group has-feedback">
-                                        <label for="nom">@lang('messages.Nbre Jrs Congé Pris')<span class="text-danger"></span></label>
+                                        <label for="nom">Nbre Jrs Congé Pris<span class="text-danger"></span></label>
                                         <input autofocus type="number" class="form-control" name="nbre_jours_conge_pris" value="{{ $journal_conge_paye->nbre_jours_conge_pris }}" required min="2022">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group has-feedback">
-                                        <label for="nom">@lang('messages.Nbre Jrs Congé Restant')<span class="text-danger"></span></label>
+                                        <label for="nom">Nbre Jrs Congé Restant<span class="text-danger"></span></label>
                                         <input autofocus type="number" class="form-control" name="nbre_jours_conge_restant" value="{{ $journal_conge_paye->nbre_jours_conge_restant }}" required min="2022">
                                     </div>
                                 </div>

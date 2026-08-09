@@ -2,7 +2,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-@lang('messages.Thank You To Choose') - @lang('messages.admin_panel')
+@lang('Thank You To Choose') - @lang('messages.admin_panel')
 @endsection
 
 @section('styles')
@@ -21,11 +21,10 @@
     <div class="row align-items-center">
         <div class="col-sm-6">
             <div class="breadcrumbs-area clearfix">
-                <h4 class="page-title pull-left">@lang('messages.Thank You To Choose')</h4>
+                <h4 class="page-title pull-left">@lang('Thank You To Choose')</h4>
                 <ul class="breadcrumbs pull-left">
                     <li><a href="{{ route('admin.dashboard') }}">@lang('messages.dashboard')</a></li>
-                    <li><a href="{{ route('admin.barrist-requisitions.index') }}">@lang('messages.list')</a></li>
-                    <li><span>@lang('messages.Thank You To Choose')</span></li>
+                    <li><span>@lang('Thank You To Choose')</span></li>
                 </ul>
             </div>
         </div>
@@ -41,7 +40,7 @@
         <div class="col-12 mt-5">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title">@lang('messages.Thank You To Choose')</h4>
+                    <h4 class="header-title">@lang('Thank You To Choose')</h4>
                     @include('backend.layouts.partials.messages')
             <div class="row">
             <div class="col-md-6 mb-3 mb-lg-0">
@@ -52,7 +51,7 @@
                                 <div class="seofct-icon">
                                     <img src="{{ asset('img/undraw_investment_data_re_sh9x.svg') }}" width="200">
 
-                                    @lang('messages.Cotisation')</div>
+                                    @lang('Cotisation')</div>
                                 <h2>
                                 </h2>
                             </div>
@@ -68,7 +67,7 @@
                                 <div class="seofct-icon">
                                     <img src="{{ asset('img/undraw_product_teardown_re_m1pc.svg') }}" width="200">
 
-                                    @lang('messages.Impot')</div>
+                                    @lang('Impot')</div>
                                 <h2>
                                 </h2>
                             </div>
@@ -86,7 +85,7 @@
                                 <div class="seofct-icon">
                                     <img src="{{ asset('img/undraw_project_complete_lwss.svg') }}" width="200">
 
-                                    @lang('messages.Prime')</div>
+                                    @lang('Prime')</div>
                                 <h2>
                                 </h2>
                             </div>
@@ -102,7 +101,7 @@
                                 <div class="seofct-icon">
                                     <img src="{{ asset('img/undraw_visual_data_re_mxxo.svg') }}" width="200">
 
-                                    @lang('messages.Indemnite')</div>
+                                    @lang('Indemnite')</div>
                                 <h2>
                                 </h2>
                             </div>
@@ -120,7 +119,7 @@
                                 <div class="seofct-icon">
                                     <img src="{{ asset('img/undraw_team_re_0bfe.svg') }}" width="200">
 
-                                    @lang('messages.Conge Paye')</div>
+                                    @lang('Conge Paye')</div>
                                 <h2>
                                 </h2>
                             </div>
@@ -136,7 +135,7 @@
                                 <div class="seofct-icon">
                                     <img src="{{ asset('img/undraw_in_no_time_-6-igu.svg') }}" width="200">
 
-                                    @lang('messages.Conge')</div>
+                                    @lang('Conge')</div>
                                 <h2>
                                 </h2>
                             </div>
@@ -154,7 +153,7 @@
                                 <div class="seofct-icon">
                                     <img src="{{ asset('img/undraw_by_the_road_re_vvs7.svg') }}" width="200">
 
-                                    @lang('messages.Absence')</div>
+                                    @lang('Absence')</div>
                                 <h2>
                                 </h2>
                             </div>
@@ -170,7 +169,7 @@
                                 <div class="seofct-icon">
                                     <img src="{{ asset('img/undraw_laravel_and_vue_-59-tp.svg') }}" width="200">
 
-                                    @lang('messages.Heure Supplementaire')</div>
+                                    @lang('Heure Supplementaire')</div>
                                 <h2>
                                 </h2>
                             </div>

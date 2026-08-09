@@ -28,25 +28,25 @@
                     </div>
                     <br><br><br><br><br>
                     <div>
-                        <h3 style="text-align: center;text-decoration: underline;">@lang('messages.FICHE D\'INFORMATION SUR LE STAGIAIRE')</h3>
+                        <h3 style="text-align: center;text-decoration: underline;">FICHE D'INFORMATION SUR LE STAGIAIRE</h3>
                     </div>
                     <div>
                         <table style="border: 1px solid black;border-collapse: collapse;">
                             <thead>
                                 <tr>
-                                    <th colspan="8" style="text-align: left;background-color: pink;">@lang('messages.IDENTIFICATION DE LE STAGIAIRE')</th>
+                                    <th colspan="8" style="text-align: left;background-color: pink;">IDENTIFICATION DE LE STAGIAIRE</th>
                                 </tr>
                             </thead>
                             <thead>
                                 <tr>
-                                    <th>@lang('messages.NOM ET PRENOM')</th>
-                                    <th>@lang('messages.NATIONALITE')</th>
-                                    <th>@lang('messages.CNI')</th>
-                                    <th>@lang('messages.RESIDENCE ACTUEL')</th>
-                                    <th>@lang('messages.TELEPHONE')</th>
-                                    <th>@lang('messages.ADRESSE ELECTRONIQUE')</th>
-                                    <th>@lang('messages.GENRE')</th>
-                                    <th>@lang('messages.ETAT CIVIL')</th>
+                                    <th>NOM ET PRENOM</th>
+                                    <th>NATIONALITE</th>
+                                    <th>CNI</th>
+                                    <th>RESIDENCE ACTUEL</th>
+                                    <th>TELEPHONE</th>
+                                    <th>ADRESSE ELECTRONIQUE</th>
+                                    <th>GENRE</th>
+                                    <th>ETAT CIVIL</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -63,18 +63,18 @@
                             </tbody>
                             <thead>
                                 <tr>
-                                    <th colspan="7" style="text-align: left;background-color: pink;">@lang('messages.STATUT DE LE STAGIAIRE')</th>
+                                    <th colspan="7" style="text-align: left;background-color: pink;">STATUT DE LE STAGIAIRE</th>
                                 </tr>
                             </thead>
                             <thead>
                                 <tr>
-                                    <th>@lang('messages.DATE D\'ARRIVEE')</th>
-                                    <th>@lang('messages.DATE D\'EMBAUCHE')</th>
-                                    <th>@lang('messages.DEPARTEMENT')</th>
-                                    <th>@lang('messages.SERVICE')</th>
-                                    <th>@lang('messages.FONCTION')</th>
-                                    <th>@lang('messages.GRADE')</th>
-                                    <th>@lang('messages.FRAIS DE DEPLACEMENT')</th>
+                                    <th>DATE D'ARRIVEE</th>
+                                    <th>DATE D'EMBAUCHE</th>
+                                    <th>DEPARTEMENT</th>
+                                    <th>SERVICE</th>
+                                    <th>FONCTION</th>
+                                    <th>GRADE</th>
+                                    <th>FRAIS DE DEPLACEMENT</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -91,7 +91,7 @@
                         </table>
                     </div>
                     <div style="float: left;">
-                        <a href=""><img src="{{ asset('img/ISSh.gif') }}" width="60" title="{{ __('messages.hr_loan_print_hint') }}"></a> 
+                        <a href=""><img src="{{ asset('img/ISSh.gif') }}" width="60" title="Télécharger d'abord le document et puis imprimer"></a> 
                     </div>
                 </div>
             </div>

@@ -2,7 +2,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-@lang('messages.LE JOURNAL COTISATION INSS') - @lang('messages.admin_panel')
+@lang('LE JOURNAL COTISATION INSS') - @lang('messages.admin_panel')
 @endsection
 
 @section('styles')
@@ -21,7 +21,7 @@
     <div class="row align-items-center">
         <div class="col-sm-6">
             <div class="breadcrumbs-area clearfix">
-                <h4 class="page-title pull-left">@lang('messages.LE JOURNAL COTISATION INSS')</h4>
+                <h4 class="page-title pull-left">LE JOURNAL COTISATION INSS</h4>
                 <ul class="breadcrumbs pull-left">
                     <li><a href="{{ route('admin.dashboard') }}">@lang('messages.dashboard')</a></li>
                     <li><span>@lang('messages.list')</span></li>
@@ -41,19 +41,19 @@
         <div class="main-content-inner">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title float-left">@lang('messages.LE JOURNAL COTISATION INSS')</h4>
+                    <h4 class="header-title float-left">LE JOURNAL COTISATION INSS</h4>
                     <form action="{{ route('admin.hr-journal-cotisations.export-to-excel')}}" method="GET">
                         <p class="float-right mb-2">
-                            <button type="submit" value="search" title="{{ __('messages.hr_export_excel_hint') }}" class="btn btn-primary">@lang('messages.Exporter En Excel')</button>
+                            <button type="submit" value="search" title="Cliquer pour exporter en Excel" class="btn btn-primary">Exporter En Excel</button>
                         </p>
                         <p class="float-right mb-2">
                             <div class="row">
                                 <div class="col-md-4">
-                                    <label for="start_date">@lang('messages.Date Debut')</label>
+                                    <label for="start_date">@lang('Date Debut')</label>
                                     <input type="date" name="start_date" class="form-control" id="start_date">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="end_date">@lang('messages.Date Fin')</label>
+                                    <label for="end_date">@lang('Date Fin')</label>
                                     <input type="date" name="end_date" class="form-control" id="end_date">
                                 </div>
                             </div>
@@ -66,23 +66,23 @@
                             <thead class="bg-light text-capitalize">
                                 <tr>
                                     <th width="5%">#</th>
-                                    <th width="10%">@lang('messages.Mois/Année')</th>
-                                    <th width="10%">@lang('messages.Employé')</th>
-                                    <th width="10%">@lang('messages.Matricule')</th>
-                                    <th width="10%">@lang('messages.Salaire de base')</th>
-                                    <th width="10%">@lang('messages.Allocation Familiale')</th>
-                                    <th width="10%">@lang('messages.Indemnité de logement')</th>
-                                    <th width="10%">@lang('messages.Indemnité de déplacement')</th>
-                                    <th width="10%">@lang('messages.Prime de fonction')</th>
-                                    <th width="10%">@lang('messages.Base Pension')</th>
-                                    <th width="10%">@lang('messages.INSS Pension Employé')</th>
-                                    <th width="10%">@lang('messages.INSS Pension Employeur')</th>
-                                    <th width="10%">@lang('messages.Total INSS Pension')</th>
-                                    <th width="10%">@lang('messages.Base INSS Risque')</th>
-                                    <th width="10%">@lang('messages.INSS Risque')</th>
-                                    <th width="10%">@lang('messages.Total INSS Risque')</th>
-                                    <th width="10%">@lang('messages.Net a payer')</th>
-                                    <th width="15%">@lang('messages.Action')</th>
+                                    <th width="10%">Mois/Année</th>
+                                    <th width="10%">Employé</th>
+                                    <th width="10%">Matricule</th>
+                                    <th width="10%">Salaire de base</th>
+                                    <th width="10%">Allocation Familiale</th>
+                                    <th width="10%">Indemnité de logement</th>
+                                    <th width="10%">Indemnité de déplacement</th>
+                                    <th width="10%">Prime de fonction</th>
+                                    <th width="10%">Base Pension</th>
+                                    <th width="10%">INSS Pension Employé</th>
+                                    <th width="10%">INSS Pension Employeur</th>
+                                    <th width="10%">Total INSS Pension</th>
+                                    <th width="10%">Base INSS Risque</th>
+                                    <th width="10%">INSS Risque</th>
+                                    <th width="10%">Total INSS Risque</th>
+                                    <th width="10%">Net a payer</th>
+                                    <th width="15%">Action</th>
                                 </tr>
                             </thead>
                             <tbody>

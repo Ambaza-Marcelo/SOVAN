@@ -2,7 +2,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-@lang('messages.Horaire du personnel') - @lang('messages.admin_panel')
+@lang('Horaire du personnel') - @lang('messages.admin_panel')
 @endsection
 
 @section('styles')
@@ -62,7 +62,7 @@
     <div class="row align-items-center">
         <div class="col-sm-6">
             <div class="breadcrumbs-area clearfix">
-                <h4 class="page-title pull-left">@lang('messages.Horaire du personnel')</h4>
+                <h4 class="page-title pull-left">@lang('Horaire du personnel')</h4>
                 <ul class="breadcrumbs pull-left">
                     <li><a href="{{ route('admin.dashboard') }}">@lang('messages.dashboard')</a></li>
                     <li><span>@lang('messages.list')</span></li>
@@ -81,11 +81,11 @@
         <div class="col-12 mt-5">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title float-left">@lang('messages.Horaires hebdomadaires')</h4>
+                    <h4 class="header-title float-left">Horaires hebdomadaires</h4>
                     <p class="float-right mb-2">
                         @if (Auth::guard('admin')->user()->can('hr_departement.create'))
                             <a href="{{ route('admin.hr-time-tables.create') }}" class="btn btn-success">
-                                <i class="fa fa-plus-square" title="{{ __('messages.hr_create_schedule') }}" aria-hidden="false"></i> @lang('messages.hr_new_schedule')
+                                <i class="fa fa-plus-square" title="Créer un horaire" aria-hidden="false"></i> Nouvel horaire
                             </a>
                         @endif
                     </p>
@@ -96,15 +96,15 @@
                         <div class="col-md-4">
                             <form method="GET" action="{{ route('admin.hr-time-tables.index') }}">
                                 <div class="form-group">
-                                    <label for="week">@lang('messages.Semaine:')</label>
+                                    <label for="week">Semaine:</label>
                                     <input type="week" name="week" id="week" class="form-control" value="{{ $selectedWeek }}" required>
                                 </div>
                         </div>
                         <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="departement_id">@lang('messages.Département:')</label>
+                                    <label for="departement_id">Département:</label>
                                     <select name="departement_id" id="departement_id" class="form-control">
-                                        <option value="">@lang('messages.Tous les départements')</option>
+                                        <option value="">Tous les départements</option>
                                         @foreach($departements as $departement)
                                             <option value="{{ $departement->id }}" {{ $selectedDepartement == $departement->id ? 'selected' : '' }}>
                                                 {{ $departement->name }}
@@ -116,7 +116,7 @@
                         <div class="col-md-4">
                                 <div class="form-group">
                                     <label>&nbsp;</label><br>
-                                    <button type="submit" class="btn btn-primary">@lang('messages.Filtrer')</button>
+                                    <button type="submit" class="btn btn-primary">Filtrer</button>
                                     @if($selectedDepartement)
                                         <a href="{{ route('admin.hr-time-tables.print-departement', ['week' => $selectedWeek, 'departement_id' => $selectedDepartement]) }}" 
                                            target="_blank" class="btn btn-info">
@@ -133,14 +133,14 @@
                             <table class="time-table">
                                 <thead>
                                     <tr>
-                                        <th>@lang('messages.NOMS')</th>
+                                        <th>NOMS</th>
                                         @foreach($weekDates as $date)
                                             <th>
                                                 {{ $date->format('d/m') }}<br>
                                                 <small>{{ $date->locale('fr')->dayName }}</small>
                                             </th>
                                         @endforeach
-                                        <th>@lang('messages.Actions')</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -166,14 +166,14 @@
                                                 <td>
                                                     @if($timeTable)
                                                         @if($timeTable->shift_name == 'A')
-                                                            <span class="shift-badge shift-a">A<br><small>@lang('messages.7h30-16h00')</small></span>
+                                                            <span class="shift-badge shift-a">A<br><small>7h30-16h00</small></span>
                                                         @elseif($timeTable->shift_name == 'B')
-                                                            <span class="shift-badge shift-b">B<br><small>@lang('messages.15h00-Close')</small></span>
+                                                            <span class="shift-badge shift-b">B<br><small>15h00-Close</small></span>
                                                         @else
                                                             <span class="shift-badge shift-off">{{ $timeTable->shift_name }}</span>
                                                         @endif
                                                     @else
-                                                        <span class="shift-badge shift-off">@lang('messages.OFF')</span>
+                                                        <span class="shift-badge shift-off">OFF</span>
                                                     @endif
                                                 </td>
                                             @endforeach

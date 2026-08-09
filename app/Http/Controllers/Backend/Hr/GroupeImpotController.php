@@ -26,6 +26,16 @@ class GroupeImpotController extends Controller
         });
     }
 
+    public function index()
+    {
+        if (is_null($this->user) || !$this->user->can('hr_impot.view')) {
+            abort(403, 'Pardon!! vous n\'avez pas l\'autorisation de visualiser l\'indemnité! Mufise ico mubaza hamagara kuri 130 canke 122');
+        }
+
+        $groupe_impots = HrGroupeImpot::all();
+        return view('backend.pages.hr.groupe_impot.index',compact('groupe_impots'));
+    }
+
     public function create()
     {
         if (is_null($this->user) || !$this->user->can('hr_impot.create')) {

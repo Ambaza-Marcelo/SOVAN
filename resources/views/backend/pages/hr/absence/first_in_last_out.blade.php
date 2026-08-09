@@ -2,7 +2,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-@lang('messages.first_in_last_out') - @lang('messages.admin_panel')
+@lang('First In Last Out') - @lang('messages.admin_panel')
 @endsection
 
 @section('styles')
@@ -31,10 +31,10 @@
     <div class="row align-items-center">
         <div class="col-sm-6">
             <div class="breadcrumbs-area clearfix">
-                <h4 class="page-title pull-left">@lang('messages.first_in_last_out')</h4>
+                <h4 class="page-title pull-left">First In Last Out</h4>
                 <ul class="breadcrumbs pull-left">
                     <li><a href="{{ route('admin.dashboard') }}">@lang('messages.dashboard')</a></li>
-                    <li><span>@lang('messages.Premier entrée / Dernier entrée / Total heures')</span></li>
+                    <li><span>Premier entrée / Dernier entrée / Total heures</span></li>
                 </ul>
             </div>
         </div>
@@ -65,13 +65,13 @@
 
                     @if(isset($error))
                         <div class="alert alert-danger">
-                            <strong>@lang('messages.Erreur:')</strong> {{ $error }}
+                            <strong>Erreur:</strong> {{ $error }}
                             <hr>
                             <small>
-                                <strong>@lang('messages.Vérifications:')</strong><br>
-                                1. Variables dans <code>@lang('messages..env')</code>: <code>GUZZLE_BIOTIME_URL</code>, <code>BIOTIME_USERNAME</code>, <code>BIOTIME_PASSWORD</code><br>
+                                <strong>Vérifications:</strong><br>
+                                1. Variables dans <code>.env</code>: <code>GUZZLE_BIOTIME_URL</code>, <code>BIOTIME_USERNAME</code>, <code>BIOTIME_PASSWORD</code><br>
                                 2. Serveur Biotime accessible depuis ce serveur<br>
-                                3. Logs: <code>@lang('messages.storage/logs/laravel.log')</code>
+                                3. Logs: <code>storage/logs/laravel.log</code>
                             </small>
                         </div>
                     @endif
@@ -80,7 +80,7 @@
                         <form id="filterForm" method="GET" action="{{ route('admin.hr-first-in-last-out.index') }}">
                             <div class="row">
                                 <div class="col-md-3">
-                                    <label>@lang('messages.Département')</label>
+                                    <label>Département</label>
                                     <select name="department_ids[]" id="departmentFilter" class="form-control" multiple>
                                         @if(isset($departments) && is_array($departments))
                                             @php $selectedDepts = request()->get('department_ids', []); @endphp
@@ -93,7 +93,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-3">
-                                    <label>@lang('messages.Employé')</label>
+                                    <label>Employé</label>
                                     <select name="employee_ids[]" id="employeeFilter" class="form-control" multiple>
                                         @if(isset($employees) && is_array($employees))
                                             @php $selectedEmps = request()->get('employee_ids', []); @endphp
@@ -106,11 +106,11 @@
                                     </select>
                                 </div>
                                 <div class="col-md-2">
-                                    <label>@lang('messages.Date Début')</label>
+                                    <label>Date Début</label>
                                     <input type="date" name="start_date" id="startDate" class="form-control" value="{{ $startDate ?? date('Y-m-d', strtotime('-30 days')) }}">
                                 </div>
                                 <div class="col-md-2">
-                                    <label>@lang('messages.Date Fin')</label>
+                                    <label>Date Fin</label>
                                     <input type="date" name="end_date" id="endDate" class="form-control" value="{{ $endDate ?? date('Y-m-d') }}">
                                 </div>
                                 <div class="col-md-2">
@@ -127,16 +127,16 @@
                         <table id="attendanceTable" class="text-center table table-striped table-bordered">
                             <thead class="bg-light text-capitalize">
                                 <tr>
-                                    <th>@lang('messages.NO.')</th>
-                                    <th>@lang('messages.First Name')</th>
-                                    <th>@lang('messages.Last Name')</th>
-                                    <th>@lang('messages.Department')</th>
-                                    <th>@lang('messages.Position')</th>
-                                    <th>@lang('messages.Date')</th>
-                                    <th>@lang('messages.Weekday')</th>
-                                    <th>@lang('messages.Check In')</th>
-                                    <th>@lang('messages.Check Out')</th>
-                                    <th>@lang('messages.Total Time')</th>
+                                    <th>NO.</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Department</th>
+                                    <th>Position</th>
+                                    <th>Date</th>
+                                    <th>Weekday</th>
+                                    <th>Check In</th>
+                                    <th>Check Out</th>
+                                    <th>Total Time</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -242,7 +242,7 @@
         }
 
         function loadEmployees(departmentIds) {
-            $('#employeeFilter').empty().append('<option value="">@lang('messages.Chargement...')</option>');
+            $('#employeeFilter').empty().append('<option value="">Chargement...</option>');
             var params = {};
             if (departmentIds && departmentIds.length > 0) params.department_id = departmentIds[0];
             $.ajax({
@@ -258,12 +258,12 @@
                             $('#employeeFilter').append($('<option></option>').attr('value', emp.id).text((emp.emp_code || '') + ' - ' + name));
                         });
                     } else {
-                        $('#employeeFilter').append('<option value="">@lang('messages.Aucun employé trouvé')</option>');
+                        $('#employeeFilter').append('<option value="">Aucun employé trouvé</option>');
                     }
                     $('#employeeFilter').trigger('change');
                 },
                 error: function() {
-                    $('#employeeFilter').empty().append('<option value="">@lang('messages.Erreur de chargement')</option>');
+                    $('#employeeFilter').empty().append('<option value="">Erreur de chargement</option>');
                 }
             });
         }

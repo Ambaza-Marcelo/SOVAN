@@ -2,7 +2,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-@lang('messages.Prendre un congé') - @lang('messages.admin_panel')
+@lang('Prendre un congé') - @lang('messages.admin_panel')
 @endsection
 
 @section('styles')
@@ -49,10 +49,10 @@
     <div class="row align-items-center">
         <div class="col-sm-6">
             <div class="breadcrumbs-area clearfix">
-                <h4 class="page-title pull-left">@lang('messages.Prendre un congé')</h4>
+                <h4 class="page-title pull-left">@lang('Prendre un congé')</h4>
                 <ul class="breadcrumbs pull-left">
                     <li><a href="{{ route('admin.dashboard') }}">@lang('messages.dashboard')</a></li>
-                    <li><span>@lang('messages.Prendre congé')</span></li>
+                    <li><span>@lang('Prendre congé')</span></li>
                 </ul>
             </div>
         </div>
@@ -68,7 +68,7 @@
         <div class="col-12 mt-5">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title">@lang('messages.Prendre un congé')</h4>
+                    <h4 class="header-title">Prendre un congé</h4>
                     @include('backend.layouts.partials.messages')
                     
                     <form action="{{ route('admin.hr-take-conges.store') }}" method="POST">
@@ -77,11 +77,11 @@
                     <div class="row">
                         <div class="col-md-6">
                                     <div class="form-group has-feedback">
-                                        <label for="type_employe">@lang('messages.Type Personnel')<span class="text-danger"></span></label>
+                                        <label for="type_employe">Type Personnel<span class="text-danger"></span></label>
                                         <select id="type_employe" class="form-control" name="type_employe">
-                                            <option disabled selected>@lang('messages.Merci de choisir')</option>
-                                            <option value="1">@lang('messages.Employé')</option>
-                                            <option value="2">@lang('messages.Stagiaire')</option>
+                                            <option disabled selected>Merci de choisir</option>
+                                            <option value="1">Employé</option>
+                                            <option value="2">Stagiaire</option>
                                         </select>
                                     </div>
                         </div>
@@ -95,9 +95,9 @@
                         </div>
                         <div class="col-sm-6">
                         <div class="form-group">
-                            <label for="type_conge_id">@lang('messages.Type Congé')</label>
+                            <label for="type_conge_id">@lang('Type Congé')</label>
                             <select class="form-control" name="type_conge_id">
-                                <option disabled selected>@lang('messages.Merci de choisir')</option>
+                                <option disabled selected>Merci de choisir</option>
                                 @foreach($type_conges as $type_conge)
                                 <option value="{{ $type_conge->id }}">{{ $type_conge->libelle}}</option>
                                 @endforeach
@@ -108,13 +108,13 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="date_heure_debut">@lang('messages.Date de départ')</label>
+                                <label for="date_heure_debut">@lang('Date de départ')</label>
                                 <input type="datetime-local" class="form-control" id="date_heure_debut" name="date_heure_debut" min="{{ date('Y') }}-{{date('m')}}/{{ date('d')}}T00:00">
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="date_heure_fin">@lang('messages.Date de retour')</label>
+                                <label for="date_heure_fin">@lang('Date de retour')</label>
                                 <input type="datetime-local" class="form-control" id="date_heure_fin" name="date_heure_fin">
                             </div>
                         </div>
@@ -283,16 +283,12 @@
     $('#type_employe').change(function () { 
         $("#dynamicEmploye").empty();
         $("#dynamicStagiaire").empty();
-        var leaveI18n = {
-            searchEmployee: @json(__('messages.Tapez pour rechercher un employé...')),
-            searchIntern: @json(__('messages.Tapez pour rechercher un stagiaire...'))
-        };
         
         if ($(this).val() === '1'){
             var employe = "<div class='form-group'>"+
-                                "<label for='employe_search'>@lang('messages.Employé')</label>"+
+                                "<label for='employe_search'>Employé</label>"+
                                 "<div class='autocomplete-wrapper'>"+
-                                    "<input type='text' id='employe_search' class='form-control' placeholder='" + leaveI18n.searchEmployee + "' autocomplete='off'>"+
+                                    "<input type='text' id='employe_search' class='form-control' placeholder='Tapez pour rechercher un employé...' autocomplete='off'>"+
                                     "<input type='hidden' id='employe_id' name='employe_id'>"+
                                     "<div class='autocomplete-list' id='employe_search-list'></div>"+
                                 "</div>"+
@@ -308,9 +304,9 @@
         }
         if ($(this).val() === '2'){
             var stagiaire = "<div class='form-group'>"+
-                                "<label for='stagiaire_search'>@lang('messages.Stagiaire')</label>"+
+                                "<label for='stagiaire_search'>Stagiaire</label>"+
                                 "<div class='autocomplete-wrapper'>"+
-                                    "<input type='text' id='stagiaire_search' class='form-control' placeholder='" + leaveI18n.searchIntern + "' autocomplete='off'>"+
+                                    "<input type='text' id='stagiaire_search' class='form-control' placeholder='Tapez pour rechercher un stagiaire...' autocomplete='off'>"+
                                     "<input type='hidden' id='stagiaire_id' name='stagiaire_id'>"+
                                     "<div class='autocomplete-list' id='stagiaire_search-list'></div>"+
                                 "</div>"+

@@ -2,7 +2,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="congePayeModalLabel">@lang('messages.Nouvelle Fonction')</h5>
+        <h5 class="modal-title" id="congePayeModalLabel">Nouveau Congé Payé</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -11,11 +11,11 @@
         @csrf
       <div class="modal-body">
           <div class="form-group has-feedback">
-                <label for="session">@lang('messages.Session')<span class="text-danger"></span></label>
+                <label for="session">Session<span class="text-danger"></span></label>
                 <input autofocus type="number" class="form-control" name="session" placeholder="Ex:2023" required min="2023">
             </div>
           <div class="form-group has-feedback">
-                <label for="nbre_jours">@lang('messages.Nombre de Jours')<span class="text-danger"></span></label>
+                <label for="nbre_jours">Nombre de Jours<span class="text-danger"></span></label>
                 <input autofocus type="number" class="form-control" name="nbre_jours" placeholder="Ex:22" required min="20" max="25">
             </div>
       </div>

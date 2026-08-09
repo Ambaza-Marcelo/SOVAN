@@ -188,7 +188,7 @@ class TakeCongeController extends Controller
         $take_conge->type_conge_id = $request->type_conge_id;
         $take_conge->save();
         session()->flash('success', 'HrTakeConge est modifié !!');
-        return redirect()->route('admin.hr-take-conges.index');
+        return redirect()->route('admin.hr-take-conges.index',$take_conge->company_id);
     }
 
     /**

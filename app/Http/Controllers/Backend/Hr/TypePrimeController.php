@@ -25,6 +25,16 @@ class TypePrimeController extends Controller
         });
     }
 
+    public function index()
+    {
+        if (is_null($this->user) || !$this->user->can('hr_prime.view')) {
+            abort(403, 'Pardon!! vous n\'avez pas l\'autorisation de visualiser le prime! Mufise ico mubaza hamagara kuri 130 canke 122');
+        }
+
+        $type_primes = HrTypePrime::all();
+        return view('backend.pages.hr.type_prime.index',compact('type_primes'));
+    }
+
     public function create()
     {
         if (is_null($this->user) || !$this->user->can('hr_prime.create')) {

@@ -2,7 +2,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-@lang('messages.Modifier la banque') - @lang('messages.admin_panel')
+@lang('Modifier la banque') - @lang('messages.admin_panel')
 @endsection
 
 @section('styles')
@@ -21,11 +21,11 @@
     <div class="row align-items-center">
         <div class="col-sm-6">
             <div class="breadcrumbs-area clearfix">
-                <h4 class="page-title pull-left">@lang('messages.Modifier la banque')</h4>
+                <h4 class="page-title pull-left">@lang('Modifier la banque')</h4>
                 <ul class="breadcrumbs pull-left">
                     <li><a href="{{ route('admin.dashboard') }}">@lang('messages.dashboard')</a></li>
                     <li><a href="{{ route('admin.hr-banques.index') }}">@lang('messages.list')</a></li>
-                    <li><span>@lang('messages.Modifier la banque')</span></li>
+                    <li><span>@lang('Modifier la banque')</span></li>
                 </ul>
             </div>
         </div>
@@ -42,7 +42,7 @@
         <div class="col-12 mt-5">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title">@lang('messages.Modifier la banque')</h4>
+                    <h4 class="header-title">Modifier la banque</h4>
                     @include('backend.layouts.partials.messages')
                     
                     <form action="{{ route('admin.hr-banques.update',$banque->id) }}" method="POST">
@@ -51,19 +51,19 @@
                         <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="name" class="col-form-label">@lang('messages.Designation *:')</label>
+                                        <label for="name" class="col-form-label">Designation *:</label>
                                         <input type="text" name="name" class="form-control" id="name" value="{{ $banque->name }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="address" class="col-form-label">@lang('messages.Adresse *:')</label>
+                                        <label for="address" class="col-form-label">Adresse *:</label>
                                         <input type="text" name="address" class="form-control" id="address" value="{{ $banque->address }}">                     
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="currency" class="col-form-label">@lang('messages.Monnaie:')</label>
+                                        <label for="currency" class="col-form-label">Monnaie:</label>
                                         <input type="text" name="currency" class="form-control" id="currency" value="{{ $banque->currency }}">
                                     </div>
                                 </div>

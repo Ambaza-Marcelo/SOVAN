@@ -25,6 +25,16 @@ class TypeIndemniteController extends Controller
         });
     }
 
+    public function index()
+    {
+        if (is_null($this->user) || !$this->user->can('hr_indemnite.view')) {
+            abort(403, 'Pardon!! vous n\'avez pas l\'autorisation de visualiser les indemnités! Mufise ico mubaza hamagara kuri 130 canke 122');
+        }
+
+        $type_indemnites = HrTypeIndemnite::all();
+        return view('backend.pages.hr.type_indemnite.index',compact('type_indemnites'));
+    }
+
     public function create()
     {
         if (is_null($this->user) || !$this->user->can('hr_indemnite.create')) {

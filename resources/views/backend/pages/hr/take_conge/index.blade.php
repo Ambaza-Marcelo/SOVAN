@@ -2,7 +2,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-@lang('messages.Les Congés pris') - @lang('messages.admin_panel')
+@lang('Les Congés pris') - @lang('messages.admin_panel')
 @endsection
 
 @section('styles')
@@ -21,7 +21,7 @@
     <div class="row align-items-center">
         <div class="col-sm-6">
             <div class="breadcrumbs-area clearfix">
-                <h4 class="page-title pull-left">@lang('messages.Les Congés pris')</h4>
+                <h4 class="page-title pull-left">@lang('Les Congés pris')</h4>
                 <ul class="breadcrumbs pull-left">
                     <li><a href="{{ route('admin.dashboard') }}">@lang('messages.dashboard')</a></li>
                     <li><span>@lang('messages.list')</span></li>
@@ -41,7 +41,7 @@
         <div class="col-12 mt-5">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title float-left">@lang('messages.Les Congés pris')</h4>
+                    <h4 class="header-title float-left">@lang('Les Congés pris')</h4>
                     <p class="float-right mb-2">
                         @if (Auth::guard('admin')->user()->can('hr_conge.create'))
                             <a class="btn btn-primary text-white" href="{{ route('admin.hr-take-conges.create',$company_id) }}">@lang('messages.new')</a>
@@ -54,13 +54,13 @@
                             <thead class="bg-light text-capitalize">
                                 <tr>
                                     <th width="5%">#</th>
-                                    <th width="10%">@lang('messages.Date')</th>
-                                    <th width="10%">@lang('messages.Employé')</th>
-                                    <th width="10%">@lang('messages.Type Congé')</th>
-                                    <th width="10%">@lang('messages.Date Début')</th>
-                                    <th width="10%">@lang('messages.Date Fin')</th>
-                                    <th width="10%">@lang('messages.Nbre heures/jours')</th>
-                                    <th width="15%">@lang('messages.Action')</th>
+                                    <th width="10%">Date</th>
+                                    <th width="10%">Employé</th>
+                                    <th width="10%">Type Congé</th>
+                                    <th width="10%">Date Début</th>
+                                    <th width="10%">Date Fin</th>
+                                    <th width="10%">Nbre heures/jours</th>
+                                    <th width="15%">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -68,22 +68,31 @@
                                <tr>
                                     <td>{{ $loop->index+1 }}</td>
                                     <td>{{ $take_conge->created_at }}</td>
-                                    <td>@if($take_conge->employe_id){{ $take_conge->employe->firstname }}&nbsp;{{ $take_conge->employe->lastname }} @else {{ $take_conge->stagiaire->firstname }}&nbsp;{{ $take_conge->stagiaire->lastname }} <span class="badge badge-warning">@lang('messages.stagiaire')</span> @endif</td>
-                                    <td>@if($take_conge->type_conge_id){{ $take_conge->typeConge->libelle }} @endif</td>
+                                    <td>
+                                        @if($take_conge->employe_id && $take_conge->employe)
+                                            {{ $take_conge->employe->firstname }}&nbsp;{{ $take_conge->employe->lastname }}
+                                        @elseif($take_conge->stagiaire)
+                                            {{ $take_conge->stagiaire->firstname }}&nbsp;{{ $take_conge->stagiaire->lastname }}
+                                            <span class="badge badge-warning">stagiaire</span>
+                                        @else
+                                            N/A
+                                        @endif
+                                    </td>
+                                    <td>@if($take_conge->type_conge_id){{ optional($take_conge->typeConge)->libelle }} @endif</td>
                                     <td>{{ \Carbon\Carbon::parse($take_conge->date_heure_debut)->format('d/m/Y à H:i:s') }}</td>
                                     <td>{{ \Carbon\Carbon::parse($take_conge->date_heure_fin)->format('d/m/Y à H:i:s') }}</td>
                                     <td>@if($take_conge->nbre_heures_conge_pris < 24){{ number_format($take_conge->nbre_heures_conge_pris,0) }} heure(s)@else {{ number_format(($take_conge->nbre_heures_conge_pris / 24),0)}} jour(s) @endif</td>
                                     <td>
                                         @if (Auth::guard('admin')->user()->can('hr_conge.create'))
-                                        <a href="{{ route('admin.hr-take-conges.billetSortie', $take_conge->id) }}"><img src="{{ asset('img/ISSh.gif') }}" width="60" title="{{ __('messages.hr_loan_print_hint') }}"></a>
+                                        <a href="{{ route('admin.hr-take-conges.billetSortie', $take_conge->id) }}"><img src="{{ asset('img/ISSh.gif') }}" width="60" title="Télécharger d'abord le document et puis imprimer"></a>
                                         @endif
                                         @if (Auth::guard('admin')->user()->can('hr_conge.edit'))
-                                            <a class="btn btn-success text-white" href="#">@lang('messages.Editer')</a>
+                                            <a class="btn btn-success text-white" href="{{ route('admin.hr-take-conges.edit', $take_conge->id) }}">@lang('Editer')</a>
                                         @endif
 
                                         @if (Auth::guard('admin')->user()->can('hr_conge.delete'))
                                             <a class="btn btn-danger text-white" href="{{ route('admin.hr-take-conges.destroy', $take_conge->id) }}"
-                                            onclick="event.preventDefault(); if(confirm(@json(__('messages.delete_confirm_irreversible')))) { document.getElementById('delete-form-{{ $take_conge->id }}').submit(); }">
+                                            onclick="event.preventDefault(); if(confirm('Are you sure you want to delete this item? This action is irreversible.')) { document.getElementById('delete-form-{{ $take_conge->id }}').submit(); }">
                                                 @lang('messages.delete')
                                             </a>
 
