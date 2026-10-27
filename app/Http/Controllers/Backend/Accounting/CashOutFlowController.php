@@ -1421,7 +1421,7 @@ class CashOutFlowController extends Controller
         if (!empty($data->loan_id) && !empty($data->employe_id)) {
             if (empty($data->account_id)) {
                 DB::rollback();
-                session()->flash('error', 'Account ID not found. Please configure account_id.');
+                session()->flash('error', 'Compte comptable introuvable. Renseignez-le avant de valider l\'opération.');
                 return redirect()->back();
             }
 
@@ -1448,7 +1448,7 @@ class CashOutFlowController extends Controller
 
             if (empty($data->employe) || empty($data->employe->account_id)) {
                 DB::rollback();
-                session()->flash('error', 'Advance account ID not found for the employee. Please configure account_id for the employee.');
+                session()->flash('error', 'Compte d\'avance introuvable pour l\'employé. Renseignez-le sur la fiche employé.');
                 return redirect()->back();
             }
 
@@ -1471,7 +1471,7 @@ class CashOutFlowController extends Controller
         } elseif (!empty($data->employe_id) && $data->flag1 == 0 && $data->flag2 == 1 && empty($data->loan_id)) {
             if (empty($data->account_id)) {
                 DB::rollback();
-                session()->flash('error', 'Account ID not found. Please configure account_id.');
+                session()->flash('error', 'Compte comptable introuvable. Renseignez-le avant de valider l\'opération.');
                 return redirect()->back();
             }
 
@@ -1498,7 +1498,7 @@ class CashOutFlowController extends Controller
 
             if (empty($data->employe) || empty($data->employe->cash_out_account_id)) {
                 DB::rollback();
-                session()->flash('error', 'Cash Out Account ID not found for the employee. Please configure cash_out_account_id for the employee.');
+                session()->flash('error', 'Compte de sortie de fonds introuvable pour l\'employé. Renseignez-le sur la fiche employé.');
                 return redirect()->back();
             }
 
@@ -1521,7 +1521,7 @@ class CashOutFlowController extends Controller
         } elseif (!empty($data->supplier_id)) {
             if (empty($data->account_id)) {
                 DB::rollback();
-                session()->flash('error', 'Account ID not found. Please configure account_id.');
+                session()->flash('error', 'Compte comptable introuvable. Renseignez-le avant de valider l\'opération.');
                 return redirect()->back();
             }
 
@@ -1548,7 +1548,7 @@ class CashOutFlowController extends Controller
 
             if (empty($data->supplier) || empty($data->supplier->account_id)) {
                 DB::rollback();
-                session()->flash('error', 'Account ID not found for the supplier. Please configure account_id for the supplier.');
+                session()->flash('error', 'Compte fournisseur introuvable. Renseignez-le sur la fiche fournisseur.');
                 return redirect()->back();
             }
 
@@ -1591,7 +1591,7 @@ class CashOutFlowController extends Controller
         } elseif (!empty($data->employe_id) && $data->flag1 == 0 && $data->flag2 == 0 && empty($data->loan_id)) {
             if (empty($data->account_id)) {
                 DB::rollback();
-                session()->flash('error', 'Account ID not found. Please configure account_id.');
+                session()->flash('error', 'Compte comptable introuvable. Renseignez-le avant de valider l\'opération.');
                 return redirect()->back();
             }
 
@@ -1627,7 +1627,7 @@ class CashOutFlowController extends Controller
                 foreach ($expenseDetails as $detail) {
                     if (empty($detail->expense) || empty($detail->expense->default_account_id)) {
                         DB::rollback();
-                        session()->flash('error', 'Default Account ID not found for the expense. Please configure default_account_id for the expense.');
+                        session()->flash('error', 'Compte de charge introuvable pour le type de dépense. Renseignez-le sur la fiche du type de dépense.');
                         return redirect()->back();
                     }
 

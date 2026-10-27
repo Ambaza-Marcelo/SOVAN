@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8">
+<title>Guide d'utilisation SOVAN</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 10.2pt; color: #1d2b33; margin: 0; line-height: 1.38; }
+  .page { page-break-after: always; padding: 0; }
+  .page:last-child { page-break-after: auto; }
+  h1, h2, h3 { color: #154a39; margin: 0; }
+  h2 { font-size: 16pt; border-bottom: 3px solid #c9a227; padding-bottom: 5px; margin: 0 0 10px; }
+  h2 .num { display: inline-block; background: #154a39; color: #fff; width: 30px; height: 30px; line-height: 30px; text-align: center; border-radius: 50%; font-size: 12pt; margin-right: 7px; }
+  h3 { font-size: 12pt; margin: 12px 0 6px; color: #1f6b4f; }
+  p { margin: 4px 0; }
+  ul, ol { margin: 4px 0 4px 18px; padding: 0; }
+  li { margin: 2px 0; }
+  .muted { color: #5c6b73; }
+  .menu { display: inline-block; background: #eef4f6; border: 1px solid #c9d9df; color: #154a39; padding: 0 5px; border-radius: 4px; font-weight: 600; font-size: 9.8pt; }
+  .btn { display: inline-block; background: #007bff; color: #fff; padding: 0 6px; border-radius: 4px; font-weight: 600; font-size: 9.5pt; }
+  table { border-collapse: collapse; width: 100%; }
+  table.grid th, table.grid td { border: 1px solid #b9c7cd; padding: 4px 6px; vertical-align: top; font-size: 9.5pt; }
+  table.grid th { background: #154a39; color: #fff; text-align: left; }
+  table.grid tr:nth-child(even) td { background: #f5f9fa; }
+  tr, .box, .steps li { page-break-inside: avoid; }
+  .box { border-left: 5px solid #1f6b4f; background: #eef6f8; padding: 7px 10px; margin: 7px 0; border-radius: 0 6px 6px 0; }
+  .box.warn { border-color: #c9a227; background: #fff8e1; }
+  .box.ok { border-color: #28a745; background: #ecf8ef; }
+  .box b.t { display: block; color: #154a39; margin-bottom: 2px; }
+  .steps { counter-reset: s; list-style: none; margin: 6px 0; padding: 0; }
+  .steps li { counter-increment: s; position: relative; padding: 4px 7px 4px 38px; margin: 3px 0; background: #fafcfd; border: 1px solid #dde7eb; border-radius: 6px; }
+  .steps li:before { content: counter(s); position: absolute; left: 6px; top: 4px; width: 21px; height: 21px; line-height: 21px; text-align: center; background: #c9a227; color: #154a39; font-weight: 700; border-radius: 50%; font-size: 9.5pt; }
+  .flow { width: 100%; margin: 7px 0; }
+  .flow td { text-align: center; vertical-align: middle; padding: 0; }
+  .flow .st { background: #154a39; color: #fff; border-radius: 6px; padding: 6px 2px; font-weight: 600; font-size: 9pt; }
+  .flow .st.alt { background: #1f6b4f; } .flow .st.gold { background: #c9a227; color: #154a39; }
+  .flow .ar { color: #c9a227; font-size: 15pt; font-weight: 700; width: 20px; }
+  .content { padding: 11mm 13mm 3mm; }
+  .cover { height: 286mm; position: relative; overflow: hidden; background: #154a39; color: #fff; }
+  .cover .band { background: #c9a227; height: 9mm; }
+  .cover .inner { padding: 16mm 16mm 0; text-align: center; }
+  .cover .brandmark { display: inline-block; background: #fff; color: #154a39; font-size: 24pt; font-weight: 800; letter-spacing: 1px; padding: 10px 22px; border-radius: 10px; }
+  .cover .kicker { margin-top: 10mm; letter-spacing: 3px; font-size: 10.5pt; color: #c9a227; }
+  .cover h1 { color: #fff; font-size: 22pt; margin-top: 4mm; line-height: 1.15; }
+  .cover .sub { font-size: 13pt; margin-top: 3mm; color: #d8e6eb; }
+  .cover .scope { margin: 8mm auto 0; width: 158mm; text-align: left; background: rgba(255,255,255,.07); border: 1px solid #c9a227; border-radius: 8px; padding: 8px 12px; font-size: 9.6pt; }
+  .cover .scope td { padding: 2px 4px; vertical-align: top; color: #fff; }
+  .cover .scope td.k { color: #c9a227; font-weight: 700; width: 42mm; }
+  .cover .trainer { margin: 8mm auto 0; width: 158mm; background: #fff; color: #154a39; border-radius: 8px; padding: 9px 12px; text-align: left; }
+  .cover .trainer td { padding: 3px 4px; }
+  .cover .trainer td.k { font-weight: 700; width: 46mm; color: #1f6b4f; }
+  .cover .foot { position: absolute; bottom: 11mm; left: 0; right: 0; text-align: center; font-size: 9.5pt; color: #b9cdd4; }
+  table.att th, table.att td { border: 1.2px solid #154a39; padding: 0 6px; font-size: 10.2pt; }
+  table.att th { background: #154a39; color: #fff; height: 9.5mm; text-align: center; }
+  table.att td { height: 13mm; }
+  table.att td.n { text-align: center; font-weight: 700; width: 11mm; }
+  .toc td { padding: 4px 3px; border-bottom: 1px dotted #b9c7cd; font-size: 10pt; }
+  .toc td.n { width: 11mm; font-weight: 700; color: #1f6b4f; }
+</style></head><body>
+
+<div class="page cover">
+  <div class="band"></div>
+  <div class="inner">
+    <div class="brandmark">SOVAN</div>
+    <div class="kicker">GUIDE D'UTILISATION — SUPPORT DE FORMATION</div>
+    <h1>LOGICIEL SOVAN</h1>
+    <div class="sub">Production, Stocks, Facturation, RH &amp; Comptabilité</div>
+    <div class="sub" style="font-size:11.5pt;margin-top:2mm;">Société de production de farine (minoterie)</div>
+    <table class="scope">
+      <tr><td class="k">Stocks</td><td>MP, Matériels, Produits finis, Marchandises</td></tr>
+      <tr><td class="k">Production</td><td>Plan → Réquisition → Transfert → Ordre de production</td></tr>
+      <tr><td class="k">Facturation</td><td>Proforma → BC → Facture → BL (sans facture, pas de BL)</td></tr>
+      <tr><td class="k">RH</td><td>Dossier employé + documents, congés, avances, bulletins &amp; journaux</td></tr>
+      <tr><td class="k">Comptabilité</td><td>Plan, trésorerie, écritures, amortissements, bilans, clôture</td></tr>
+    </table>
+    <table class="trainer">
+      <tr><td class="k">Formateur</td><td><b>AMBAZA Marcellin</b></td></tr>
+      <tr><td class="k">Fonction</td><td>Directeur Général EGOTEK</td></tr>
+      <tr><td class="k">Date de la formation</td><td>&nbsp;</td></tr>
+      <tr><td class="k">Lieu</td><td>&nbsp;</td></tr>
+    </table>
+  </div>
+  <div class="foot">SOVAN — Usine de farine — Document interne de formation — Formateur : AMBAZA Marcellin, Directeur Général EGOTEK</div>
+</div>
+
+<div class="page"><div class="content">
+  <h2>Fiche de présence des participants</h2>
+  <table class="grid" style="margin-bottom:8px">
+    <tr><th style="width:38%">Formation</th><td>Logiciel SOVAN — Production, Stocks, Facturation, RH &amp; Comptabilité</td></tr>
+    <tr><th>Formateur</th><td><b>AMBAZA Marcellin</b>, Directeur Général EGOTEK</td></tr>
+    <tr><th>Date / Heure</th><td>&nbsp;</td></tr>
+    <tr><th>Lieu</th><td>&nbsp;</td></tr>
+  </table>
+  <p class="muted">À compléter au stylo par chaque participant.</p>
+  <table class="att">
+    <tr><th style="width:11mm">N°</th><th style="width:56mm">Nom &amp; Prénom</th><th style="width:40mm">Fonction / Service</th><th style="width:30mm">Téléphone</th><th>Signature</th></tr>
+    <tr><td class="n">1</td><td></td><td></td><td></td><td></td></tr><tr><td class="n">2</td><td></td><td></td><td></td><td></td></tr><tr><td class="n">3</td><td></td><td></td><td></td><td></td></tr><tr><td class="n">4</td><td></td><td></td><td></td><td></td></tr><tr><td class="n">5</td><td></td><td></td><td></td><td></td></tr><tr><td class="n">6</td><td></td><td></td><td></td><td></td></tr><tr><td class="n">7</td><td></td><td></td><td></td><td></td></tr><tr><td class="n">8</td><td></td><td></td><td></td><td></td></tr><tr><td class="n">9</td><td></td><td></td><td></td><td></td></tr><tr><td class="n">10</td><td></td><td></td><td></td><td></td></tr>
+  </table>
+  <table style="margin-top:9mm"><tr>
+    <td style="width:50%"><b>Le Formateur</b><br>AMBAZA Marcellin<br>Directeur Général EGOTEK<br><br>Signature : ______________________</td>
+    <td style="width:50%"><b>Visa de la Direction</b><br><br><br><br>Signature : ______________________</td>
+  </tr></table>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2>Sommaire</h2>
+  <table class="toc">
+    <tr><td class="n">1</td><td>Connexion et menus du logiciel</td></tr>
+    <tr><td class="n">2</td><td>Organisation des stocks (MP, matériels, produits finis, marchandises)</td></tr>
+    <tr><td class="n">3</td><td>Fichiers de base</td></tr>
+    <tr><td class="n">4</td><td>Approvisionnement</td></tr>
+    <tr><td class="n">5</td><td>Entrées, sorties, inventaires et transferts</td></tr>
+    <tr><td class="n">6</td><td>Module Production</td></tr>
+    <tr><td class="n">7</td><td>Processus de facturation (proforma → facture → BL)</td></tr>
+    <tr><td class="n">8</td><td>Module Ressources Humaines (dossier, documents, avances, paie)</td></tr>
+    <tr><td class="n">9</td><td>Module Comptabilité (trésorerie, écritures, amortissements, clôture)</td></tr>
+    <tr><td class="n">10</td><td>Circuit de validation &amp; rapports</td></tr>
+    <tr><td class="n">11</td><td>Bonnes pratiques, exercices et évaluation</td></tr>
+  </table>
+  <div class="box" style="margin-top:6mm">
+    <b class="t">Objectifs</b>
+    Gérer stocks et production ; facturer (proforma → facture → BL) ; administrer la RH (dossier complet + documents attachés, avances, paie) ; maîtriser la comptabilité (trésorerie, écritures, amortissements, bilans, clôture).
+  </div>
+  <div class="box warn"><b class="t">Droits d'accès</b>Les menus visibles dépendent des permissions. Contactez l'administrateur si un menu manque.</div>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2><span class="num">1</span>Connexion et menus</h2>
+  <ol class="steps">
+    <li>Saisir l'<b>adresse e-mail ou le nom d'utilisateur</b>.</li>
+    <li>Saisir le <b>mot de passe</b>.</li>
+    <li>Cliquer sur <span class="btn" style="background:#1f6b4f">CONNEXION</span>.</li>
+  </ol>
+  <table class="grid">
+    <tr><th style="width:28%">Menu</th><th>Contenu</th></tr>
+    <tr><td><span class="menu">Fichiers de Base</span></td><td>Fournisseurs, Clients, MP, Matériel, Items (PF / marchandises)</td></tr>
+    <tr><td><span class="menu">Stock</span></td><td>MP, Matériels, Produits finis, Marchandises</td></tr>
+    <tr><td><span class="menu">Production</span></td><td>Plan, Réquisition, Transfert, Ordre de production</td></tr>
+    <tr><td><span class="menu">Achats</span></td><td>Demande, Commande, Réception</td></tr>
+    <tr><td><span class="menu">Ventes</span></td><td>Proforma, Bons de commande, Factures, Bon de livraison, Note de Crédit</td></tr>
+    <tr><td><span class="menu">Employés / Congés / Bulletin de paie</span></td><td>RH : fiches, documents attachés, congés, avances, bulletins</td></tr>
+    <tr><td><span class="menu">Comptabilité</span></td><td>Plan, avances, virements, sorties de caisse, écritures, bilans, balance</td></tr>
+  </table>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2><span class="num">2</span>Organisation des stocks</h2>
+  <table class="grid">
+    <tr><th style="width:24%">Famille</th><th>Magasins</th><th>Exemples</th></tr>
+    <tr><td><b>Matières premières</b></td><td>Grand / Intermédiaire / Petit</td><td>maïs, blé, grain, emballages (sacs…)</td></tr>
+    <tr><td><b>Matériels</b></td><td>Grand / Intermédiaire / Petit</td><td>pièces machines, outils maintenance, EPI</td></tr>
+    <tr><td><b>Produits finis</b></td><td>Stock PF + Petit stock PF</td><td>farine (différents conditionnements)</td></tr>
+    <tr><td><b>Marchandises</b></td><td>Stock des marchandises</td><td>articles achetés-revendus (si applicable)</td></tr>
+  </table>
+  <table class="flow"><tr>
+    <td><div class="st">ACHAT</div></td><td class="ar">&#10140;</td>
+    <td><div class="st alt">PRODUCTION</div></td><td class="ar">&#10140;</td>
+    <td><div class="st gold">PRODUITS FINIS</div></td><td class="ar">&#10140;</td>
+    <td><div class="st">FACTURE → BL</div></td>
+  </tr></table>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2><span class="num">3</span>Fichiers de base</h2>
+  <ol class="steps">
+    <li>Fournisseurs et Clients.</li>
+    <li>Catégories et unités de mesure (MP / Matériel).</li>
+    <li>Fiches <b>Matières premières</b> et <b>Matériel</b>.</li>
+    <li><b>Items</b> : type produits finis (avec nomenclature MP) ou marchandises.</li>
+  </ol>
+  <div class="box warn"><b class="t">Important</b>Un PF sans MP liées ne pourra pas être correctement fabriqué via l'OF.</div>
+
+  <h2 style="margin-top:8mm"><span class="num">4</span>Approvisionnement</h2>
+  <table class="flow"><tr>
+    <td><div class="st">Demande d'achat</div></td><td class="ar">&#10140;</td>
+    <td><div class="st alt">Commande</div></td><td class="ar">&#10140;</td>
+    <td><div class="st gold">Réception</div></td>
+  </tr></table>
+  <p>Menu <span class="menu">Achats</span> (MP et Matériels). Valider → Confirmer → Approuver. À l'approbation de la réception, le stock augmente.</p>
+  <div class="box ok"><b class="t">Exemple SOVAN</b>Demande d'achat de 20 t de maïs → commande → réception au Grand Stock MP.</div>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2><span class="num">5</span>Entrées, sorties, inventaires, transferts</h2>
+  <table class="grid">
+    <tr><th>Document</th><th>Utilité</th></tr>
+    <tr><td>Entrée / Sortie MP, PF, Matériels, Marchandises</td><td>Mouvements hors circuit achat / production / vente</td></tr>
+    <tr><td>Inventaire</td><td>Ajustement stock théorique ↔ physique</td></tr>
+    <tr><td>Réquisition / Transfert Matériels</td><td>Circulation entre magasins matériels</td></tr>
+  </table>
+
+  <h2 style="margin-top:8mm"><span class="num">6</span>Module Production</h2>
+  <table class="flow"><tr>
+    <td><div class="st">Plan</div></td><td class="ar">&#10140;</td>
+    <td><div class="st alt">Réquisition MP</div></td><td class="ar">&#10140;</td>
+    <td><div class="st alt">Transfert MP</div></td><td class="ar">&#10140;</td>
+    <td><div class="st gold">Ordre de production</div></td>
+  </tr></table>
+  <ol class="steps">
+    <li><b>Plan de production</b> : PF et quantités prévues → approbation.</li>
+    <li><b>Réquisition MP</b> puis <b>Transfert</b> vers l'atelier.</li>
+    <li><b>Ordre de production</b> : à l'approbation, consommation des MP et entrée au stock PF.</li>
+  </ol>
+  <div class="box ok"><b class="t">Exemple SOVAN</b>Plan 5 t de farine → réquisition/transfert grain → OF approuvé → entrée farine au stock PF.</div>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2><span class="num">7</span>Processus de facturation</h2>
+  <p>Menu <span class="menu">Ventes</span>. Circuit commercial usine — <b>la facture précède toujours le bon de livraison</b> :</p>
+  <table class="flow"><tr>
+    <td><div class="st">Proforma</div></td><td class="ar">&#10140;</td>
+    <td><div class="st alt">Bon de commande</div></td><td class="ar">&#10140;</td>
+    <td><div class="st gold">Facture</div></td><td class="ar">&#10140;</td>
+    <td><div class="st alt">Bon de livraison</div></td>
+  </tr></table>
+  <div class="box warn"><b class="t">Règle obligatoire</b><b>Sans facture, pas de bon de livraison.</b> Le BL est établi uniquement après la facture (à partir de la facture / commande facturée). On ne livre jamais sans facture préalable.</div>
+  <ol class="steps">
+    <li><b>Facture Proforma</b> : devis / offre client → Valider → Confirmer → Approuver.</li>
+    <li><b>Bon de commande</b> (vente) : confirmation de la commande client.</li>
+    <li><b>Facture</b> : document qui commence la vente réelle ; impression pour le client ; clôture cash ou crédit.</li>
+    <li><b>Bon de livraison</b> : établi <b>après</b> la facture ; autorise l'expédition des PF / marchandises ; impacte le stock à l'approbation.</li>
+  </ol>
+  <h3>7.1 Clôture Cash ou Crédit</h3>
+  <table class="grid">
+    <tr><th style="width:22%">Mode</th><th>Procédure</th></tr>
+    <tr><td><b>Cash</b></td><td>Encaissement comptant sur la facture. Préciser le compte : <b>caisse ou banque</b>.</td></tr>
+    <tr><td><b>Crédit</b></td><td>Facture à crédit. Le client doit avoir un compte comptable. Puis BL pour livrer. Suivi via Crédits / recouvrement.</td></tr>
+  </table>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2><span class="num">7</span>Facturation — règles documentaires</h2>
+  <table class="grid">
+    <tr><th style="width:22%">Règle</th><th>Détail</th></tr>
+    <tr><td><b>Original</b></td><td>Première impression d'un bon / facture : mention <b>Original</b>.</td></tr>
+    <tr><td><b>Copie</b></td><td>Réimpression : mention <b>Copie</b> + signature préalable + motif clair.</td></tr>
+    <tr><td><b>Signatures</b></td><td>Tout bon ou facture : <b>au minimum deux signatures</b> ; motif clair en cas d'annulation / correction.</td></tr>
+    <tr><td><b>Note de Crédit</b></td><td>Menu <span class="menu">Note de Crédit</span> (facture d'avoir) en cas d'erreur / retour / correction.</td></tr>
+  </table>
+  <h3>7.2 Petite caisse (si utilisée)</h3>
+  <ol class="steps">
+    <li>Les caissiers gèrent la <b>petite caisse</b> des encaissements cash du jour.</li>
+    <li>En fin de journée : transfert du total vers la <b>caisse principale</b> (menu Comptabilité &rsaquo; Transfert de fonds).</li>
+    <li>Bon de transfert <b>signé</b> (2 signatures) et <b>classé</b>.</li>
+  </ol>
+  <div class="box warn"><b class="t">Erreurs</b>Annulation de document, Note de Crédit (avoir) : toujours motif clair + au moins deux signatures.</div>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2><span class="num">8</span>Module Ressources Humaines</h2>
+  <p>Le module RH centralise l'organisation, le <b>dossier complet du personnel</b>, les congés, les avances et la paie.</p>
+  <table class="grid">
+    <tr><th style="width:30%">Menu</th><th>Contenu</th></tr>
+    <tr><td><span class="menu">Employés</span></td><td>Entreprises, Départements, Services, Fonctions, Grades, Banques, fiches Employés + <b>documents attachés</b></td></tr>
+    <tr><td><span class="menu">Congés</span></td><td>Types de congé, Congés, Congé payé, présences / pointages</td></tr>
+    <tr><td><span class="menu">Bulletin de paie</span></td><td>Avance sur salaire, Journal de paie, Bulletin de paie, Réglages</td></tr>
+    <tr><td><span class="menu">Les Journaux</span></td><td>Journal Paie, Journal Cotisations, Journal IRE</td></tr>
+  </table>
+  <h3>8.1 Organisation &amp; fiche employé</h3>
+  <ol class="steps">
+    <li>Paramétrer <b>Entreprise → Département → Service → Fonction / Grade → Banques</b>.</li>
+    <li>Créer la fiche employé : identité, matricule, affectation, salaire de base, compte bancaire, contacts.</li>
+    <li>Mettre à jour la fiche à chaque mutation, promotion ou changement de salaire.</li>
+  </ol>
+  <div class="box ok"><b class="t">Dossier numérique</b>Chaque employé dispose d'un dossier dans le système : données + pièces jointes. Objectif : ne plus dépendre uniquement du classeur papier.</div>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2><span class="num">8</span>RH — documents du personnel</h2>
+  <p>Sur la fiche employé, vous pouvez <b>attacher les documents du personnel</b> pour conserver le <b>dossier complet</b> dans le système.</p>
+  <table class="grid">
+    <tr><th style="width:32%">Documents typiques</th><th>Utilité</th></tr>
+    <tr><td>CV</td><td>Parcours et compétences</td></tr>
+    <tr><td>Contrat de travail</td><td>Preuve d'engagement et conditions</td></tr>
+    <tr><td>CNI / Passeport</td><td>Identité officielle</td></tr>
+    <tr><td>Diplômes / attestations</td><td>Qualifications</td></tr>
+    <tr><td>Autres (lettre, photo…)</td><td>Compléments du dossier RH</td></tr>
+  </table>
+  <h3>8.2 Procédure d'attachement</h3>
+  <ol class="steps">
+    <li>Ouvrir <span class="menu">Employés</span> → fiche de l'employé (création ou modification).</li>
+    <li>Section <b>Documents</b> : sélectionner un ou plusieurs fichiers.</li>
+    <li>Formats acceptés : <b>PDF, DOC, DOCX, JPG, PNG</b>.</li>
+    <li>Enregistrer : les pièces restent liées à l'employé (voir / télécharger / supprimer selon droits).</li>
+  </ol>
+  <div class="box warn"><b class="t">Bonnes pratiques</b>Nommer clairement les fichiers (ex. Contrat_Nom_2026.pdf). Ne supprimer un document qu'avec autorisation RH. Respecter la confidentialité des données personnelles.</div>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2><span class="num">8</span>RH — avances sur salaire</h2>
+  <p>Menu <span class="menu">Bulletin de paie</span> &rsaquo; <b>Avance sur salaire</b>. L'avance est une avance de fonds remboursée ensuite par retenues sur la paie.</p>
+  <h3>8.3 Circuit d'une avance</h3>
+  <table class="flow"><tr>
+    <td><div class="st">Demande</div></td><td class="ar">&#10140;</td>
+    <td><div class="st alt">Validation</div></td><td class="ar">&#10140;</td>
+    <td><div class="st gold">Paiement</div></td><td class="ar">&#10140;</td>
+    <td><div class="st alt">Retenues paie</div></td>
+  </tr></table>
+  <ol class="steps">
+    <li>Créer une <b>demande d'avance</b> : employé, montant, motif, échéancier (tranches / mois).</li>
+    <li>Valider / approuver selon le circuit RH.</li>
+    <li>Le paiement peut générer une <b>demande de sortie de fonds</b> (lien trésorerie / comptabilité).</li>
+    <li>À la paie : la <b>retenue prêt / avance</b> est déduite automatiquement selon les mois prévus.</li>
+    <li>Suivre le solde jusqu'à extinction complète de la dette.</li>
+  </ol>
+  <div class="box warn"><b class="t">Règle importante</b>Un employé <b>ne peut pas</b> prendre une nouvelle avance tant qu'il a une dette en attente ou partiellement payée. Toutes les tranches doivent être soldées avant une nouvelle demande.</div>
+  <h3>8.4 Congés &amp; bulletins</h3>
+  <ol class="steps">
+    <li>Enregistrer les congés <b>avant</b> la génération de la paie du mois.</li>
+    <li>Vérifier les avances en cours (retenues correctes sur le bulletin).</li>
+    <li>Générer Journal de paie → Bulletins ; imprimer / archiver.</li>
+    <li>Consulter Journal Cotisations et Journal IRE pour les déclarations.</li>
+  </ol>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2><span class="num">9</span>Module Comptabilité</h2>
+  <p>La comptabilité enregistre toutes les opérations financières et produit les états de pilotage (balance, bilans, résultat).</p>
+  <table class="grid">
+    <tr><th style="width:34%">Sous-menu</th><th>Rôle</th></tr>
+    <tr><td>Plan comptable (Chart Accounts)</td><td>Création / structure des comptes (actifs, passifs, charges, produits)</td></tr>
+    <tr><td>Avance (Advance Payment)</td><td>Avances de fonds (acomptes) liées aux comptes paramétrés</td></tr>
+    <tr><td>Transfert de fonds (Fund Transfer / Virement)</td><td>Mouvements entre caisses / comptes bancaires</td></tr>
+    <tr><td>Catégorie / Dépenses</td><td>Classement et enregistrement des dépenses</td></tr>
+    <tr><td>Demande de sortie de caisse</td><td>Demande de paiement (fournisseur, avance RH, autres)</td></tr>
+    <tr><td>Sortie de caisse (Cash Out Flow)</td><td>Paiement effectif après validation de la demande</td></tr>
+    <tr><td>Retour de fonds</td><td>Restitution de fonds non utilisés</td></tr>
+    <tr><td>Écriture comptable (Journal Entry)</td><td>Saisie manuelle et consultation des écritures automatiques</td></tr>
+    <tr><td>Balance des comptes</td><td>Soldes Débit / Crédit de tous les comptes</td></tr>
+    <tr><td>Bilan actif / Bilan passif</td><td>États de situation patrimoniale</td></tr>
+    <tr><td>Paramètres comptes</td><td>Comptes par défaut (TVA, ventes, achats, PF, amortissements…)</td></tr>
+  </table>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2><span class="num">9</span>Comptabilité — plan &amp; trésorerie</h2>
+  <h3>9.1 Plan comptable</h3>
+  <ol class="steps">
+    <li>Ouvrir <span class="menu">Chart Accounts</span> : vérifier l'arborescence (classes / sous-comptes).</li>
+    <li>Chaque compte a un code, un libellé et un type (actif, passif, charge, produit).</li>
+    <li>Les paramètres comptes lient le métier (ventes, stocks, TVA, caisse, banque) aux bons numéros.</li>
+    <li>Ne pas modifier un compte déjà mouvementé sans accord de la Direction financière.</li>
+  </ol>
+  <h3>9.2 Circuit trésorerie</h3>
+  <table class="flow"><tr>
+    <td><div class="st">Demande sortie</div></td><td class="ar">&#10140;</td>
+    <td><div class="st alt">Validation</div></td><td class="ar">&#10140;</td>
+    <td><div class="st gold">Sortie de caisse</div></td>
+  </tr></table>
+  <ol class="steps">
+    <li><b>Paiement fournisseur</b> : après réception stock → Demande de sortie → Sortie (compte <b>caisse ou banque</b>).</li>
+    <li><b>Virement / transfert</b> : petite caisse → caisse principale, ou entre comptes bancaires (bon signé, 2 signatures).</li>
+    <li><b>Encaissement vente</b> : à la clôture cash de la facture, choisir caisse ou banque.</li>
+    <li><b>Avance RH</b> : peut générer une demande de sortie de fonds liée à l'employé.</li>
+    <li>Toujours joindre la pièce justificative et contrôler Débit = Crédit après approbation.</li>
+  </ol>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2><span class="num">9</span>Comptabilité — écritures &amp; imputation</h2>
+  <h3>9.3 Journal Entry</h3>
+  <ol class="steps">
+    <li>Ouvrir <span class="menu">Écriture comptable</span> pour consulter les écritures générées par stock, ventes, paie, sorties de caisse.</li>
+    <li>Saisie manuelle (si autorisée) : date, libellé, lignes Débit et Crédit — le total Débit doit égaler le total Crédit.</li>
+    <li>Ne jamais laisser une écriture déséquilibrée ; corriger ou contrepasser avec motif clair.</li>
+  </ol>
+  <p>Chaque opération métier génère (ou doit générer) une écriture équilibrée :</p>
+  <table class="grid">
+    <tr><th>Opération</th><th>Débit</th><th>Crédit</th></tr>
+    <tr><td>Réception achat</td><td>Stock magasin (+ TVA déductible)</td><td>Fournisseur</td></tr>
+    <tr><td>Paiement fournisseur</td><td>Fournisseur</td><td>Caisse ou Banque</td></tr>
+    <tr><td>Facture vente (cash)</td><td>Caisse ou Banque (TTC)</td><td>Ventes HT + TVA collectée</td></tr>
+    <tr><td>Facture vente (crédit)</td><td>Client (créance)</td><td>Ventes HT + TVA collectée</td></tr>
+    <tr><td>Encaissement créance client</td><td>Caisse ou Banque</td><td>Client</td></tr>
+    <tr><td>BL / sortie stock (après facture)</td><td>Coût des ventes / compte article</td><td>Magasin PF / marchandises</td></tr>
+    <tr><td>OF (production)</td><td>Stock PF</td><td>Consommation MP (selon paramétrage)</td></tr>
+    <tr><td>Paiement avance salaire</td><td>Compte avance / créance employé</td><td>Caisse ou Banque</td></tr>
+    <tr><td>Retenue avance sur paie</td><td>Charge salariale / compte paie</td><td>Compte avance (réduction dette)</td></tr>
+    <tr><td>Dotation aux amortissements</td><td>Charge d'amortissement</td><td>Amortissements cumulés</td></tr>
+    <tr><td>Clôture — bénéfice</td><td>Compte de résultat</td><td>Report à nouveau / Réserves</td></tr>
+    <tr><td>Clôture — perte</td><td>Report à nouveau</td><td>Compte de résultat</td></tr>
+  </table>
+  <div class="box"><b class="t">Contrôle</b>Après chaque validation : Journal Entry (Débit = Crédit) + soldes caisse/banque/clients/fournisseurs.</div>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2><span class="num">9</span>Comptabilité — amortissements</h2>
+  <p>Les <b>immobilisations</b> (machines, véhicules, bâtiments, équipements de production) se déprécient dans le temps. L'<b>amortissement</b> constate cette perte de valeur chaque exercice.</p>
+  <table class="grid">
+    <tr><th style="width:28%">Notion</th><th>Détail</th></tr>
+    <tr><td><b>Immobilisation</b></td><td>Bien durable utilisé pour l'activité (ex. broyeur, moule, camion, bâtiment).</td></tr>
+    <tr><td><b>Valeur d'origine</b></td><td>Coût d'acquisition (achat + frais accessoires si paramétrés).</td></tr>
+    <tr><td><b>Durée d'amortissement</b></td><td>Nombre d'années (ou mois) sur lesquels on répartit la charge.</td></tr>
+    <tr><td><b>Dotation</b></td><td>Charge de l'exercice : Débit charge d'amortissement / Crédit amortissements cumulés.</td></tr>
+    <tr><td><b>Valeur nette comptable</b></td><td>Valeur d'origine − amortissements cumulés.</td></tr>
+  </table>
+  <h3>9.3 Procédure pratique</h3>
+  <ol class="steps">
+    <li>Enregistrer l'immobilisation dans le plan / fichier des actifs (selon paramétrage).</li>
+    <li>Définir durée et mode (linéaire en général pour la formation).</li>
+    <li>En fin de période (mois ou exercice) : passer la <b>dotation aux amortissements</b> via écriture ou module dédié.</li>
+    <li>Contrôler que la charge apparaît au <b>compte de résultat</b> et que le bilan reflète la VNC.</li>
+  </ol>
+  <div class="box warn"><b class="t">Attention</b>Ne pas amortir le stock (MP, PF, marchandises) : seuls les biens immobilisés s'amortissent. Les stocks sont valorisés à l'achat / au coût de production.</div>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2><span class="num">9</span>Comptabilité — clôture de l'exercice</h2>
+  <p>La <b>clôture d'exercice</b> arrête une période comptable (souvent l'année) et ouvre la suivante. Opération réservée à la Direction financière / admin autorisé.</p>
+  <h3>9.4 Étapes de clôture</h3>
+  <ol class="steps">
+    <li><b>Inventaire physique</b> des stocks (MP, matériels, PF, marchandises) et rapprochement avec le logiciel.</li>
+    <li><b>Rapprochement bancaire</b> et contrôle des caisses (soldes = réalité).</li>
+    <li>Saisie des <b>écritures d'inventaire</b> : charges à payer, produits à recevoir, provisions si besoin.</li>
+    <li>Passage des <b>dotations aux amortissements</b> de l'exercice.</li>
+    <li>Vérification des <b>soldes clients / fournisseurs</b> (créances et dettes).</li>
+    <li>Édition des états : <b>balance</b>, <b>bilan</b>, <b>compte de résultat</b>.</li>
+    <li><b>Clôture</b> dans le logiciel : les comptes de charges et produits sont soldés ; le résultat (bénéfice ou perte) est reporté (report à nouveau / réserves).</li>
+    <li>Ouverture du nouvel exercice : report des soldes du bilan (actifs, passifs, trésorerie).</li>
+  </ol>
+  <table class="grid">
+    <tr><th style="width:32%">État</th><th>Utilité</th></tr>
+    <tr><td><b>Balance des comptes</b></td><td>Soldes Débit / Crédit de tous les comptes — premier contrôle avant clôture.</td></tr>
+    <tr><td><b>Compte de résultat</b></td><td>Produits − Charges = résultat de l'exercice (bénéfice ou perte).</td></tr>
+    <tr><td><b>Bilan actif</b></td><td>Stocks, créances clients, caisse/banque, immobilisations nettes (après amortissements).</td></tr>
+    <tr><td><b>Bilan passif</b></td><td>Capitaux propres, dettes fournisseurs, dettes sociales / fiscales, autres passifs.</td></tr>
+  </table>
+  <div class="box warn"><b class="t">Sécurité</b>Ne jamais clôturer sans validation écrite de la Direction. Faire une sauvegarde avant toute clôture définitive. Après clôture, les mouvements de l'exercice clos ne doivent plus être modifiés sans procédure de réouverture autorisée.</div>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2><span class="num">10</span>Circuit de validation &amp; rapports</h2>
+  <table class="flow"><tr>
+    <td><div class="st">Créé</div></td><td class="ar">&#10140;</td>
+    <td><div class="st alt">Validé</div></td><td class="ar">&#10140;</td>
+    <td><div class="st alt">Confirmé</div></td><td class="ar">&#10140;</td>
+    <td><div class="st gold">Approuvé</div></td>
+  </tr></table>
+  <p>Le stock et la comptabilité ne sont impactés définitivement qu'après <b>approbation</b>. Rapports stock : MP, matériels, PF, marchandises.</p>
+
+  <h2 style="margin-top:8mm"><span class="num">11</span>Bonnes pratiques et exercices</h2>
+  <table class="grid">
+    <tr><th style="width:6%">#</th><th>Règle</th></tr>
+    <tr><td>1</td><td>Respecter Plan → Réquisition → Transfert → OF pour la production.</td></tr>
+    <tr><td>2</td><td>Facturation : Proforma → BC → <b>Facture → BL</b> ; sans facture, pas de BL ; Original / Copie + signatures.</td></tr>
+    <tr><td>3</td><td>Clôture cash : préciser compte <b>caisse ou banque</b>.</td></tr>
+    <tr><td>4</td><td>RH : dossier employé complet (données + documents attachés) ; avances soldées avant nouvelle demande.</td></tr>
+    <tr><td>5</td><td>Paie : congés et retenues d'avance vérifiés avant génération des bulletins.</td></tr>
+    <tr><td>6</td><td>Compta : contrôler écritures ; amortissements et clôture = Direction financière ; sauvegarde avant clôture.</td></tr>
+    <tr><td>7</td><td>Ne jamais partager ses identifiants.</td></tr>
+  </table>
+  <h3>Exercices (SOVAN)</h3>
+  <ol class="steps">
+    <li>Créer fiche MP « Maïs » et item PF « Farine 25 kg » avec nomenclature.</li>
+    <li>Demande d'achat MP + commande + réception Grand Stock MP.</li>
+    <li>Plan de production + réquisition + transfert MP vers atelier.</li>
+    <li>Approuver un OF et vérifier le stock farine (PF).</li>
+    <li>Créer une proforma puis une <b>facture</b> ; clôturer en cash (banque) ; ensuite établir le <b>BL</b> ; contrôler l'écriture.</li>
+    <li>Créer une fiche employé, y <b>attacher</b> CV + contrat (PDF), puis une <b>avance sur salaire</b> ; consulter le journal de paie.</li>
+    <li>Expliquer une dotation aux amortissements, lire la balance et les bilans, décrire les étapes de clôture d'exercice.</li>
+  </ol>
+  <h3>Évaluation</h3>
+  <table class="grid">
+    <tr><th>Critère</th><th style="width:14%">Très bien</th><th style="width:14%">Bien</th><th style="width:14%">Moyen</th><th style="width:14%">Faible</th></tr>
+    <tr><td>Clarté des explications</td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>Utilité pour mon travail</td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>Exercices pratiques</td><td></td><td></td><td></td><td></td></tr>
+  </table>
+  <p style="margin-top:4mm;text-align:right"><b>Le Formateur : AMBAZA Marcellin</b><br>Directeur Général EGOTEK</p>
+</div></div>
+
+</body></html>

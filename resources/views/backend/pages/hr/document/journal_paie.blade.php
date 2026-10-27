@@ -45,7 +45,7 @@
 </head>
 <body>
 @php
-    $companyName = $setting->name ?? ($setting->company_name ?? 'MUSUMBA ELCOM');
+    $companyName = $setting->name ?? ($setting->company_name ?? 'SOVAN');
     $logoPath = public_path('img/logo.png');
     if (!file_exists($logoPath)) {
         $logoPath = public_path('img/logo.png');
@@ -78,7 +78,7 @@
     <tr>
         <td style="width:18%; vertical-align:top;">
             @if($logoSrc)
-                <img src="{{ $logoSrc }}" width="110" height="70" alt="MUSUMBA ELCOM">
+                <img src="{{ $logoSrc }}" width="110" height="70" alt="SOVAN">
             @endif
         </td>
         <td style="width:52%; vertical-align:top; font-size:9px;">
@@ -115,7 +115,7 @@
             <th style="width:7%;">Salaire brut</th>
             <th style="width:6%;">INSS Emp.</th>
             <th style="width:6%;">INSS Emplr</th>
-            <th style="width:6%;">Ass. Mal.</th>
+            {{-- <th style="width:6%;">Ass. Mal.</th> --}}
             <th style="width:5%;">IRE</th>
             <th style="width:5%;">Pret</th>
             <th style="width:5%;">Autres</th>
@@ -132,7 +132,7 @@
                     + (float)$row->indemnite_deplacement
                     + (float)$row->prime_fonction;
                 $retenues = (float)$row->somme_cotisation_inss
-                    + (float)$row->assurance_maladie_employe
+                    // + (float)$row->assurance_maladie_employe
                     + (float)$row->somme_impot
                     + (float)$row->retenue_pret
                     + (float)$row->soins_medicaux
@@ -164,7 +164,7 @@
                 <td class="text-right bold">{{ $fmt($brut) }}</td>
                 <td class="text-right">{{ $fmt($row->somme_cotisation_inss) }}</td>
                 <td class="text-right">{{ $fmt($row->inss_employeur) }}</td>
-                <td class="text-right">{{ $fmt($row->assurance_maladie_employe) }}</td>
+                {{-- <td class="text-right">{{ $fmt($row->assurance_maladie_employe) }}</td> --}}
                 <td class="text-right">{{ $fmt($row->somme_impot) }}</td>
                 <td class="text-right">{{ $fmt($row->retenue_pret) }}</td>
                 <td class="text-right">{{ $fmt((float)$row->autre_retenue + (float)$row->soins_medicaux) }}</td>
@@ -179,7 +179,7 @@
             <td class="text-right">{{ $fmt($totalBrut) }}</td>
             <td class="text-right">{{ $fmt($totalInssEmp) }}</td>
             <td class="text-right">{{ $fmt($totalInssEmplr) }}</td>
-            <td class="text-right">{{ $fmt($totalAssEmp) }}</td>
+            {{-- <td class="text-right">{{ $fmt($totalAssEmp) }}</td> --}}
             <td class="text-right">{{ $fmt($totalIre) }}</td>
             <td class="text-right">{{ $fmt($totalPret) }}</td>
             <td class="text-right">{{ $fmt($totalAutre) }}</td>

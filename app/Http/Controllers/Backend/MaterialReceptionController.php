@@ -1025,7 +1025,7 @@ class MaterialReceptionController extends Controller
                     $item = Item::find($data->item_id);
                     if (!$item) {
                         DB::rollback();
-                        session()->flash('error', 'Article introuvable (item_id).');
+                        session()->flash('error', 'Article introuvable.');
                         return back();
                     }
                     $qtyReceived = (float) $data->quantity_received;
@@ -1463,7 +1463,7 @@ class MaterialReceptionController extends Controller
 
             if (empty($vat_deduc_account_id)) {
                 DB::rollback();
-                session()->flash('error', 'Account ID for VAT deduction not configured. Please configure vat_deduc_account_id in Account Settings.');
+                session()->flash('error', 'Compte de TVA déductible non configuré. Renseignez-le dans les paramètres comptables.');
                 return redirect()->back();
             }
 
@@ -1488,7 +1488,7 @@ class MaterialReceptionController extends Controller
             //start credit acc_employee operations
             if (empty($dataCashOutFlow->employe->cash_out_account_id)) {
                 DB::rollback();
-                session()->flash('error', 'Cash Out Account ID not found for the employee ('.$dataCashOutFlow->employe->firstname.') Please configure cash_out_account_id for the employee.');
+                session()->flash('error', 'Compte de sortie de fonds introuvable pour l\'employé ('.$dataCashOutFlow->employe->firstname.'). Renseignez-le sur la fiche employé.');
                 return redirect()->back();
             }
 
@@ -1585,7 +1585,7 @@ class MaterialReceptionController extends Controller
 
             if (empty($vat_deduc_account_id)) {
                 DB::rollback();
-                session()->flash('error', 'Account ID for VAT deduction not configured. Please configure vat_deduc_account_id in Account Settings.');
+                session()->flash('error', 'Compte de TVA déductible non configuré. Renseignez-le dans les paramètres comptables.');
                 return redirect()->back();
             }
 
@@ -1610,7 +1610,7 @@ class MaterialReceptionController extends Controller
             //start credit operations
             if (empty($reception->supplier->account_id)) {
                 DB::rollback();
-                session()->flash('error', 'Account ID not found for the supplier. Please configure account_id for the supplier.');
+                session()->flash('error', 'Compte fournisseur introuvable. Renseignez-le sur la fiche fournisseur.');
                 return redirect()->back();
             }
 

@@ -76,7 +76,7 @@
                                     <th width="10%">Prime de fonction</th>
                                     <th width="10%">Rémuneration brute</th>
                                     <th width="10%">INSS Employé</th>
-                                    <th width="10%">Assurance Maladie Employé</th>
+                                    {{-- <th width="10%">Assurance Maladie Employé</th> --}}
                                     <th width="10%">Base IPR</th>
                                     <th width="10%">Rabatmt</th>
                                     <th width="10%">IRE [0%,20%,30%]</th>
@@ -101,9 +101,10 @@
                                     @endphp
                                     <td>{{ number_format($remuneration_brute,0,',',' ') }}</td>
                                     <td>{{ number_format($journal_impot->somme_cotisation_inss,0,',',' ') }}</td>
-                                    <td>{{ number_format($journal_impot->assurance_maladie_employe,0,',',' ') }}</td>
+                                    {{-- <td>{{ number_format($journal_impot->assurance_maladie_employe,0,',',' ') }}</td> --}}
                                     @php
-                                        $base_imposable = $remuneration_brute - $journal_impot->indemnite_deplacement - $journal_impot->indemnite_logement - $journal_impot->somme_cotisation_inss - $journal_impot->assurance_maladie_employe - $journal_impot->allocation_familiale; 
+                                        $base_imposable = $remuneration_brute - $journal_impot->indemnite_deplacement - $journal_impot->indemnite_logement - $journal_impot->somme_cotisation_inss - $journal_impot->allocation_familiale;
+                                        // - $journal_impot->assurance_maladie_employe
                                     @endphp
                                     <td>{{ number_format($base_imposable,0,',',' ') }}</td>
                                     <td></td>

@@ -61,6 +61,7 @@
                             <li class="nav-item"><a class="nav-link" id="material-tab" data-toggle="tab" href="#material" role="tab">@lang('messages.Material Accounts')</a></li>
                             <li class="nav-item"><a class="nav-link" id="payslip-tab" data-toggle="tab" href="#payslip" role="tab">@lang('messages.Pay Slip Accounts')</a></li>
                             <li class="nav-item"><a class="nav-link" id="complementary-tab" data-toggle="tab" href="#complementary" role="tab">@lang('messages.Complementary Accounts')</a></li>
+                            <li class="nav-item"><a class="nav-link" id="closing-tab" data-toggle="tab" href="#closing" role="tab">Clôture d'exercice</a></li>
                             <li class="nav-item"><a class="nav-link" id="production-tab" data-toggle="tab" href="#production" role="tab">@lang('messages.Production account')</a></li>
                         </ul>
 
@@ -289,6 +290,32 @@
                                     </div>
                                     <div class="col-md-6">
                                         @include('backend.pages.accounting.account_setting._account_search', ['name' => 'adv_payment_account_id', 'label' => __('messages.Advance payment Account'), 'required' => false, 'value_id' => old('adv_payment_account_id', $setting->adv_payment_account_id)])
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="closing" role="tabpanel">
+                                <p class="text-muted small">Comptes utilisés par la clôture en 4 étapes (amortissements → résultat → RAN → verrouillage).</p>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        @include('backend.pages.accounting.account_setting._account_search', ['name' => 'result_account_id', 'label' => 'Compte de résultat (12)', 'required' => false, 'value_id' => old('result_account_id', $setting->result_account_id ?: $setting->profit_account_id)])
+                                    </div>
+                                    <div class="col-md-4">
+                                        @include('backend.pages.accounting.account_setting._account_search', ['name' => 'ran_profit_account_id', 'label' => 'Report à nouveau bénéfice (120)', 'required' => false, 'value_id' => old('ran_profit_account_id', $setting->ran_profit_account_id ?: $setting->retained_earnings_account_id)])
+                                    </div>
+                                    <div class="col-md-4">
+                                        @include('backend.pages.accounting.account_setting._account_search', ['name' => 'ran_loss_account_id', 'label' => 'Report à nouveau perte (129)', 'required' => false, 'value_id' => old('ran_loss_account_id', $setting->ran_loss_account_id)])
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-md-4">
+                                        @include('backend.pages.accounting.account_setting._account_search', ['name' => 'profit_account_id', 'label' => 'Compte bénéfice (legacy)', 'required' => false, 'value_id' => old('profit_account_id', $setting->profit_account_id)])
+                                    </div>
+                                    <div class="col-md-4">
+                                        @include('backend.pages.accounting.account_setting._account_search', ['name' => 'loss_account_id', 'label' => 'Compte perte (legacy)', 'required' => false, 'value_id' => old('loss_account_id', $setting->loss_account_id)])
+                                    </div>
+                                    <div class="col-md-4">
+                                        @include('backend.pages.accounting.account_setting._account_search', ['name' => 'retained_earnings_account_id', 'label' => 'Report à nouveau (legacy)', 'required' => false, 'value_id' => old('retained_earnings_account_id', $setting->retained_earnings_account_id)])
                                     </div>
                                 </div>
                             </div>

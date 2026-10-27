@@ -94,15 +94,13 @@
                                 <div class="form-group">
                                     <label for="item_movement_type">@lang('messages.Type Sortie')</label>
                                     <select class="form-control" name="item_movement_type" id="item_movement_type" required>
-                                        <option value="SN" {{ $stockout->item_movement_type == 'SN' ? 'selected' : '' }}>SN - Sortie Normale</option>
+                                        <option value="SAU" {{ in_array($stockout->item_movement_type ?? '', ['', 'SAU', 'SN'], true) ? 'selected' : '' }}>SAU - Sortie Autre</option>
                                         <option value="SP" {{ $stockout->item_movement_type == 'SP' ? 'selected' : '' }}>SP - Sortie Perte</option>
                                         <option value="SV" {{ $stockout->item_movement_type == 'SV' ? 'selected' : '' }}>SV - Sortie Vol</option>
                                         <option value="SC" {{ $stockout->item_movement_type == 'SC' ? 'selected' : '' }}>SC - Sortie Casse</option>
                                         @if (Auth::guard('admin')->user()->can('finished_goods_stockout.edit'))
                                         <option value="SAJ" {{ $stockout->item_movement_type == 'SAJ' ? 'selected' : '' }}>SAJ - Sortie Ajustement</option>
-                                        @endif
-                                        <option value="SAU" {{ $stockout->item_movement_type == 'SAU' ? 'selected' : '' }}>SAU - Sortie Autre</option>
-                                    </select>
+                                        @endif                                    </select>
                                 </div>
                             </div>
                         </div>

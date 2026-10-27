@@ -50,7 +50,62 @@ class EmployeController extends Controller
 
 
         $employes = HrEmploye::with(['account', 'cashOutAccount'])->where('company_id',$company_id)->get();
-        return view('backend.pages.hr.employe.index',compact('employes','company_id'));
+        $meMatriculeCount = HrEmploye::where('matricule_no', 'LIKE', 'ME%')->count();
+        return view('backend.pages.hr.employe.index',compact('employes','company_id','meMatriculeCount'));
+    }
+
+    /**
+     * Remplace le préfixe ME par SOV sur tous les matricules déjà enregistrés.
+     */
+    public function replaceMatriculePrefix($company_id)
+    {
+        if (is_null($this->user) || !$this->user->can('hr_employe.edit')) {
+            abort(403, 'Pardon!! vous n\'avez pas l\'autorisation de modifier les employés! Mufise ico mubaza hamagara kuri 130 canke 122');
+        }
+
+        $employes = HrEmploye::where('matricule_no', 'LIKE', 'ME%')->orderBy('id')->get();
+
+        if ($employes->isEmpty()) {
+            session()->flash('error', 'Aucun employé avec un matricule commençant par ME.');
+            return redirect()->route('admin.hr-employes.index', $company_id);
+        }
+
+        $updates = [];
+        $conflicts = [];
+        foreach ($employes as $employe) {
+            if (!preg_match('/^ME(\d+)$/i', (string) $employe->matricule_no, $matches)) {
+                $conflicts[] = $employe->matricule_no . ' (format inattendu)';
+                continue;
+            }
+
+            $newMatricule = 'SOV' . $matches[1];
+            $exists = HrEmploye::where('matricule_no', $newMatricule)
+                ->where('id', '!=', $employe->id)
+                ->exists();
+
+            if ($exists || isset($updates[$newMatricule])) {
+                $conflicts[] = $employe->matricule_no . ' → ' . $newMatricule;
+                continue;
+            }
+
+            $updates[$newMatricule] = $employe;
+        }
+
+        if (!empty($conflicts)) {
+            session()->flash('error', 'Aucun matricule modifié. Conflit : ' . implode(', ', $conflicts));
+            return redirect()->route('admin.hr-employes.index', $company_id);
+        }
+
+        DB::transaction(function () use ($updates) {
+            foreach ($updates as $newMatricule => $employe) {
+                $employe->matricule_no = $newMatricule;
+                $employe->save();
+            }
+        });
+
+        session()->flash('success', count($updates) . ' matricule(s) mis à jour : le préfixe ME a été remplacé par SOV.');
+
+        return redirect()->route('admin.hr-employes.index', $company_id);
     }
     public function create()
     {
@@ -148,9 +203,9 @@ class EmployeController extends Controller
 
             $latest = HrEmploye::latest()->first();
             if ($latest) {
-               $matricule_no = 'ME' . (str_pad((int)$latest->id + 1, 4, '0', STR_PAD_LEFT)); 
+               $matricule_no = 'SOV' . (str_pad((int)$latest->id + 1, 4, '0', STR_PAD_LEFT)); 
             }else{
-               $matricule_no = 'ME' . (str_pad((int)0 + 1, 4, '0', STR_PAD_LEFT));  
+               $matricule_no = 'SOV' . (str_pad((int)0 + 1, 4, '0', STR_PAD_LEFT));  
             }
 
         $employe = new HrEmploye();

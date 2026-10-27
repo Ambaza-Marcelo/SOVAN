@@ -156,6 +156,7 @@
                                     <td>{{ number_format(floor($data->inss_employeur),0,',',' ') }}</td>
                                 </tr>
                             </tbody>
+                            {{-- Assurance maladie désactivée
                             <tbody>
                                 <tr>
                                     <td>ASSURANCE MALADIE</td>
@@ -183,6 +184,7 @@
                                     <td>{{ number_format($data->assurance_maladie_employeur,0,',',' ') }}</td>
                                 </tr>
                             </tbody>
+                            --}}
                             <tbody>
                                 <tr>
                                     <td>SOINS MEDICAUX</td>
@@ -196,16 +198,16 @@
                                 <tr>
                                     @php
 
-                                        if($salaire_brut < 250000){
-                                            $assurance_maladie = 0;
-                                        }else{
-                                           $assurance_maladie = 6000; 
-                                        }
+                                        // if($salaire_brut < 250000){
+                                        //     $assurance_maladie = 0;
+                                        // }else{
+                                        //    $assurance_maladie = 6000;
+                                        // }
 
                                         $salaire_brut = ($data->somme_salaire_base + $data->indemnite_deplacement + $data->indemnite_logement + $data->prime_fonction + $data->allocation_familiale);
 
 
-                                        $base_imposable = $salaire_brut - $data->indemnite_deplacement - $data->indemnite_logement - $data->somme_cotisation_inss - $data->assurance_maladie_employe; 
+                                        $base_imposable = $salaire_brut - $data->indemnite_deplacement - $data->indemnite_logement - $data->somme_cotisation_inss; // - $data->assurance_maladie_employe; 
 
                                         if ($base_imposable >= 0 && $base_imposable <= 150000) {
                                         $somme_impot = 0;
@@ -246,7 +248,7 @@
                                     <td>{{ number_format($salaire_brut,0,',',' ') }}</td>
                                     <td></td>
                                     @php
-                                            $total_deductions = $data->somme_cotisation_inss + $data->assurance_maladie_employe + $data->somme_impot + $data->retenue_pret + $data->soins_medicaux + $data->autre_retenue;
+                                            $total_deductions = $data->somme_cotisation_inss + $data->somme_impot + $data->retenue_pret + $data->soins_medicaux + $data->autre_retenue; // + $data->assurance_maladie_employe;
                                     @endphp
                                     <td>{{ number_format($total_deductions,0,',',' ') }}</td>
                                     <td></td>

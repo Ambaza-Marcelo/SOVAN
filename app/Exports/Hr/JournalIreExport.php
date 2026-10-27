@@ -52,11 +52,11 @@ class JournalIreExport implements FromCollection, WithMapping, WithHeadings
         }
 
 
-        $total_deductions = $data->somme_cotisation_inss + $data->assurance_maladie_employe + $data->somme_impot + $data->retenue_pret + $data->soins_medicaux + $data->autre_retenue;
+        $total_deductions = $data->somme_cotisation_inss + $data->somme_impot + $data->retenue_pret + $data->soins_medicaux + $data->autre_retenue; // + $data->assurance_maladie_employe
         $net_a_payer = $remuneration_brute - $total_deductions;
 
 
-        $base_imposable = ($remuneration_brute - $data->indemnite_logement - $data->indemnite_deplacement - $inss - $data->assurance_maladie_employe);
+        $base_imposable = ($remuneration_brute - $data->indemnite_logement - $data->indemnite_deplacement - $inss); // - $data->assurance_maladie_employe
 
         if ($base_imposable >= 0 && $base_imposable <= 150000) {
                 $somme_impot = 0;

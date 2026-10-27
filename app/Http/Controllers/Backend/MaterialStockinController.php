@@ -31,6 +31,7 @@ use App\Services\Stock\StockCumpCalculator;
 use App\Models\Accounting\AccountLedger;
 use App\Models\Accounting\AccountAccount;
 use App\Models\Accounting\AccountSetting;
+use App\Services\Material\MaterialFlowOrchestrator;
 use Carbon\Carbon;
 use PDF;
 use Validator;
@@ -870,8 +871,22 @@ class MaterialStockinController extends Controller
         $reportExtraBigStoreData = [];
         $reportSmallStoreData = [];
         $flag_md = 0;
+        $orchestrator = app(MaterialFlowOrchestrator::class);
+        $immaterialActivations = [];
 
         foreach($datas as $data){
+
+                $materialModel = Material::find($data->material_id);
+                if ($materialModel && !$orchestrator->affectsPhysicalStock($materialModel)) {
+                    // CAS 2 : non stockable + amortissable — pas de mouvement physique
+                    $amount = (float) ($data->total_amount_purchase ?? (($data->quantity ?? 0) * ($data->purchase_price ?? 0)));
+                    $immaterialActivations[] = [
+                        'material' => $materialModel,
+                        'detail' => $data,
+                        'amount' => $amount,
+                    ];
+                    continue;
+                }
 
                 if ($data->store_type == 'md') {
                     $code_store_destination = MaterialBigStore::where('id',$data->dest_bg_store_id)->value('code');
@@ -941,6 +956,8 @@ class MaterialStockinController extends Controller
                         $flag_md = 1;
                         }else{
                             $flag_md = 0;
+                            DB::rollback();
+                            DB::rollback();
                             session()->flash('error', 'this item is not saved in the stock');
                             return back();
                         }
@@ -1013,6 +1030,7 @@ class MaterialStockinController extends Controller
                         $flag_md = 1;
                         }else{
                             $flag_md = 0;
+                            DB::rollback();
                             session()->flash('error', 'this item is not saved in the stock');
                             return back();
                         }
@@ -1086,20 +1104,25 @@ class MaterialStockinController extends Controller
                         $flag_md = 1;
                         }else{
                             $flag_md = 0;
+                            DB::rollback();
                             session()->flash('error', 'this item is not saved in the stock');
                             return back();
                         }
 
                 }else{
-                     session()->flash('error', 'OOPS! Something wrong');
+                    DB::rollback();
+                    session()->flash('error', 'OOPS! Something wrong');
                     return back();
                 }
   
         }
 
-        $totalValue = DB::table('material_stockin_details')
-            ->where('stockin_no', '=', $stockin_no)
-            ->sum('total_amount_purchase');
+        // Valeur classe 3 = uniquement les lignes stockables (exclut CAS 2 immobilisations)
+        $totalValue = 0.0;
+        foreach (array_merge($reportBigStoreData, $reportExtraBigStoreData, $reportSmallStoreData) as $reportRow) {
+            $totalValue += (float) ($reportRow['value_stockin'] ?? 0);
+        }
+        $totalValue = round($totalValue, 2);
 
         // Insert reports based on store type
         if (!empty($reportBigStoreData) && $flag_md != 0) {
@@ -1180,6 +1203,65 @@ class MaterialStockinController extends Controller
                 AccountJournalEntryDetail::insert($insert_journal_credit_eaj_data_acc2);
             
                 //end credit operation
+        }
+
+        // CAS 2 : immobilisation + mise en service / plan d'amortissement
+        if (!empty($immaterialActivations)) {
+            $m_eaj_account_id = AccountSetting::where('active',1)->value('m_eaj_account_id');
+            if (empty($m_eaj_account_id)) {
+                DB::rollback();
+                session()->flash('error', __('messages.approval_accounts_required'));
+                return redirect()->back();
+            }
+            $insertImmobilisationJournal = [];
+            $approvalDate = \Carbon\Carbon::now();
+            foreach ($immaterialActivations as $row) {
+                $mat = $row['material'];
+                $detail = $row['detail'];
+                $amount = (float) $row['amount'];
+                if ($amount <= 0) {
+                    continue;
+                }
+                try {
+                    $debitAccountId = $orchestrator->resolveStockinDebitAccountId($mat, null);
+                } catch (\Throwable $ex) {
+                    DB::rollback();
+                    session()->flash('error', $ex->getMessage());
+                    return redirect()->back();
+                }
+
+                $debitLedger = $this->updateLedgerTotals($debitAccountId, 'debit', $amount);
+                $creditLedger = $this->updateLedgerTotals((int) $m_eaj_account_id, 'credit', $amount);
+
+                $insertImmobilisationJournal[] = [
+                    'date' => $detail->date,
+                    'document_no' => $detail->stockin_no,
+                    'description' => $detail->description,
+                    'account_id' => $debitAccountId,
+                    'libelle' => ($detail->description ?? '') . ' - Immobilisation ' . $mat->name,
+                    'debit' => $amount,
+                    'credit' => 0,
+                    'balance' => $debitLedger['balance'],
+                    'created_at' => \Carbon\Carbon::now(),
+                ];
+                $insertImmobilisationJournal[] = [
+                    'date' => $detail->date,
+                    'document_no' => $detail->stockin_no,
+                    'description' => $detail->description,
+                    'account_id' => (int) $m_eaj_account_id,
+                    'libelle' => ($detail->description ?? '') . ' - Immobilisation ' . $mat->name,
+                    'debit' => 0,
+                    'credit' => $amount,
+                    'balance' => $creditLedger['balance'],
+                    'created_at' => \Carbon\Carbon::now(),
+                ];
+
+                // CAS 2 : service_start_date = date d'approbation + plan linéaire immédiat
+                $orchestrator->activateOnApprovedEntry($mat, $approvalDate, $amount);
+            }
+            if (!empty($insertImmobilisationJournal)) {
+                AccountJournalEntryDetail::insert($insertImmobilisationJournal);
+            }
         }
 
         MaterialStockin::where('stockin_no', '=', $stockin_no)

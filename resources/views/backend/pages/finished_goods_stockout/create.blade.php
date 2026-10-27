@@ -101,15 +101,13 @@
                                 <div class="form-group">
                                     <label for="item_movement_type">@lang('messages.Type Sortie')</label>
                                     <select class="form-control" name="item_movement_type" id="item_movement_type" required>
-                                    <option disabled="disabled" selected="selected">@lang('messages.Merci de choisir')</option>
-                                        <option value="SN">@lang('messages.SN - Sortie Normale')</option>
+                                        <option value="SAU" selected="selected">@lang('messages.SAU - Sortie Autre')</option>
                                         <option value="SP">@lang('messages.SP - Sortie Perte')</option>
                                         <option value="SV">@lang('messages.SV - Sortie Vol')</option>
                                         <option value="SC">@lang('messages.SC - Sortie Casse')</option>
                                         @if (Auth::guard('admin')->user()->can('finished_goods_stockout.edit'))
                                         <option value="SAJ">@lang('messages.SAJ - Sortie Ajustement')</option>
                                         @endif
-                                        <option value="SAU">@lang('messages.SAU - Sortie Autre')</option>
                                 </select>
                                 </div>
                             </div>

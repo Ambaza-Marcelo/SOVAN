@@ -35,7 +35,7 @@ class ChartAccount implements FromCollection, WithStyles, WithColumnWidths, With
     public function collection()
     {
         $setting = Setting::first();
-        $companyName = $setting ? ($setting->name ?? $setting->company_name ?? 'MUSUMBA ELCOM') : 'MUSUMBA ELCOM';
+        $companyName = $setting ? ($setting->name ?? $setting->company_name ?? 'SOVAN') : 'SOVAN';
         $title = 'PLAN COMPTABLE DE LA SOCIETE ' . strtoupper($companyName);
 
         $rows = collect([

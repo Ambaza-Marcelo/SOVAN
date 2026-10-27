@@ -1,6 +1,7 @@
 <?php
 namespace App\Models\Accounting;
 
+use App\Services\Accounting\JournalPostingService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -25,10 +26,33 @@ class AccountJournalEntryDetail extends Model
         'credit',
         'debit',
         'balance',
+        'exercise_id',
+        'period_id',
     ];
+
+    /**
+     * Intercepte tous les insert() existants : garde-fou période + estampillage exercice.
+     *
+     * @param  array  $values
+     * @return bool
+     */
+    public static function insert(array $values)
+    {
+        return app(JournalPostingService::class)->insert($values);
+    }
 
     public function account(){
         return $this->belongsTo('App\Models\Accounting\AccountAccount');
+    }
+
+    public function exercise()
+    {
+        return $this->belongsTo(AccountExercise::class, 'exercise_id');
+    }
+
+    public function period()
+    {
+        return $this->belongsTo(AccountPeriod::class, 'period_id');
     }
 
     /**

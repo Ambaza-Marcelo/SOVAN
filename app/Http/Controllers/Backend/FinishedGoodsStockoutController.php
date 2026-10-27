@@ -20,6 +20,7 @@ use App\Models\FinishedGoodReport;
 use App\Models\Accounting\AccountJournalEntryDetail;
 use App\Models\Accounting\AccountLedger;
 use App\Models\Accounting\AccountSetting;
+use App\Services\Stock\SauStockoutJournalService;
 use Carbon\Carbon;
 use PDF;
 use Validator;
@@ -166,7 +167,7 @@ class FinishedGoodsStockoutController extends Controller
             'quantity.*'  => 'required',
             'asker'  => 'required',
             'destination'  => 'required',
-            'item_movement_type'  => 'required|in:SN,SP,SV,SC,SAJ,SAU',
+            'item_movement_type'  => 'nullable|in:SAU,SP,SV,SC,SAJ',
             'store_type' => 'required|in:MAIN,SM',
             'finished_g_store_id'  => 'required_if:store_type,MAIN',
             'finished_g_sm_store_id'  => 'required_if:store_type,SM',
@@ -193,7 +194,7 @@ class FinishedGoodsStockoutController extends Controller
             $finished_g_store_id = $request->finished_g_store_id;
             $finished_g_sm_store_id = $request->finished_g_sm_store_id;
             $description = $request->description; 
-            $item_movement_type = $request->item_movement_type; 
+            $item_movement_type = SauStockoutJournalService::normalizeType($request->item_movement_type); 
             $requisition_no = $request->requisition_no;
             $quantity = $request->quantity;
 
@@ -379,7 +380,7 @@ class FinishedGoodsStockoutController extends Controller
             'quantity.*'  => 'required',
             'asker'  => 'required',
             'destination'  => 'required',
-            'item_movement_type'  => 'required|in:SN,SP,SV,SC,SAJ,SAU',
+            'item_movement_type'  => 'nullable|in:SAU,SP,SV,SC,SAJ',
             'store_type' => 'required|in:MAIN,SM',
             'finished_g_store_id'  => 'required_if:store_type,MAIN',
             'finished_g_sm_store_id'  => 'required_if:store_type,SM',
@@ -406,7 +407,7 @@ class FinishedGoodsStockoutController extends Controller
             $finished_g_store_id = $request->finished_g_store_id;
             $finished_g_sm_store_id = $request->finished_g_sm_store_id;
             $description = $request->description; 
-            $item_movement_type = $request->item_movement_type; 
+            $item_movement_type = SauStockoutJournalService::normalizeType($request->item_movement_type); 
             $requisition_no = $request->requisition_no;
             $quantity = $request->quantity;
 
@@ -640,8 +641,20 @@ class FinishedGoodsStockoutController extends Controller
                 return back();
             }
 
+            $sauService = app(SauStockoutJournalService::class);
+            $movementType = SauStockoutJournalService::normalizeType($stockout->item_movement_type);
+            try {
+                $sauService->assertDirectStockoutType($movementType);
+            } catch (\RuntimeException $ex) {
+                session()->flash('error', $ex->getMessage());
+
+                return back();
+            }
+            $isSau = $movementType === SauStockoutJournalService::SAU;
+
             $accountSetting = \App\Models\Accounting\AccountSetting::where('active', 1)->first();
-            if (!$finished_goods_store->default_account_id || !$accountSetting || !$accountSetting->f_saj_account_id) {
+            if (!$finished_goods_store->default_account_id
+                || (!$isSau && (!$accountSetting || !$accountSetting->f_saj_account_id))) {
                 session()->flash('error', __('messages.approval_accounts_required'));
 
                 return back();
@@ -680,6 +693,9 @@ class FinishedGoodsStockoutController extends Controller
                 $valueStockout = floatval($data->total_cost_value);
                 $quantityTotal = $quantityStockInitial - $quantityStockout;
                 $currentCump = (float) ($storeDetail->cump ?? 0);
+                if ($isSau && $currentCump > 0) {
+                    $valueStockout = round($currentCump * $quantityStockout, 2);
+                }
 
                 $currency = $stockout->item_purchase_or_sale_currency ?: 'BIF';
                 $movementDate = $data->date
@@ -734,6 +750,23 @@ class FinishedGoodsStockoutController extends Controller
             }
             */
 
+            $resolvedSauLines = [];
+            if ($isSau) {
+                try {
+                    $resolvedSauLines = $sauService->resolveLines(array_map(function ($row) {
+                        return [
+                            'item' => $row['data']->item,
+                            'amount' => $row['valueStockout'],
+                            'label' => (string) ($row['data']->item->name ?? ''),
+                        ];
+                    }, $prepared));
+                } catch (\RuntimeException $ex) {
+                    session()->flash('error', $ex->getMessage());
+
+                    return back();
+                }
+            }
+
             DB::beginTransaction();
 
             try {
@@ -776,7 +809,13 @@ class FinishedGoodsStockoutController extends Controller
                 }
 
                 $stock_account_id = $finished_goods_store->default_account_id;
-                if ($stock_account_id) {
+                if ($isSau) {
+                    $sauService->post($stock_account_id, $resolvedSauLines, [
+                        'date' => $stockout->date,
+                        'document_no' => $stockout_no,
+                        'description' => $stockout->description,
+                    ]);
+                } elseif ($stock_account_id) {
                     $stockLedgerState = $this->updateLedgerTotals($stock_account_id, 'credit', $totalValue);
 
                     $journalEntryCredit = new AccountJournalEntryDetail();
@@ -792,7 +831,7 @@ class FinishedGoodsStockoutController extends Controller
                 }
 
                 $accountSetting = AccountSetting::where('active', 1)->first();
-                if ($accountSetting && $accountSetting->f_saj_account_id) {
+                if (!$isSau && $accountSetting && $accountSetting->f_saj_account_id) {
                     $sajLedgerState = $this->updateLedgerTotals($accountSetting->f_saj_account_id, 'debit', $totalValue);
 
                     $journalEntryDebit = new AccountJournalEntryDetail();

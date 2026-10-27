@@ -56,6 +56,12 @@ class AccountSetting extends Model
         'currency_id',
         'bank_statements_source',
         'exercise_id',
+        'profit_account_id',
+        'loss_account_id',
+        'retained_earnings_account_id',
+        'result_account_id',
+        'ran_profit_account_id',
+        'ran_loss_account_id',
         'prod_bg_account_id',
         'prod_sm_account_id'
     ];
@@ -68,5 +74,46 @@ class AccountSetting extends Model
     public function account()
     {
         return $this->belongsTo('App\Models\Accounting\AccountAccount');
+    }
+
+    public function resultAccount()
+    {
+        return $this->belongsTo(AccountAccount::class, 'result_account_id');
+    }
+
+    public function ranProfitAccount()
+    {
+        return $this->belongsTo(AccountAccount::class, 'ran_profit_account_id');
+    }
+
+    public function ranLossAccount()
+    {
+        return $this->belongsTo(AccountAccount::class, 'ran_loss_account_id');
+    }
+
+    /**
+     * Compte de résultat (12) — fallback sur profit_account_id.
+     */
+    public function resolvedResultAccountId()
+    {
+        return $this->result_account_id ?: $this->profit_account_id;
+    }
+
+    /**
+     * Report à nouveau bénéfice (120) — fallback sur retained_earnings_account_id.
+     */
+    public function resolvedRanProfitAccountId()
+    {
+        return $this->ran_profit_account_id ?: $this->retained_earnings_account_id;
+    }
+
+    /**
+     * Report à nouveau perte (129) — fallback RAN bénéfice.
+     */
+    public function resolvedRanLossAccountId()
+    {
+        return $this->ran_loss_account_id
+            ?: $this->ran_profit_account_id
+            ?: $this->retained_earnings_account_id;
     }
 }

@@ -43,6 +43,14 @@
                 <div class="card-body">
                     <h4 class="header-title float-left">@lang('messages.materials')</h4>
                     <p class="float-right mb-2">
+                        @if (Auth::guard('admin')->user()->can('material.view'))
+                            <a class="btn btn-success btn-sm text-white" href="{{ route('admin.immobilisations.export-excel') }}" title="Registre des immobilisations + plans d'amortissement">
+                                <i class="fa fa-file-excel-o"></i> Registre immo. Excel
+                            </a>
+                            <a class="btn btn-info btn-sm text-white" href="{{ route('admin.immobilisations.export-pdf') }}" target="_blank" title="Registre des immobilisations + plans d'amortissement">
+                                <i class="fa fa-file-pdf-o"></i> Registre immo. PDF
+                            </a>
+                        @endif
                         @if (Auth::guard('admin')->user()->can('material.create'))
                             <a class="btn btn-primary text-white" href="{{ route('admin.materials.create') }}">@lang('messages.new')</a>
                         @endif
@@ -68,7 +76,18 @@
                                @foreach ($materials as $material)
                                <tr>
                                     <td>{{ $loop->index+1 }}</td>
-                                    <td>{{ $material->name }}</td>
+                                    <td>{{ $material->name }}
+                                        <div class="mt-1">
+                                            @if($material->is_stockable ?? true)
+                                                <span class="badge badge-secondary">Stockable</span>
+                                            @else
+                                                <span class="badge badge-light">Non stockable</span>
+                                            @endif
+                                            @if($material->is_amortizable)
+                                                <span class="badge badge-info">Amortissable</span>
+                                            @endif
+                                        </div>
+                                    </td>
                                     <td>{{ $material->code }}</td>
                                     <td>{{ $material->code_store }}</td>
                                     <td>{{ $material->quantity }}</td>
@@ -76,6 +95,11 @@
                                     <td>{{ number_format($material->purchase_price,0,',',' ') }}</td>
                                     <td>@if($material->account) {{ $material->account->account_number }}-{{ $material->account->account_name }} @else - @endif</td>
                                     <td>
+                                        @if (Auth::guard('admin')->user()->can('material.view') && $material->is_amortizable)
+                                            <a class="btn btn-info text-white btn-sm" href="{{ route('admin.materials.depreciation', $material->id) }}" title="Plan d'amortissement">
+                                                Amortissement
+                                            </a>
+                                        @endif
                                         @if (Auth::guard('admin')->user()->can('material.edit'))
                                             <a class="btn btn-success text-white" href="{{ route('admin.materials.edit', $material->id) }}">@lang('messages.edit')</a>
                                         @endif

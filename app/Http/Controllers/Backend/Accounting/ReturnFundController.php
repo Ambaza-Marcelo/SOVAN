@@ -472,7 +472,7 @@ class ReturnFundController extends Controller
         // 1) Avance sur salaire → crédit employe->account_id
         if (!empty($loanId) && !empty($employeId)) {
             if (!$employe || empty($employe->account_id)) {
-                throw new \Exception('Compte avance sur salaire introuvable. Configurez account_id sur la fiche employé.');
+                throw new \Exception('Compte avance sur salaire introuvable. Renseignez-le sur la fiche employé.');
             }
 
             return [
@@ -483,7 +483,7 @@ class ReturnFundController extends Controller
         // 2) Achat en espèces → crédit employe->cash_out_account_id
         if (!empty($employeId) && $flag2 === '1' && empty($loanId)) {
             if (!$employe || empty($employe->cash_out_account_id)) {
-                throw new \Exception('Compte sortie de fonds introuvable. Configurez cash_out_account_id sur la fiche employé.');
+                throw new \Exception('Compte de sortie de fonds introuvable. Renseignez-le sur la fiche employé.');
             }
 
             return [
@@ -494,7 +494,7 @@ class ReturnFundController extends Controller
         // 3) Achat au crédit → crédit supplier->account_id
         if (!empty($supplierId)) {
             if (!$supplier || empty($supplier->account_id)) {
-                throw new \Exception('Compte fournisseur introuvable. Configurez account_id sur la fiche fournisseur.');
+                throw new \Exception('Compte fournisseur introuvable. Renseignez-le sur la fiche fournisseur.');
             }
 
             return [
@@ -524,7 +524,7 @@ class ReturnFundController extends Controller
 
             foreach ($expenseDetails as $index => $line) {
                 if (empty($line->expense) || empty($line->expense->default_account_id)) {
-                    throw new \Exception('Compte de charge introuvable. Configurez default_account_id sur le type de dépense.');
+                    throw new \Exception('Compte de charge introuvable. Renseignez-le sur la fiche du type de dépense.');
                 }
 
                 $accountId = (int) $line->expense->default_account_id;

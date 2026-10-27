@@ -172,11 +172,13 @@
                                                         </a>
                                                     @endif
                                                 @else
+                                                    {{-- Création de facture depuis le BL désactivée pour éviter la double facturation
                                                     @if (Auth::guard('admin')->user()->can('invoice.create'))
                                                         <a class="btn btn-success btn-sm text-white" href="{{ route('admin.invoice.create', $delivery_note->delivery_number) }}" title="@lang('messages.Créer Facture')">
                                                             <i class="fa fa-file-invoice"></i> @lang('messages.Facture')
                                                         </a>
                                                     @endif
+                                                    --}}
                                                 @endif
                                             @endif
                                             

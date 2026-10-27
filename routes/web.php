@@ -209,6 +209,11 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('Egotek/materials/store', 'Backend\MaterialController@store')->name('admin.materials.store');
     Route::get('Egotek/materials/edit/{id}', 'Backend\MaterialController@edit')->name('admin.materials.edit');
     Route::put('Egotek/materials/update/{id}', 'Backend\MaterialController@update')->name('admin.materials.update');
+    Route::get('Egotek/materials/{id}/depreciation', 'Backend\MaterialController@depreciation')->name('admin.materials.depreciation');
+    Route::get('Egotek/materials/{id}/depreciation/excel', 'Backend\MaterialController@exportDepreciationExcel')->name('admin.materials.depreciation.export-excel');
+    Route::get('Egotek/materials/{id}/depreciation/pdf', 'Backend\MaterialController@exportDepreciationPdf')->name('admin.materials.depreciation.export-pdf');
+    Route::get('Egotek/immobilisations/export-excel', 'Backend\ImmobilisationExportController@exportExcel')->name('admin.immobilisations.export-excel');
+    Route::get('Egotek/immobilisations/export-pdf', 'Backend\ImmobilisationExportController@exportPdf')->name('admin.immobilisations.export-pdf');
     Route::delete('Egotek/materials/destroy/{id}', 'Backend\MaterialController@destroy')->name('admin.materials.destroy');
     Route::post('Egotek/materials/toggle-status/{id}', 'Backend\MaterialController@toggleStatus')->name('admin.materials.toggle-status');
 
@@ -1030,6 +1035,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::put('hr-employes/update/{id}', 'Backend\Hr\EmployeController@update')->name('admin.hr-employes.update');
     Route::delete('hr-employes/destroy/{id}', 'Backend\Hr\EmployeController@destroy')->name('admin.hr-employes.destroy');
 
+    Route::post('hr-employes/replace-matricule-prefix/{company_id}', 'Backend\Hr\EmployeController@replaceMatriculePrefix')->name('admin.hr-employes.replace-matricule-prefix');
     Route::get('hr-employes/exportToExcel/{company_id}', 'Backend\Hr\EmployeController@exportToExcel')->name('admin.hr-employes.exportToExcel');
     Route::get('hr-employes/search-accounts', 'Backend\Hr\EmployeController@searchAccounts')->name('admin.hr-employes.search-accounts');
     Route::get('hr-employes/{id}/image/{filename}', 'Backend\Hr\EmployeController@serveImage')->name('admin.hr-employes.image');
@@ -1311,6 +1317,23 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('accounting-settings/edit/{id}', 'Backend\Accounting\AccountSettingController@edit')->name('admin.accounting-settings.edit');
     Route::put('accounting-settings/update/{id}', 'Backend\Accounting\AccountSettingController@update')->name('admin.accounting-settings.update');
     Route::delete('accounting-settings/destroy/{id}', 'Backend\Accounting\AccountSettingController@destroy')->name('admin.accounting-settings.destroy');
+
+    //-----exercices / clôture comptable-----
+    Route::get('accounting/exercises/index', 'Backend\Accounting\AccountExerciseController@index')->name('admin.accounting-exercises.index');
+    Route::get('accounting/exercises/create', 'Backend\Accounting\AccountExerciseController@create')->name('admin.accounting-exercises.create');
+    Route::post('accounting/exercises/store', 'Backend\Accounting\AccountExerciseController@store')->name('admin.accounting-exercises.store');
+    Route::get('accounting/exercises/preview', 'Backend\Accounting\AccountExerciseController@preview')->name('admin.accounting-exercises.preview');
+    Route::post('accounting/exercises/close', 'Backend\Accounting\AccountExerciseController@close')->name('admin.accounting-exercises.close');
+    Route::get('accounting/exercises/preview-result', 'Backend\Accounting\AccountExerciseController@previewResult')->name('admin.accounting-exercises.preview-result');
+    Route::post('accounting/exercises/close-result', 'Backend\Accounting\AccountExerciseController@closeResult')->name('admin.accounting-exercises.close-result');
+    Route::get('accounting/exercises/preview-ran', 'Backend\Accounting\AccountExerciseController@previewRan')->name('admin.accounting-exercises.preview-ran');
+    Route::post('accounting/exercises/close-ran', 'Backend\Accounting\AccountExerciseController@closeRan')->name('admin.accounting-exercises.close-ran');
+    Route::post('accounting/exercises/lock', 'Backend\Accounting\AccountExerciseController@lock')->name('admin.accounting-exercises.lock');
+    Route::get('accounting/exercises/show/{id}', 'Backend\Accounting\AccountExerciseController@show')->name('admin.accounting-exercises.show');
+    Route::put('accounting/exercises/lock-period/{periodId}', 'Backend\Accounting\AccountExerciseController@lockPeriod')->name('admin.accounting-exercises.lock-period');
+    //-----exercices / clôture comptable-----
+    Route::get('accounting/sau-rectification', 'Backend\Accounting\SauRectificationController@index')->name('admin.accounting-sau-rectification.index');
+    Route::post('accounting/sau-rectification/apply', 'Backend\Accounting\SauRectificationController@apply')->name('admin.accounting-sau-rectification.apply');
 
     //cash outflow request routes
     Route::get('accounting/cash-out-flow-request/index', 'Backend\Accounting\CashOutFlowRequestController@index')->name('admin.cash-out-flow-request.index');

@@ -46,7 +46,7 @@
 <body>
 @php
     $employe = $data->employe ?? null;
-    $companyName = $setting->name ?? ($setting->company_name ?? 'MUSUMBA ELCOM');
+    $companyName = $setting->name ?? ($setting->company_name ?? 'SOVAN');
     $logoPath = public_path('img/logo.png');
     if (!file_exists($logoPath)) {
         $logoPath = public_path('img/logo.png');
@@ -64,27 +64,28 @@
         + (float)($data->prime_fonction ?? 0)
         + (float)($data->allocation_familiale ?? 0);
 
-    if ($salaire_brut >= 2000000) {
-        $base_assurance_maladie = 2000000;
-    } elseif ($salaire_brut >= 1000000) {
-        $base_assurance_maladie = 1000000;
-    } elseif ($salaire_brut >= 500000) {
-        $base_assurance_maladie = 500000;
-    } elseif ($salaire_brut >= 400000) {
-        $base_assurance_maladie = 400000;
-    } elseif ($salaire_brut >= 300000) {
-        $base_assurance_maladie = 300000;
-    } elseif ($salaire_brut >= 250000) {
-        $base_assurance_maladie = 250000;
-    } else {
-        $base_assurance_maladie = 200000;
-    }
+    // Assurance maladie désactivée.
+    // if ($salaire_brut >= 2000000) {
+    //     $base_assurance_maladie = 2000000;
+    // } elseif ($salaire_brut >= 1000000) {
+    //     $base_assurance_maladie = 1000000;
+    // } elseif ($salaire_brut >= 500000) {
+    //     $base_assurance_maladie = 500000;
+    // } elseif ($salaire_brut >= 400000) {
+    //     $base_assurance_maladie = 400000;
+    // } elseif ($salaire_brut >= 300000) {
+    //     $base_assurance_maladie = 300000;
+    // } elseif ($salaire_brut >= 250000) {
+    //     $base_assurance_maladie = 250000;
+    // } else {
+    //     $base_assurance_maladie = 200000;
+    // }
 
     $base_imposable = $salaire_brut
         - (float)($data->indemnite_deplacement ?? 0)
         - (float)($data->indemnite_logement ?? 0)
-        - (float)($data->somme_cotisation_inss ?? 0)
-        - (float)($data->assurance_maladie_employe ?? 0);
+        - (float)($data->somme_cotisation_inss ?? 0);
+        // - (float)($data->assurance_maladie_employe ?? 0);
 
     if ($base_imposable <= 150000) {
         $somme_impot_calc = 0;
@@ -100,7 +101,7 @@
     $somme_impot = (float)($data->somme_impot ?? $somme_impot_calc);
 
     $total_deductions = (float)($data->somme_cotisation_inss ?? 0)
-        + (float)($data->assurance_maladie_employe ?? 0)
+        // + (float)($data->assurance_maladie_employe ?? 0)
         + $somme_impot
         + (float)($data->retenue_pret ?? 0)
         + (float)($data->soins_medicaux ?? 0)
@@ -135,7 +136,7 @@
     <tr>
         <td style="width:22%; vertical-align:top;">
             @if($logoSrc)
-                <img src="{{ $logoSrc }}" width="125" height="85" alt="MUSUMBA ELCOM">
+                <img src="{{ $logoSrc }}" width="125" height="85" alt="SOVAN">
             @endif
         </td>
         <td style="width:48%; vertical-align:top; font-size:9px;">
@@ -250,6 +251,7 @@
             <td class="text-right">{{ $fmt($data->somme_cotisation_inss) }}</td>
             <td class="text-right">{{ $fmt(floor((float)($data->inss_employeur ?? 0))) }}</td>
         </tr>
+        {{-- Assurance maladie désactivée
         <tr>
             <td>ASSURANCE MALADIE</td>
             <td class="text-right">{{ $fmt($base_assurance_maladie) }}</td>
@@ -257,6 +259,7 @@
             <td class="text-right">{{ $fmt($data->assurance_maladie_employe) }}</td>
             <td class="text-right">{{ $fmt($data->assurance_maladie_employeur) }}</td>
         </tr>
+        --}}
         <tr>
             <td>SOINS MEDICAUX</td>
             <td></td>

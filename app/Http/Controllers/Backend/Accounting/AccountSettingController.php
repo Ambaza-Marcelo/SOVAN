@@ -49,6 +49,83 @@ class AccountSettingController extends Controller
         return view('backend.pages.accounting.account_setting.create', compact('accounts', 'currencies'));
     }
 
+    /**
+     * Libellés affichés dans les messages de validation à la place des noms techniques de champs.
+     */
+    protected function validationAttributes(): array
+    {
+        $labels = [
+            'date' => 'messages.Date',
+            'code' => 'messages.Code',
+            'fiscal_year' => 'messages.Fiscal Year',
+            'active' => 'messages.Status',
+            'currency_id' => 'messages.Currency',
+            'vat_collec_account_id' => 'messages.VAT Collected Account',
+            'vat_deduc_account_id' => 'messages.VAT Deductible Account',
+            'f_selling_account_id' => 'messages.Finished Goods Selling Account',
+            'f_sm_selling_account_id' => 'messages.Finished Goods SM Selling Account',
+            'service_selling_account_id' => 'messages.Service Selling Account',
+            'goods_selling_account_id' => 'messages.Goods Selling Account',
+            'f_saj_account_id' => 'messages.Finished Goods SAJ Account',
+            'f_sp_account_id' => 'messages.Finished Goods SP Account',
+            'f_sv_account_id' => 'messages.Finished Goods SV Account',
+            'f_sc_account_id' => 'messages.Finished Goods SC Account',
+            'f_eaj_account_id' => 'messages.Finished Goods EAJ Account',
+            'm_purchase_account_id' => 'messages.Material Purchase Account',
+            'm_saj_account_id' => 'messages.Material SAJ Account',
+            'm_sp_account_id' => 'messages.Material SP Account',
+            'm_sv_account_id' => 'messages.Material SV Account',
+            'm_sc_account_id' => 'messages.Material SC Account',
+            'm_eaj_account_id' => 'messages.Material EAJ Account',
+            'raw_mat_purchase_account_id' => 'messages.Raw Material Purchase Account',
+            'raw_mat_saj_account_id' => 'messages.Raw Material SAJ Account',
+            'raw_mat_sp_account_id' => 'messages.Raw Material SP Account',
+            'raw_mat_sv_account_id' => 'messages.Raw Material SV Account',
+            'raw_mat_sc_account_id' => 'messages.Raw Material SC Account',
+            'raw_mat_eaj_account_id' => 'messages.Raw Material EAJ Account',
+            'basic_salary_account_id' => 'messages.Basic Salary Account',
+            'f_allowance_account_id' => 'messages.F Allowance Account',
+            'h_allowance_account_id' => 'messages.H Allowance Account',
+            't_allowance_account_id' => 'messages.T Allowance Account',
+            'o_allowance_account_id' => 'messages.O Allowance Account',
+            'gross_salary_account_id' => 'messages.Gross Salary Account',
+            'ded1_salary_account_id' => 'messages.Deduction 1 Salary Account',
+            'ded2_salary_account_id' => 'messages.Deduction 2 Salary Account',
+            'cot_employee_account_id' => 'messages.COT Employee Account',
+            'cot_employer_account_id' => 'messages.COT Employer Account',
+            'tax_salary_account_id' => 'messages.Tax Salary Account',
+            'med_care_salary_account_id' => 'messages.Medical Care Salary Account',
+            'insurance_employee_account_id' => 'messages.Insurance Employee Account',
+            'insurance_employer_account_id' => 'messages.Insurance Employer Account',
+            'loan_salary_account_id' => 'messages.Loan Salary Account',
+            'net_salary_account_id' => 'messages.Net Salary Account',
+            'temp_account_id' => 'messages.Temporary Account',
+            'adv_payment_account_id' => 'messages.Advance payment Account',
+            'prod_bg_account_id' => 'messages.Main stock',
+            'prod_sm_account_id' => 'messages.Small production stock',
+        ];
+
+        $attributes = array_map(function ($key) {
+            return __($key);
+        }, $labels);
+
+        return array_merge($attributes, [
+            'result_account_id' => 'Compte de résultat (12)',
+            'ran_profit_account_id' => 'Report à nouveau bénéfice (120)',
+            'ran_loss_account_id' => 'Report à nouveau perte (129)',
+            'profit_account_id' => 'Compte bénéfice',
+            'loss_account_id' => 'Compte perte',
+            'retained_earnings_account_id' => 'Report à nouveau',
+        ]);
+    }
+
+    protected function validationMessages(): array
+    {
+        return [
+            'required' => 'Le champ « :attribute » est obligatoire.',
+        ];
+    }
+
     public function store(Request $request)
     {
         if (is_null($this->user) || !$this->user->can('account_setting.create')) {
@@ -103,7 +180,7 @@ class AccountSettingController extends Controller
             'adv_payment_account_id' => 'nullable',
             'prod_bg_account_id' => 'nullable',
             'prod_sm_account_id' => 'nullable',
-        ]);
+        ], $this->validationMessages(), $this->validationAttributes());
 
         $latest = AccountSetting::latest()->first();
         $code = $latest ? str_pad((int)$latest->id + 1, 4, '0', STR_PAD_LEFT) : str_pad(1, 4, '0', STR_PAD_LEFT);
@@ -247,7 +324,13 @@ class AccountSettingController extends Controller
             'adv_payment_account_id' => 'nullable',
             'prod_bg_account_id' => 'nullable',
             'prod_sm_account_id' => 'nullable',
-        ]);
+            'result_account_id' => 'nullable|exists:account_accounts,id',
+            'ran_profit_account_id' => 'nullable|exists:account_accounts,id',
+            'ran_loss_account_id' => 'nullable|exists:account_accounts,id',
+            'profit_account_id' => 'nullable|exists:account_accounts,id',
+            'loss_account_id' => 'nullable|exists:account_accounts,id',
+            'retained_earnings_account_id' => 'nullable|exists:account_accounts,id',
+        ], $this->validationMessages(), $this->validationAttributes());
 
         $setting = AccountSetting::findOrFail($id);
 
@@ -298,6 +381,12 @@ class AccountSettingController extends Controller
         $setting->adv_payment_account_id = $request->adv_payment_account_id;
         $setting->prod_bg_account_id = $request->prod_bg_account_id;
         $setting->prod_sm_account_id = $request->prod_sm_account_id;
+        $setting->result_account_id = $request->result_account_id ?: null;
+        $setting->ran_profit_account_id = $request->ran_profit_account_id ?: null;
+        $setting->ran_loss_account_id = $request->ran_loss_account_id ?: null;
+        $setting->profit_account_id = $request->profit_account_id ?: $setting->profit_account_id;
+        $setting->loss_account_id = $request->loss_account_id ?: $setting->loss_account_id;
+        $setting->retained_earnings_account_id = $request->retained_earnings_account_id ?: $setting->retained_earnings_account_id;
         $setting->currency_id = $request->currency_id;
         $setting->bank_statements_source = $request->bank_statements_source;
         $setting->exercise_id = $request->exercise_id;

@@ -5,9 +5,12 @@
     <div class="sidebar-header">
         <div class="logo">
             <a href="{{ route('admin.dashboard') }}" class="sidebar-brand">
-                <span class="sidebar-brand-mark">SO</span>
+                <img
+                    src="{{ asset('img/logo.png') }}"
+                    alt="{{ __('messages.app_brand') }}"
+                    class="sidebar-brand-logo"
+                >
                 <span class="sidebar-brand-text">
-                    <h2 class="sidebar-brand-name">@lang('messages.app_brand')</h2>
                     <span class="sidebar-brand-tag">@lang('messages.app_brand_tagline')</span>
                 </span>
             </a>
@@ -443,7 +446,7 @@
                     <!-- end human ressources management  -->
 
                     <!-- accounting management -->
-                    @if ($usr->can('account_account.create') || $usr->can('account_account.view') ||  $usr->can('account_parent_account.view') ||  $usr->can('account_parent_account.create') || $usr->can('account_setting.create') || $usr->can('account_setting.view') ||  $usr->can('account_setting.edit') ||  $usr->can('account_setting.delete'))
+                    @if ($usr->can('account_account.create') || $usr->can('account_account.view') ||  $usr->can('account_parent_account.view') ||  $usr->can('account_parent_account.create') || $usr->can('account_setting.create') || $usr->can('account_setting.view') ||  $usr->can('account_setting.edit') ||  $usr->can('account_setting.delete') || $usr->can('account_exercise.view'))
                     <li>
                         <a href="javascript:void(0)" aria-expanded="true"><i class="fa fa-calculator"></i><span>
                             @lang('messages.Accounting')
@@ -451,6 +454,12 @@
                         <ul class="">
                             @if ($usr->can('account_parent_account.view'))
                                 <li class=""><a href="{{ route('admin.accounting-parent-accounts.index') }}"><i class="fa fa-sitemap"></i>&nbsp;@lang('messages.Chart Accounts')</a></li>
+                            @endif
+                            @if ($usr->can('account_exercise.view'))
+                                <li class=""><a href="{{ route('admin.accounting-exercises.index') }}"><i class="fa fa-calendar-check-o"></i>&nbsp;Processus de clôture</a></li>
+                            @endif
+                            @if ($usr->can('account_journal_entry.edit'))
+                                <li class=""><a href="{{ route('admin.accounting-sau-rectification.index') }}"><i class="fa fa-random"></i>&nbsp;Rectification sorties SAU</a></li>
                             @endif
                             @if ($usr->can('account_journal_entry.view'))
                                 <li class=""><a href="{{ route('admin.accounting-advance-payment.index') }}"><i class="fa fa-list-alt"></i>&nbsp;@lang('messages.Advance Payment')</a></li>

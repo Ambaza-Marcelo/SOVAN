@@ -42,11 +42,13 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="header-title float-left">@lang('messages.Factures')</h4>
+                    {{-- Création de facture depuis le BL désactivée pour éviter la double facturation
                     <p class="float-right mb-2">
                         @if (Auth::guard('admin')->user()->can('invoice.create'))
                             <a class="btn btn-primary text-white" href="{{ route('admin.delivery-note.index') }}">@lang('messages.Créer depuis Bon de Livraison')</a>
                         @endif
                     </p>
+                    --}}
                     <div class="clearfix"></div>
                     @include('backend.layouts.partials._index_filter_export', ['filterRoute' => 'admin.invoice.index', 'exportRoute' => 'admin.invoice.export-to-excel'])
                     <div class="data-tables">

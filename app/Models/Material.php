@@ -1,11 +1,11 @@
 <?php
 namespace App\Models;
 
+use App\Services\DepreciationService;
 use Illuminate\Database\Eloquent\Model;
 
 class Material extends Model
 {
-    //
     protected $fillable = [
         'name',
         'code',
@@ -19,11 +19,45 @@ class Material extends Model
         'threshold_quantity',
         'expiration_date',
         'status',
+        'is_stockable',
         'updated_by',
         'created_by',
         'mcategory_id',
-        'material_measurement_id'
+        'material_measurement_id',
+        'default_account_id',
+        'immobilization_account_id',
+        'is_amortizable',
+        'depreciation_base',
+        'residual_value',
+        'service_start_date',
+        'duration_years',
+        'depreciation_expense_account_id',
+        'depreciation_asset_account_id',
     ];
+
+    protected $casts = [
+        'is_amortizable' => 'boolean',
+        'is_stockable' => 'boolean',
+        'service_start_date' => 'date',
+        'depreciation_base' => 'float',
+        'residual_value' => 'float',
+        'purchase_price' => 'float',
+        'cost_price' => 'float',
+        'selling_price' => 'float',
+        'quantity' => 'float',
+        'threshold_quantity' => 'float',
+        'cump' => 'float',
+        'duration_years' => 'integer',
+    ];
+
+    /**
+     * Plan d'amortissement linéaire (tableau / JSON).
+     * Accessible via $material->depreciation_schedule
+     */
+    public function getDepreciationScheduleAttribute(): array
+    {
+        return app(DepreciationService::class)->generateLinearSchedule($this);
+    }
 
     public function materialCategory()
     {
@@ -89,5 +123,20 @@ class Material extends Model
 
     public function account(){
         return $this->belongsTo('App\Models\Accounting\AccountAccount', 'default_account_id');
+    }
+
+    public function immobilizationAccount()
+    {
+        return $this->belongsTo('App\Models\Accounting\AccountAccount', 'immobilization_account_id');
+    }
+
+    public function depreciationExpenseAccount()
+    {
+        return $this->belongsTo('App\Models\Accounting\AccountAccount', 'depreciation_expense_account_id');
+    }
+
+    public function depreciationAssetAccount()
+    {
+        return $this->belongsTo('App\Models\Accounting\AccountAccount', 'depreciation_asset_account_id');
     }
 }

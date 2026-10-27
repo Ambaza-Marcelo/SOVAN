@@ -30,6 +30,8 @@ use App\Models\Accounting\AccountJournalEntryDetail;
 use App\Models\Accounting\AccountLedger;
 use App\Models\Accounting\AccountAccount;
 use App\Models\Accounting\AccountSetting;
+use App\Services\Material\MaterialFlowOrchestrator;
+use App\Services\Stock\SauStockoutJournalService;
 use Carbon\Carbon;
 use PDF;
 use Validator;
@@ -147,7 +149,7 @@ class MaterialStockoutController extends Controller
                 'asker'  => 'required',
                 'origin_bg_store_id'  => 'required',
                 'destination'  => 'required',
-                'item_movement_type'  => 'required|in:SN,SP,SV,SD,SC,SAJ,ST,SAU',
+                'item_movement_type'  => 'nullable|in:SAU,SP,SV,SD,SC,SAJ',
                 'description'  => 'required|max:490'
             );
 
@@ -167,7 +169,7 @@ class MaterialStockoutController extends Controller
             $destination = $request->destination;
             $description =$request->description; 
             $origin_bg_store_id = $request->origin_bg_store_id;
-            $item_movement_type = $request->item_movement_type;
+            $item_movement_type = SauStockoutJournalService::normalizeType($request->item_movement_type);
             $quantity = $request->quantity;
             $store_type = $request->store_type;
             
@@ -266,7 +268,7 @@ class MaterialStockoutController extends Controller
                 'asker'  => 'required',
                 'origin_extra_store_id'  => 'required',
                 'destination'  => 'required',
-                'item_movement_type'  => 'required|in:SN,SP,SV,SD,SC,SAJ,ST,SAU',
+                'item_movement_type'  => 'nullable|in:SAU,SP,SV,SD,SC,SAJ',
                 'description'  => 'required'
             );
 
@@ -286,7 +288,7 @@ class MaterialStockoutController extends Controller
             $destination = $request->destination;
             $description =$request->description; 
             $origin_extra_store_id = $request->origin_extra_store_id;
-            $item_movement_type = $request->item_movement_type;
+            $item_movement_type = SauStockoutJournalService::normalizeType($request->item_movement_type);
             $quantity = $request->quantity;
             $store_type = $request->store_type;
             
@@ -386,7 +388,7 @@ class MaterialStockoutController extends Controller
                 'asker'  => 'required',
                 'origin_sm_store_id'  => 'required',
                 'destination'  => 'required',
-                'item_movement_type'  => 'required|in:SN,SP,SV,SD,SC,SAJ,ST,SAU',
+                'item_movement_type'  => 'nullable|in:SAU,SP,SV,SD,SC,SAJ',
                 'description'  => 'required'
             );
 
@@ -406,7 +408,7 @@ class MaterialStockoutController extends Controller
             $destination = $request->destination;
             $origin_sm_store_id = $request->origin_sm_store_id;
             $description =$request->description; 
-            $item_movement_type = $request->item_movement_type;
+            $item_movement_type = SauStockoutJournalService::normalizeType($request->item_movement_type);
             $quantity = $request->quantity;
             $store_type = $request->store_type;
             
@@ -579,7 +581,7 @@ class MaterialStockoutController extends Controller
             'quantity.*'  => 'required',
             'asker'  => 'required',
             'destination'  => 'required',
-            'item_movement_type'  => 'required|in:SN,SP,SV,SD,SC,SAJ,ST,SAU',
+            'item_movement_type'  => 'nullable|in:SAU,SP,SV,SD,SC,SAJ',
             'description'  => 'required|max:490'
         );
 
@@ -599,7 +601,7 @@ class MaterialStockoutController extends Controller
             $asker = $request->asker;
             $destination = $request->destination;
             $description = $request->description; 
-            $item_movement_type = $request->item_movement_type;
+            $item_movement_type = SauStockoutJournalService::normalizeType($request->item_movement_type);
             $origin_bg_store_id = $request->origin_bg_store_id;
             $origin_sm_store_id = $request->origin_sm_store_id;
             $origin_extra_store_id = $request->origin_extra_store_id;
@@ -847,6 +849,14 @@ class MaterialStockoutController extends Controller
             return $response;
         }
 
+        $sauService = app(SauStockoutJournalService::class);
+        try {
+            $sauService->assertDirectStockoutType($stockoutHeader->item_movement_type);
+        } catch (\RuntimeException $ex) {
+            session()->flash('error', $ex->getMessage());
+            return back();
+        }
+
         try {DB::beginTransaction();
 
         $datas = MaterialStockoutDetail::where('stockout_no', $stockout_no)->get();
@@ -858,8 +868,15 @@ class MaterialStockoutController extends Controller
         $flag_big = 0;
         $flag_md = 0;
         $flag_sm = 0;
+        $orchestrator = app(MaterialFlowOrchestrator::class);
 
         foreach($datas as $data){
+
+            // CAS 2 : article non stockable — aucun mouvement physique (même en sortie)
+            $materialModel = Material::find($data->material_id);
+            if ($materialModel && !$orchestrator->affectsPhysicalStock($materialModel)) {
+                continue;
+            }
 
             if (!empty($data->origin_bg_store_id)) {
                 $code_store_origin = MaterialBigStore::where('id',$data->origin_bg_store_id)->value('code');
@@ -1043,9 +1060,12 @@ class MaterialStockoutController extends Controller
   
         }
 
-        $cmp = DB::table('material_stockout_details')
-            ->where('stockout_no', '=', $stockout_no)
-            ->sum('total_purchase_value');
+        // Valeur comptable = uniquement les lignes stockables réellement sorties (exclut CAS 2)
+        $cmp = 0.0;
+        foreach (array_merge($reportBigStoreData, $reportSmallStoreData, $reportExtraBigStoreData) as $reportRow) {
+            $cmp += (float) ($reportRow['value_stockout'] ?? 0);
+        }
+        $cmp = round($cmp, 2);
 
         // Get first data item for accounting
         $firstData = MaterialStockoutDetail::where('stockout_no', $stockout_no)->first();
@@ -1113,7 +1133,7 @@ class MaterialStockoutController extends Controller
 
                 if (empty($m_sp_account_id)) {
                     DB::rollback();
-                    session()->flash('error', 'Account ID for SP adjustment not configured. Please configure m_sp_account_id in Account Settings.');
+                    session()->flash('error', 'Compte de sortie perte (SP) des matériels non configuré. Renseignez-le dans les paramètres comptables.');
                     return redirect()->back();
                 }
 
@@ -1158,7 +1178,7 @@ class MaterialStockoutController extends Controller
 
                 if (empty($m_sv_account_id)) {
                     DB::rollback();
-                    session()->flash('error', 'Account ID for SV adjustment not configured. Please configure m_sv_account_id in Account Settings.');
+                    session()->flash('error', 'Compte de sortie vol (SV) des matériels non configuré. Renseignez-le dans les paramètres comptables.');
                     return redirect()->back();
                 }
 
@@ -1203,7 +1223,7 @@ class MaterialStockoutController extends Controller
 
                 if (empty($m_sc_account_id)) {
                     DB::rollback();
-                    session()->flash('error', 'Account ID for SC adjustment not configured. Please configure m_sc_account_id in Account Settings.');
+                    session()->flash('error', 'Compte de sortie casse (SC) des matériels non configuré. Renseignez-le dans les paramètres comptables.');
                     return redirect()->back();
                 }
 
@@ -1224,6 +1244,39 @@ class MaterialStockoutController extends Controller
                 AccountJournalEntryDetail::insert($insert_journal_debit_sc_data_acc2);
             
                 //end debit operation
+            }elseif (SauStockoutJournalService::isSau($firstData->item_movement_type)) {
+                // Sortie autre APPROUVÉE (valeur CUMP des lignes stockables) :
+                // CAS 1 → Crédit stock (3) / Débit compte de la fiche article
+                // CAS 3 → Crédit stock (3) / Débit immobilisation (2) + mise en service + plan
+                $sauLines = [];
+                foreach (array_merge($reportBigStoreData, $reportSmallStoreData, $reportExtraBigStoreData) as $reportRow) {
+                    $material = Material::find($reportRow['material_id']);
+                    $sauLines[] = [
+                        'item' => $material,
+                        'amount' => (float) ($reportRow['value_stockout'] ?? 0),
+                        'label' => $material ? $material->name : ('#' . $reportRow['material_id']),
+                    ];
+                }
+
+                try {
+                    $resolvedSauLines = $sauService->resolveLines($sauLines);
+                    $sauService->post($id_acc_stock, $resolvedSauLines, [
+                        'date' => $firstData->date,
+                        'document_no' => $firstData->stockout_no,
+                        'description' => $firstData->description,
+                    ]);
+                } catch (\RuntimeException $ex) {
+                    DB::rollback();
+                    session()->flash('error', $ex->getMessage());
+                    return redirect()->back();
+                }
+
+                $approvalDate = \Carbon\Carbon::now();
+                foreach ($resolvedSauLines as $line) {
+                    if ($line['item'] && $line['amount'] > 0) {
+                        $orchestrator->activateOnApprovedStockout($line['item'], $approvalDate, $line['amount']);
+                    }
+                }
             }else{
                 //start credit operations
                 $stockLedgerState = $this->updateLedgerTotals($id_acc_stock, 'credit', $cmp);

@@ -134,8 +134,8 @@ class JournalPaieController extends Controller
                 $paiement->somme_impot = $data->somme_impot;
                 $paiement->somme_cotisation_inss = $data->somme_cotisation_inss;
                 $paiement->inss_employeur = $data->inss_employeur;
-                $paiement->assurance_maladie_employe = $data->assurance_maladie_employe;
-                $paiement->assurance_maladie_employeur = $data->assurance_maladie_employeur;
+                $paiement->assurance_maladie_employe = 0; // $data->assurance_maladie_employe;
+                $paiement->assurance_maladie_employeur = 0; // $data->assurance_maladie_employeur;
                 $paiement->indemnite_deplacement = $data->indemnite_deplacement;
                 $paiement->indemnite_logement = $data->indemnite_logement;
                 $paiement->allocation_familiale = $data->allocation_familiale;
@@ -258,19 +258,22 @@ class JournalPaieController extends Controller
             $transport_allowance = DB::table('hr_paiements')->where('code', '=', $code)->sum('indemnite_deplacement');
             $other_prime = DB::table('hr_paiements')->where('code', '=', $code)->sum('prime_fonction');
             $cotisation_employer = DB::table('hr_paiements')->where('code', '=', $code)->sum('inss_employeur');
-            $insurance_employer = DB::table('hr_paiements')->where('code', '=', $code)->sum('assurance_maladie_employeur');
+            // Assurance maladie désactivée : les comptes n'existent pas.
+            // $insurance_employer = DB::table('hr_paiements')->where('code', '=', $code)->sum('assurance_maladie_employeur');
+            $insurance_employer = 0;
             $net_salary = DB::table('hr_paiements')->where('code', '=', $code)->sum('somme_salaire_net_imposable');
             $tax = DB::table('hr_paiements')->where('code', '=', $code)->sum('somme_impot');
-            $insurance_employe = DB::table('hr_paiements')->where('code', '=', $code)->sum('assurance_maladie_employe');
+            // $insurance_employe = DB::table('hr_paiements')->where('code', '=', $code)->sum('assurance_maladie_employe');
+            $insurance_employe = 0;
             $cotisation_employe = DB::table('hr_paiements')->where('code', '=', $code)->sum('somme_cotisation_inss');
             $retenue_pret = DB::table('hr_paiements')->where('code', '=', $code)->sum('retenue_pret');
             $autre_retenue = DB::table('hr_paiements')->where('code', '=', $code)->sum('autre_retenue');
             $soins_medicaux = DB::table('hr_paiements')->where('code', '=', $code)->sum('soins_medicaux');
-            $insurance_employer_employe = $insurance_employer + $insurance_employe;
+            $insurance_employer_employe = 0; // $insurance_employer + $insurance_employe;
             $cotisation_employer_employe = $cotisation_employer + $cotisation_employe;
 
-            $total_debit = $basic_salary+$house_allowance+$transport_allowance+$other_prime+$cotisation_employer+$insurance_employer;
-            $total_credit = $net_salary+$tax+$insurance_employer_employe+$cotisation_employer_employe+$retenue_pret+$autre_retenue+$soins_medicaux;
+            $total_debit = $basic_salary+$house_allowance+$transport_allowance+$other_prime+$cotisation_employer; // +$insurance_employer;
+            $total_credit = $net_salary+$tax+$cotisation_employer_employe+$retenue_pret+$autre_retenue+$soins_medicaux; // +$insurance_employer_employe;
 
 
             $data = HrJournalPaie::where('code',$code)->first();
@@ -352,25 +355,26 @@ class JournalPaieController extends Controller
             AccountJournalEntryDetail::insert($insert_journal_cot_employer_data);
 
             //end cotisation employer debit operations
-            //start insurance employer debit operations
-            $insurance_employer_account_id = AccountSetting::where('active',1)->value('insurance_employer_account_id');
-            $insuranceEmployerLedgerState = $this->updateLedgerTotals($insurance_employer_account_id, 'debit', $insurance_employer);
-
-            $journalEntryBasicSalarydata = array(
-                    'date' => $data->date_fin,
-                    'document_no' => $data->code,
-                    'description' => "insurance employer",
-                    'account_id' => $insurance_employer_account_id,
-                    'libelle' => "insurance employer",
-                    'debit' => $insurance_employer,
-                    'balance' => $insuranceEmployerLedgerState['balance'],
-                    'created_at' => \Carbon\Carbon::now()
-                );
-                $insert_journal_insurance_employer_data[] = $journalEntryBasicSalarydata;
-
-            AccountJournalEntryDetail::insert($insert_journal_insurance_employer_data);
-
-            //end insurance employer debit operations
+            // Assurance maladie désactivée : pas d'imputation des comptes insurance.
+            // //start insurance employer debit operations
+            // $insurance_employer_account_id = AccountSetting::where('active',1)->value('insurance_employer_account_id');
+            // $insuranceEmployerLedgerState = $this->updateLedgerTotals($insurance_employer_account_id, 'debit', $insurance_employer);
+            //
+            // $journalEntryBasicSalarydata = array(
+            //         'date' => $data->date_fin,
+            //         'document_no' => $data->code,
+            //         'description' => "insurance employer",
+            //         'account_id' => $insurance_employer_account_id,
+            //         'libelle' => "insurance employer",
+            //         'debit' => $insurance_employer,
+            //         'balance' => $insuranceEmployerLedgerState['balance'],
+            //         'created_at' => \Carbon\Carbon::now()
+            //     );
+            //     $insert_journal_insurance_employer_data[] = $journalEntryBasicSalarydata;
+            //
+            // AccountJournalEntryDetail::insert($insert_journal_insurance_employer_data);
+            //
+            // //end insurance employer debit operations
 
             //start net salary credit operations
             $net_salary_account_id = AccountSetting::where('active',1)->value('net_salary_account_id');
@@ -452,46 +456,47 @@ class JournalPaieController extends Controller
             AccountJournalEntryDetail::insert($insert_journal_cot_employee_credit_data);
 
             //end cot employee credit operation
-            //start insurance employee credit operations
-            $insurance_employee_account_id = AccountSetting::where('active',1)->value('insurance_employee_account_id');
-            $insuranceEmployeeCreditLedgerState = $this->updateLedgerTotals($insurance_employee_account_id, 'credit', $insurance_employe);
-
-            $journalEntryInsuranceEmployeeCreditdata = array(
-                    'date' => $data->date_fin,
-                    'document_no' => $data->code,
-                    'description' => "insurance employee",
-                    'account_id' => $insurance_employee_account_id,
-                    'libelle' => "insurance employee",
-                    'credit' => $insurance_employe,
-                    'balance' => $insuranceEmployeeCreditLedgerState['balance'],
-                    'created_at' => \Carbon\Carbon::now()
-                );
-                
-                $insert_journal_insurance_employee_credit_data[] = $journalEntryInsuranceEmployeeCreditdata;
-                
-            AccountJournalEntryDetail::insert($insert_journal_insurance_employee_credit_data);
-
-            //end insurance employee credit operation
-            //start insurance employer credit operations
-            $insurance_employer_account_id = AccountSetting::where('active',1)->value('insurance_employer_account_id');
-            $insuranceEmployerCreditLedgerState = $this->updateLedgerTotals($insurance_employer_account_id, 'credit', $insurance_employer);
-
-            $journalEntryInsuranceEmployerCreditdata = array(
-                    'date' => $data->date_fin,
-                    'document_no' => $data->code,
-                    'description' => "insurance employer",
-                    'account_id' => $insurance_employer_account_id,
-                    'libelle' => "insurance employer",
-                    'credit' => $insurance_employer,
-                    'balance' => $insuranceEmployerCreditLedgerState['balance'],
-                    'created_at' => \Carbon\Carbon::now()
-                );
-                
-                $insert_journal_insurance_employer_credit_data[] = $journalEntryInsuranceEmployerCreditdata;
-                
-            AccountJournalEntryDetail::insert($insert_journal_insurance_employer_credit_data);
-
-            //end insurance employer credit operation
+            // Assurance maladie désactivée : pas d'imputation des comptes insurance.
+            // //start insurance employee credit operations
+            // $insurance_employee_account_id = AccountSetting::where('active',1)->value('insurance_employee_account_id');
+            // $insuranceEmployeeCreditLedgerState = $this->updateLedgerTotals($insurance_employee_account_id, 'credit', $insurance_employe);
+            //
+            // $journalEntryInsuranceEmployeeCreditdata = array(
+            //         'date' => $data->date_fin,
+            //         'document_no' => $data->code,
+            //         'description' => "insurance employee",
+            //         'account_id' => $insurance_employee_account_id,
+            //         'libelle' => "insurance employee",
+            //         'credit' => $insurance_employe,
+            //         'balance' => $insuranceEmployeeCreditLedgerState['balance'],
+            //         'created_at' => \Carbon\Carbon::now()
+            //     );
+            //
+            //     $insert_journal_insurance_employee_credit_data[] = $journalEntryInsuranceEmployeeCreditdata;
+            //
+            // AccountJournalEntryDetail::insert($insert_journal_insurance_employee_credit_data);
+            //
+            // //end insurance employee credit operation
+            // //start insurance employer credit operations
+            // $insurance_employer_account_id = AccountSetting::where('active',1)->value('insurance_employer_account_id');
+            // $insuranceEmployerCreditLedgerState = $this->updateLedgerTotals($insurance_employer_account_id, 'credit', $insurance_employer);
+            //
+            // $journalEntryInsuranceEmployerCreditdata = array(
+            //         'date' => $data->date_fin,
+            //         'document_no' => $data->code,
+            //         'description' => "insurance employer",
+            //         'account_id' => $insurance_employer_account_id,
+            //         'libelle' => "insurance employer",
+            //         'credit' => $insurance_employer,
+            //         'balance' => $insuranceEmployerCreditLedgerState['balance'],
+            //         'created_at' => \Carbon\Carbon::now()
+            //     );
+            //
+            //     $insert_journal_insurance_employer_credit_data[] = $journalEntryInsuranceEmployerCreditdata;
+            //
+            // AccountJournalEntryDetail::insert($insert_journal_insurance_employer_credit_data);
+            //
+            // //end insurance employer credit operation
             //start medecine care fees credit operations
             $med_care_salary_account_id = AccountSetting::where('active',1)->value('med_care_salary_account_id');
             $medCareCreditLedgerState = $this->updateLedgerTotals($med_care_salary_account_id, 'credit', $soins_medicaux);
@@ -740,8 +745,8 @@ class JournalPaieController extends Controller
                     $paiement->somme_impot = $data->somme_impot;
                     $paiement->somme_cotisation_inss = $data->somme_cotisation_inss;
                     $paiement->inss_employeur = $data->inss_employeur;
-                    $paiement->assurance_maladie_employe = $data->assurance_maladie_employe;
-                    $paiement->assurance_maladie_employeur = $data->assurance_maladie_employeur;
+                    $paiement->assurance_maladie_employe = 0; // $data->assurance_maladie_employe;
+                    $paiement->assurance_maladie_employeur = 0; // $data->assurance_maladie_employeur;
                     $paiement->indemnite_deplacement = $data->indemnite_deplacement;
                     $paiement->indemnite_logement = $data->indemnite_logement;
                     $paiement->allocation_familiale = $data->allocation_familiale;
@@ -875,7 +880,7 @@ class JournalPaieController extends Controller
         $soinsMedicaux = (float) ($data->soins_medicaux ?? 0);
         $autreRetenue = (float) ($data->autre_retenue ?? 0);
         $totalDeductions = ($data->somme_cotisation_inss ?? 0)
-            + ($data->assurance_maladie_employe ?? 0)
+            // + ($data->assurance_maladie_employe ?? 0)
             + ($data->somme_impot ?? 0)
             + $retenuePret
             + $soinsMedicaux

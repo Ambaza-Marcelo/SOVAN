@@ -31,7 +31,7 @@ class JournalCotisationExport implements FromCollection, WithMapping, WithHeadin
     public function map($data) : array {
 
         $remuneration_brute = $data->somme_salaire_base + $data->allocation_familiale + $data->indemnite_logement + $data->indemnite_deplacement + $data->prime_fonction;
-        $total_deductions = $data->somme_cotisation_inss + $data->assurance_maladie_employe + $data->somme_impot + $data->retenue_pret + $data->soins_medicaux + $data->autre_retenue;
+        $total_deductions = $data->somme_cotisation_inss + $data->somme_impot + $data->retenue_pret + $data->soins_medicaux + $data->autre_retenue; // + $data->assurance_maladie_employe
         $net_a_payer = $remuneration_brute - $total_deductions;
         if ($remuneration_brute < 450000 ) {
             $inss_pension = ($remuneration_brute * 6)/100;

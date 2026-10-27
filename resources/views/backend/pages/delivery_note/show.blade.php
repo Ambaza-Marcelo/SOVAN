@@ -128,6 +128,7 @@
                             <a class="btn btn-light" href="{{ route('admin.delivery-note.index') }}">
                                 <i class="fa fa-arrow-left"></i> {{ __('messages.back') }}
                             </a>
+                            {{-- Création de facture depuis le BL désactivée pour éviter la double facturation
                             @if($delivery_note->etat == '3')
                                 @if (Auth::guard('admin')->user()->can('invoice.create'))
                                     <a class="btn btn-success text-white" href="{{ route('admin.invoice.create', $delivery_note->delivery_number) }}" title="@lang('messages.Créer Facture')">
@@ -135,6 +136,7 @@
                                     </a>
                                 @endif
                             @endif
+                            --}}
                             @if (!$hasValidatedInvoice)
                                 @if (Auth::guard('admin')->user()->can('delivery_note.delete'))
                                     <a class="btn btn-danger text-white" href="{{ route('admin.delivery-note.destroy', $delivery_note->delivery_number) }}"

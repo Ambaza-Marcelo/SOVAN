@@ -100,8 +100,8 @@
                                     <th>Salaire brut</th>
                                     <th>INSS Employe</th>
                                     <th>INSS Employeur</th>
-                                    <th>Ass. Mal. Employe</th>
-                                    <th>Ass. Mal. Employeur</th>
+                                    {{-- <th>Ass. Mal. Employe</th>
+                                    <th>Ass. Mal. Employeur</th> --}}
                                     <th>IRE</th>
                                     <th>Retenue pret</th>
                                     <th>Soins medicaux</th>
@@ -120,7 +120,7 @@
                                         + (float)$jp->indemnite_deplacement
                                         + (float)$jp->prime_fonction;
                                     $totalRetenue = (float)$jp->somme_cotisation_inss
-                                        + (float)$jp->assurance_maladie_employe
+                                        // + (float)$jp->assurance_maladie_employe
                                         + (float)$jp->somme_impot
                                         + (float)$jp->retenue_pret
                                         + (float)$jp->soins_medicaux
@@ -140,8 +140,8 @@
                                     <td><strong>{{ $fmt($brut) }}</strong></td>
                                     <td>{{ $fmt($jp->somme_cotisation_inss) }}</td>
                                     <td>{{ $fmt($jp->inss_employeur) }}</td>
-                                    <td>{{ $fmt($jp->assurance_maladie_employe) }}</td>
-                                    <td>{{ $fmt($jp->assurance_maladie_employeur) }}</td>
+                                    {{-- <td>{{ $fmt($jp->assurance_maladie_employe) }}</td>
+                                    <td>{{ $fmt($jp->assurance_maladie_employeur) }}</td> --}}
                                     <td>{{ $fmt($jp->somme_impot) }}</td>
                                     <td>{{ $fmt($jp->retenue_pret) }}</td>
                                     <td>{{ $fmt($jp->soins_medicaux) }}</td>

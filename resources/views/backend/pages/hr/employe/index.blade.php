@@ -47,6 +47,14 @@
                     <p class="float-right mb-2">
                             <a class="btn btn-success text-white" href="{{ route('admin.hr-employes.exportToExcel',$company_id) }}">Exporter en Excel</a>&nbsp;
                     </p>
+                    @if (Auth::guard('admin')->user()->can('hr_employe.edit') && $meMatriculeCount > 0)
+                    <p class="float-right mb-2">
+                        <form action="{{ route('admin.hr-employes.replace-matricule-prefix', $company_id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Remplacer le préfixe ME par SOV pour les {{ $meMatriculeCount }} employé(s) déjà enregistrés avec ME ?');">
+                            @csrf
+                            <button type="submit" class="btn btn-warning text-white">ME → SOV ({{ $meMatriculeCount }})</button>
+                        </form>&nbsp;
+                    </p>
+                    @endif
                     <div class="clearfix"></div>
                     <div class="data-tables">
                         @include('backend.layouts.partials.messages')

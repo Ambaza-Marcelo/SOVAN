@@ -1,13 +1,20 @@
-{{-- En-tête document: informations de la société (format type devis / facture) --}}
+{{-- En-tête document SOVAN : logo | infos société | date --}}
 @php
-    $setting = $setting ?? null;
-    $companyName = $setting ? ($setting->name ?? $setting->company_name ?? 'MUSUMBA ELCOM') : 'MUSUMBA ELCOM';
+    if (!isset($setting) || !$setting) {
+        $setting = \App\Models\Setting::first();
+    }
+
+    $companyName = $setting
+        ? ($setting->name ?? $setting->company_name ?? 'SOVAN')
+        : 'SOVAN';
 
     $docDate = null;
     $dateCandidates = array_filter([
         $documentDate ?? null,
         $date ?? null,
-    ], static fn ($value) => $value !== null && $value !== '');
+    ], static function ($value) {
+        return $value !== null && $value !== '';
+    });
 
     foreach ($dateCandidates as $candidate) {
         if ($candidate instanceof \DateTimeInterface) {
@@ -19,17 +26,19 @@
             continue;
         }
 
-        if (preg_match('/^\d{2}\/\d{2}\/\d{4}/', $candidate)) {
+        $candidate = trim($candidate);
+
+        // Déjà au format français d/m/Y ou d/m/Y H:i
+        if (preg_match('/^\d{2}\/\d{2}\/\d{4}(\s+\d{2}:\d{2}(:\d{2})?)?$/', $candidate)) {
             $docDate = $candidate;
             break;
         }
 
-        foreach (['Y-m-d H:i:s', 'Y-m-d H:i', 'Y-m-d'] as $format) {
-            try {
-                $docDate = \Carbon\Carbon::createFromFormat($format, $candidate)->format('d/m/Y H:i');
-                break 2;
-            } catch (\Exception $e) {
-            }
+        try {
+            $docDate = \Carbon\Carbon::parse($candidate)->format('d/m/Y H:i');
+            break;
+        } catch (\Exception $e) {
+            // essayer le candidat suivant
         }
     }
 
@@ -38,67 +47,107 @@
     }
 
     $publicLogoPath = public_path('img/logo.png');
+    $logoSrc = null;
+    if (is_file($publicLogoPath)) {
+        // Base64 : fiable pour PDF DomPDF et aperçu navigateur
+        $logoSrc = 'data:image/png;base64,' . base64_encode(file_get_contents($publicLogoPath));
+    } elseif ($setting && !empty($setting->logo)) {
+        $storedLogo = storage_path('app/public/logo/' . $setting->logo);
+        if (!is_file($storedLogo)) {
+            $storedLogo = storage_path('public/logo/' . $setting->logo);
+        }
+        if (is_file($storedLogo)) {
+            $mime = function_exists('mime_content_type') ? mime_content_type($storedLogo) : 'image/png';
+            $logoSrc = 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($storedLogo));
+        }
+    }
+
+    $addressParts = [];
+    if ($setting) {
+        foreach (['quartier', 'commune', 'province'] as $addrField) {
+            $val = trim((string) ($setting->{$addrField} ?? ''));
+            if ($val === '') {
+                continue;
+            }
+            $alreadyListed = false;
+            foreach ($addressParts as $existing) {
+                if (mb_strtoupper($existing) === mb_strtoupper($val)) {
+                    $alreadyListed = true;
+                    break;
+                }
+            }
+            if (!$alreadyListed) {
+                $addressParts[] = $val;
+            }
+        }
+    }
+    $addressLine = implode(', ', $addressParts);
+
+    // Lignes fiscales pré-composées (évite les @if imbriqués collés au texte)
+    $fiscalParts = [];
+    if ($setting) {
+        if (!empty($setting->nif)) {
+            $fiscalParts[] = 'NIF: ' . $setting->nif;
+        }
+        if (!empty($setting->rc)) {
+            $fiscalParts[] = 'RC: ' . $setting->rc;
+        }
+        if (!empty($setting->tp_fiscal_center)) {
+            $fiscalParts[] = 'C.FISCAL: ' . $setting->tp_fiscal_center;
+        }
+    }
+    $fiscalLine = implode(' | ', $fiscalParts);
+
+    $phoneLine = '';
+    if ($setting && !empty($setting->telephone1)) {
+        $phoneLine = 'Tél: ' . $setting->telephone1;
+        if (!empty($setting->telephone2)) {
+            $phoneLine .= ' / ' . $setting->telephone2;
+        }
+    }
 @endphp
-<table style="width:100%; border:none; border-bottom:1px solid #333; margin-bottom:12px;">
+<table class="doc-header" style="width:100%; border:none; border-collapse:collapse; border-bottom:1px solid #333; margin:0 0 12px 0; padding:0 0 8px 0;">
     <tr>
-        <td style="border:none; width:22%; vertical-align:top;">
-            @if(file_exists($publicLogoPath))
-                <img src="{{ asset('img/logo.png') }}" alt="MUSUMBA ELCOM" style="max-width:300px; max-height:150px; object-fit:contain;">
+        {{-- Logo --}}
+        <td style="border:none; width:24%; vertical-align:top; padding:0 8px 0 0;">
+            @if ($logoSrc)
+                <img
+                    src="{{ $logoSrc }}"
+                    alt="{{ $companyName }}"
+                    style="max-width:140px; max-height:70px; width:auto; height:auto; object-fit:contain; display:block;"
+                >
             @endif
         </td>
-        <td style="border:none; width:33%; vertical-align:top;">
-            <strong style="font-size:14px;">{{ $companyName }}</strong><br>
-            <span style="font-size:10px;">
-                @if($setting && !empty($setting->nif))
-                    NIF: {{ $setting->nif }}
-                    @if(!empty($setting->rc)) &nbsp;|&nbsp; RC: {{ $setting->rc }} @endif
-                    @if(!empty($setting->tp_fiscal_center)) &nbsp;|&nbsp; C.FISCAL: {{ $setting->tp_fiscal_center }} @endif
-                    <br>
+
+        {{-- Infos société --}}
+        <td style="border:none; width:52%; vertical-align:top; padding:0 8px;">
+            <strong style="font-size:12px; line-height:1.25; display:block; margin-bottom:2px;">{{ $companyName }}</strong>
+            <div style="font-size:9px; line-height:1.35; color:#222;">
+                @if ($fiscalLine !== '')
+                    {{ $fiscalLine }}<br>
                 @endif
-                @if($setting && isset($setting->vat_taxpayer))
+
+                @if ($setting && isset($setting->vat_taxpayer))
                     Assujetti à la TVA: {{ $setting->vat_taxpayer ? 'Oui' : 'Non' }}<br>
                 @endif
-                @if($setting && (!empty($setting->zone) || !empty($setting->commune)))
-                    {{ $setting->zone ?? '' }} {{ $setting->commune ? '- '.$setting->commune : '' }}<br>
+
+                @if ($addressLine !== '')
+                    {{ $addressLine }}<br>
                 @endif
-                @if($setting && !empty($setting->province))
-                    {{ $setting->province }}<br>
+
+                @if ($phoneLine !== '')
+                    {{ $phoneLine }}<br>
                 @endif
-                @if($setting && !empty($setting->rue))
-                    {{ $setting->rue }}<br>
+
+                @if ($setting && !empty($setting->email))
+                    Email: {{ $setting->email }}
                 @endif
-                @if($setting && !empty($setting->quartier))
-                    {{ $setting->quartier }}<br>
-                @endif
-                @if($setting && !empty($setting->postal_number))
-                    B.P. {{ $setting->postal_number }}<br>
-                @endif
-                @if($setting && !empty($setting->telephone1))
-                    Tél: {{ $setting->telephone1 }}@if(!empty($setting->telephone2)) / {{ $setting->telephone2 }}@endif<br>
-                @endif
-                @if($setting && !empty($setting->email))
-                    Email: {{ $setting->email }}<br>
-                @endif
-            </span>
+            </div>
         </td>
-        <td style="border:none; width:45%; text-align:right; vertical-align:top;">
-            @if(!$publicLogoPath || !file_exists($publicLogoPath))
-                @if($setting && !empty($setting->logo))
-                @php
-                    $logoPath = storage_path('public/logo/'.$setting->logo);
-                @endphp
-                @if(file_exists($logoPath))
-                    <img src="{{ $logoPath }}" width="100" height="50" alt="" style="max-height:55px; object-fit:contain;"><br>
-                @endif
-                @endif
-            @endif
-            @if(!empty($documentTitle))
-                <strong style="font-size:13px; text-decoration:underline;">{{ $documentTitle }}</strong><br>
-            @endif
-            @if(!empty($documentNumber))
-                <span style="font-size:11px;">{{ $documentNumber }}</span><br>
-            @endif
-            <span style="font-size:10px;">{{ $docDate }}</span>
+
+        {{-- Date génération --}}
+        <td style="border:none; width:24%; text-align:right; vertical-align:top; padding:0 0 0 8px; white-space:nowrap;">
+            <span style="font-size:10px; line-height:1.3;">{{ $docDate }}</span>
         </td>
     </tr>
 </table>

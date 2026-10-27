@@ -92,8 +92,7 @@
                                 <div class="form-group">
                                     <label for="item_movement_type">@lang('messages.Type de Sortie')</label>
                                     <select class="form-control" name="item_movement_type" id="item_movement_type" required>
-                                    <option disabled="disabled">@lang('messages.Merci de choisir')</option>
-                                        <option value="SN" {{ $stockout->item_movement_type == 'SN' ? 'selected' : '' }}>@lang('messages.Sortie Normale')</option>
+                                        <option value="SAU" {{ in_array($stockout->item_movement_type ?? '', ['', 'SAU', 'SN', 'ST'], true) ? 'selected' : '' }}>@lang('messages.Sortie Autre')</option>
                                         @if (Auth::guard('admin')->user()->can('raw_material_stockout.edit'))
                                         <option value="SP" {{ $stockout->item_movement_type == 'SP' ? 'selected' : '' }}>@lang('messages.Sortie Perte')</option>
                                         <option value="SV" {{ $stockout->item_movement_type == 'SV' ? 'selected' : '' }}>@lang('messages.Sortie Vol')</option>
@@ -101,8 +100,6 @@
                                         <option value="SC" {{ $stockout->item_movement_type == 'SC' ? 'selected' : '' }}>@lang('messages.Sortie Casse')</option>
                                         <option value="SAJ" {{ $stockout->item_movement_type == 'SAJ' ? 'selected' : '' }}>@lang('messages.Sortie Ajustement')</option>
                                         @endif
-                                        <option value="ST" {{ $stockout->item_movement_type == 'ST' ? 'selected' : '' }}>@lang('messages.Sortie Transfert')</option>
-                                        <option value="SAU" {{ $stockout->item_movement_type == 'SAU' ? 'selected' : '' }}>@lang('messages.Sortie Autre')</option>
                                 </select>
                                 </div>
                             </div>

@@ -128,6 +128,9 @@ class InvoiceController extends Controller
             abort(403, 'Sorry !! You are Unauthorized to create any invoice !');
         }
 
+        session()->flash('error', 'La création d\'une facture à partir d\'un bon de livraison est désactivée pour éviter la double facturation.');
+        return redirect()->route('admin.delivery-note.index');
+
         // Get delivery note
         $delivery_note = DeliveryNote::where('delivery_number', $delivery_number)
             ->with(['client'])
@@ -224,6 +227,13 @@ class InvoiceController extends Controller
             $client_id = $request->client_id;
             $delivery_number = $request->delivery_number ?? null;
             $document_no = $request->document_no ?? $delivery_number;
+            if (
+                ($delivery_number && DeliveryNote::where('delivery_number', $delivery_number)->exists())
+                || ($document_no && DeliveryNote::where('delivery_number', $document_no)->exists())
+            ) {
+                session()->flash('error', 'La création d\'une facture à partir d\'un bon de livraison est désactivée pour éviter la double facturation.');
+                return redirect()->route('admin.delivery-note.index');
+            }
             $invoiceType = $this->normalizeSingleChoice($request->input('invoice_type'), ['FN', 'RC', 'RHF'], 'FN');
             $paymentType = $this->normalizeSingleChoice($request->input('payment_type'), ['1', '2', '3', '4'], '1');
             $invoiceCurrency = $this->normalizeSingleChoice($request->input('invoice_currency'), ['BIF', 'USD', 'EUR'], 'BIF');

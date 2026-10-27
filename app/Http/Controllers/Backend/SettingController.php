@@ -196,99 +196,52 @@ class SettingController extends Controller
     }
 
     /**
-     * Backup database and download as SQL file
+     * Backup database and download as a compressed ZIP file.
      *
      * @return \Illuminate\Http\Response
      */
     public function backupDatabase()
     {
+        @set_time_limit(0);
+        @ini_set('memory_limit', '1024M');
+
         try {
-            // Get database configuration
             $host = Config::get('database.connections.mysql.host');
             $port = Config::get('database.connections.mysql.port', '3306');
             $database = Config::get('database.connections.mysql.database');
             $username = Config::get('database.connections.mysql.username');
             $password = Config::get('database.connections.mysql.password');
 
-            // Generate backup filename with timestamp
             $filename = 'backup_' . $database . '_' . date('Y-m-d_H-i-s') . '.sql';
+            $sqlPath = $this->backupDirectory() . DIRECTORY_SEPARATOR . $filename;
 
-            // Determine mysqldump path based on OS
-            $mysqldumpPath = '';
-            if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-                // Windows - try common paths
-                $laragonBase = 'C:\\laragon\\bin\\mysql';
-                $possiblePaths = [];
-                
-                // Check Laragon MySQL directories (scan for any MySQL version)
-                if (is_dir($laragonBase)) {
-                    $mysqlDirs = glob($laragonBase . '\\mysql-*', GLOB_ONLYDIR);
-                    foreach ($mysqlDirs as $mysqlDir) {
-                        $possiblePaths[] = $mysqlDir . '\\bin\\mysqldump.exe';
-                    }
-                }
-                
-                // Add other common paths
-                $possiblePaths[] = 'C:\\xampp\\mysql\\bin\\mysqldump.exe';
-                $possiblePaths[] = 'C:\\wamp64\\bin\\mysql\\mysql8.0.31\\bin\\mysqldump.exe';
-                $possiblePaths[] = 'mysqldump.exe'; // If in PATH
-                
-                foreach ($possiblePaths as $path) {
-                    if ($path === 'mysqldump.exe') {
-                        // Check if mysqldump is in PATH
-                        $testCommand = 'where mysqldump.exe 2>nul';
-                        exec($testCommand, $testOutput, $testReturn);
-                        if ($testReturn === 0 && !empty($testOutput)) {
-                            $mysqldumpPath = 'mysqldump.exe';
-                            break;
-                        }
-                    } elseif (file_exists($path)) {
-                        $mysqldumpPath = $path;
-                        break;
-                    }
-                }
-                
-                // If still not found, try alternative method
-                if (empty($mysqldumpPath)) {
-                    return $this->backupDatabaseAlternative($database, $filename);
-                }
-            } else {
-                // Linux/Mac - mysqldump should be in PATH
-                $mysqldumpPath = 'mysqldump';
+            $mysqldumpPath = $this->resolveMysqldumpPath();
+            if (empty($mysqldumpPath)) {
+                return $this->backupDatabaseAlternative($database, $filename);
             }
 
-            // Build mysqldump command
             $command = sprintf(
-                '%s --host=%s --port=%s --user=%s --password=%s --single-transaction --routines --triggers %s',
+                '%s --host=%s --port=%s --user=%s --password=%s --single-transaction --routines --triggers --result-file=%s %s',
                 escapeshellarg($mysqldumpPath),
                 escapeshellarg($host),
                 escapeshellarg($port),
                 escapeshellarg($username),
                 escapeshellarg($password),
+                escapeshellarg($sqlPath),
                 escapeshellarg($database)
             );
 
-            // Execute mysqldump and capture output
             $output = [];
             $returnVar = 0;
             exec($command . ' 2>&1', $output, $returnVar);
 
-            if ($returnVar !== 0) {
-                // If mysqldump failed, try alternative method using Laravel's database dump
+            if ($returnVar !== 0 || !is_file($sqlPath) || filesize($sqlPath) === 0) {
+                @unlink($sqlPath);
                 return $this->backupDatabaseAlternative($database, $filename);
             }
 
-            // Combine output into SQL string
-            $sql = implode("\n", $output);
-
-            // Return file download
-            return response($sql)
-                ->header('Content-Type', 'application/sql')
-                ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
-                ->header('Content-Length', strlen($sql));
-
+            return $this->downloadSqlAsZip($sqlPath, $filename);
         } catch (\Exception $e) {
-            // Fallback to alternative method
             try {
                 $database = Config::get('database.connections.mysql.database');
                 $filename = 'backup_' . $database . '_' . date('Y-m-d_H-i-s') . '.sql';
@@ -300,7 +253,7 @@ class SettingController extends Controller
     }
 
     /**
-     * Alternative backup method using Laravel's database dump
+     * Alternative backup method using Laravel's database dump or PDO.
      *
      * @param string $database
      * @param string $filename
@@ -309,21 +262,23 @@ class SettingController extends Controller
     private function backupDatabaseAlternative($database, $filename)
     {
         try {
-            // Use Laravel's database dump if available (Laravel 8+)
             if (class_exists('\Illuminate\Support\Facades\Artisan')) {
-                \Artisan::call('db:backup', [
-                    '--database' => 'mysql',
-                    '--destination' => 'local',
-                    '--destinationPath' => $filename,
-                ]);
-                
-                $backupPath = storage_path('app/backups/' . $filename);
-                if (file_exists($backupPath)) {
-                    return response()->download($backupPath, $filename)->deleteFileAfterSend(true);
+                try {
+                    \Artisan::call('db:backup', [
+                        '--database' => 'mysql',
+                        '--destination' => 'local',
+                        '--destinationPath' => $filename,
+                    ]);
+
+                    $backupPath = storage_path('app/backups/' . $filename);
+                    if (file_exists($backupPath)) {
+                        return $this->downloadSqlAsZip($backupPath, $filename);
+                    }
+                } catch (\Exception $ignored) {
+                    // Fallback to PDO dump below.
                 }
             }
 
-            // Manual backup using PDO
             $host = Config::get('database.connections.mysql.host');
             $port = Config::get('database.connections.mysql.port', '3306');
             $username = Config::get('database.connections.mysql.username');
@@ -336,53 +291,140 @@ class SettingController extends Controller
                 [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]
             );
 
-            $sql = "-- Database Backup\n";
-            $sql .= "-- Generated: " . date('Y-m-d H:i:s') . "\n";
-            $sql .= "-- Database: {$database}\n\n";
-            $sql .= "SET FOREIGN_KEY_CHECKS=0;\n\n";
+            $sqlPath = $this->backupDirectory() . DIRECTORY_SEPARATOR . $filename;
+            $handle = fopen($sqlPath, 'w');
+            if ($handle === false) {
+                throw new \RuntimeException('Impossible de créer le fichier SQL temporaire.');
+            }
 
-            // Get all tables
+            fwrite($handle, "-- Database Backup\n");
+            fwrite($handle, "-- Generated: " . date('Y-m-d H:i:s') . "\n");
+            fwrite($handle, "-- Database: {$database}\n\n");
+            fwrite($handle, "SET FOREIGN_KEY_CHECKS=0;\n\n");
+
             $tables = $pdo->query("SHOW TABLES")->fetchAll(\PDO::FETCH_COLUMN);
 
             foreach ($tables as $table) {
-                $sql .= "-- Table structure for table `{$table}`\n";
-                $sql .= "DROP TABLE IF EXISTS `{$table}`;\n";
-                
-                $createTable = $pdo->query("SHOW CREATE TABLE `{$table}`")->fetch(\PDO::FETCH_ASSOC);
-                $sql .= $createTable['Create Table'] . ";\n\n";
+                fwrite($handle, "-- Table structure for table `{$table}`\n");
+                fwrite($handle, "DROP TABLE IF EXISTS `{$table}`;\n");
 
-                $sql .= "-- Dumping data for table `{$table}`\n";
-                $rows = $pdo->query("SELECT * FROM `{$table}`")->fetchAll(\PDO::FETCH_ASSOC);
-                
-                if (count($rows) > 0) {
-                    $columns = array_keys($rows[0]);
-                    $sql .= "INSERT INTO `{$table}` (`" . implode('`, `', $columns) . "`) VALUES\n";
-                    
-                    $values = [];
-                    foreach ($rows as $row) {
-                        $rowValues = [];
-                        foreach ($row as $value) {
-                            if ($value === null) {
-                                $rowValues[] = 'NULL';
-                            } else {
-                                $rowValues[] = $pdo->quote($value);
-                            }
-                        }
-                        $values[] = "(" . implode(', ', $rowValues) . ")";
+                $createTable = $pdo->query("SHOW CREATE TABLE `{$table}`")->fetch(\PDO::FETCH_ASSOC);
+                fwrite($handle, $createTable['Create Table'] . ";\n\n");
+
+                fwrite($handle, "-- Dumping data for table `{$table}`\n");
+                $rows = $pdo->query("SELECT * FROM `{$table}`");
+                $written = 0;
+
+                while ($row = $rows->fetch(\PDO::FETCH_ASSOC)) {
+                    if ($written === 0) {
+                        fwrite($handle, "INSERT INTO `{$table}` (`" . implode('`, `', array_keys($row)) . "`) VALUES\n");
+                    } else {
+                        fwrite($handle, ",\n");
                     }
-                    $sql .= implode(",\n", $values) . ";\n\n";
+
+                    $rowValues = [];
+                    foreach ($row as $value) {
+                        $rowValues[] = $value === null ? 'NULL' : $pdo->quote($value);
+                    }
+                    fwrite($handle, "(" . implode(', ', $rowValues) . ")");
+                    $written++;
+                }
+
+                if ($written > 0) {
+                    fwrite($handle, ";\n\n");
                 }
             }
 
-            $sql .= "SET FOREIGN_KEY_CHECKS=1;\n";
+            fwrite($handle, "SET FOREIGN_KEY_CHECKS=1;\n");
+            fclose($handle);
 
-            return response($sql)
-                ->header('Content-Type', 'application/sql')
-                ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
-                ->header('Content-Length', strlen($sql));
-
+            return $this->downloadSqlAsZip($sqlPath, $filename);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', __('messages.save_error') . ' ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Compress the SQL dump into a ZIP archive and download it.
+     *
+     * @param string $sqlPath
+     * @param string $sqlFilename
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    private function downloadSqlAsZip($sqlPath, $sqlFilename)
+    {
+        if (!class_exists('ZipArchive')) {
+            throw new \RuntimeException('L\'extension PHP ZipArchive est requise pour compresser la sauvegarde.');
+        }
+
+        $zipFilename = preg_replace('/\.sql$/i', '', $sqlFilename) . '.zip';
+        $zipPath = $this->backupDirectory() . DIRECTORY_SEPARATOR . $zipFilename;
+
+        $zip = new \ZipArchive();
+        $opened = $zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
+        if ($opened !== true) {
+            @unlink($sqlPath);
+            throw new \RuntimeException('Impossible de créer le fichier ZIP de sauvegarde.');
+        }
+
+        $zip->addFile($sqlPath, $sqlFilename);
+        $zip->close();
+        @unlink($sqlPath);
+
+        return response()->download($zipPath, $zipFilename, [
+            'Content-Type' => 'application/zip',
+        ])->deleteFileAfterSend(true);
+    }
+
+    /**
+     * @return string
+     */
+    private function backupDirectory()
+    {
+        $directory = storage_path('app/backups');
+        if (!is_dir($directory)) {
+            mkdir($directory, 0755, true);
+        }
+
+        return $directory;
+    }
+
+    /**
+     * @return string
+     */
+    private function resolveMysqldumpPath()
+    {
+        if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
+            return 'mysqldump';
+        }
+
+        $possiblePaths = [];
+        $laragonBase = 'C:\\laragon\\bin\\mysql';
+        if (is_dir($laragonBase)) {
+            $mysqlDirs = glob($laragonBase . '\\mysql-*', GLOB_ONLYDIR);
+            foreach ($mysqlDirs as $mysqlDir) {
+                $possiblePaths[] = $mysqlDir . '\\bin\\mysqldump.exe';
+            }
+        }
+
+        $possiblePaths[] = 'C:\\xampp\\mysql\\bin\\mysqldump.exe';
+        $possiblePaths[] = 'C:\\wamp64\\bin\\mysql\\mysql8.0.31\\bin\\mysqldump.exe';
+        $possiblePaths[] = 'mysqldump.exe';
+
+        foreach ($possiblePaths as $path) {
+            if ($path === 'mysqldump.exe') {
+                exec('where mysqldump.exe 2>nul', $testOutput, $testReturn);
+                if ($testReturn === 0 && !empty($testOutput)) {
+                    return 'mysqldump.exe';
+                }
+                continue;
+            }
+
+            if (file_exists($path)) {
+                return $path;
+            }
+        }
+
+        return '';
     }
 }

@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<title>User Guide — SOVAN (English)</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 10.2pt; color: #1d2b33; margin: 0; line-height: 1.38; }
+  .page { page-break-after: always; padding: 0; }
+  .page:last-child { page-break-after: auto; }
+  h1, h2, h3 { color: #154a39; margin: 0; }
+  h2 { font-size: 15.5pt; border-bottom: 3px solid #c9a227; padding-bottom: 5px; margin: 0 0 10px; }
+  h2 .num { display: inline-block; background: #154a39; color: #fff; width: 30px; height: 30px; line-height: 30px; text-align: center; border-radius: 50%; font-size: 12pt; margin-right: 7px; }
+  h3 { font-size: 11.5pt; margin: 11px 0 5px; color: #1f6b4f; }
+  p { margin: 4px 0; }
+  .muted { color: #5c6b73; }
+  .menu { display: inline-block; background: #eef4f6; border: 1px solid #c9d9df; color: #154a39; padding: 0 5px; border-radius: 4px; font-weight: 600; font-size: 9.8pt; }
+  .btn { display: inline-block; background: #007bff; color: #fff; padding: 0 6px; border-radius: 4px; font-weight: 600; font-size: 9.5pt; }
+  table { border-collapse: collapse; width: 100%; }
+  table.grid th, table.grid td { border: 1px solid #b9c7cd; padding: 4px 6px; vertical-align: top; font-size: 9.5pt; }
+  table.grid th { background: #154a39; color: #fff; text-align: left; }
+  table.grid tr:nth-child(even) td { background: #f5f9fa; }
+  tr, .box, .steps li { page-break-inside: avoid; }
+  .box { border-left: 5px solid #1f6b4f; background: #eef6f8; padding: 7px 10px; margin: 7px 0; border-radius: 0 6px 6px 0; }
+  .box.warn { border-color: #c9a227; background: #fff8e1; }
+  .box.ok { border-color: #28a745; background: #ecf8ef; }
+  .box b.t { display: block; color: #154a39; margin-bottom: 2px; }
+  .steps { counter-reset: s; list-style: none; margin: 6px 0; padding: 0; }
+  .steps li { counter-increment: s; position: relative; padding: 4px 7px 4px 38px; margin: 3px 0; background: #fafcfd; border: 1px solid #dde7eb; border-radius: 6px; }
+  .steps li:before { content: counter(s); position: absolute; left: 6px; top: 4px; width: 21px; height: 21px; line-height: 21px; text-align: center; background: #c9a227; color: #154a39; font-weight: 700; border-radius: 50%; font-size: 9.5pt; }
+  .flow { width: 100%; margin: 7px 0; }
+  .flow td { text-align: center; vertical-align: middle; padding: 0; }
+  .flow .st { background: #154a39; color: #fff; border-radius: 6px; padding: 6px 2px; font-weight: 600; font-size: 8.8pt; }
+  .flow .st.alt { background: #1f6b4f; } .flow .st.gold { background: #c9a227; color: #154a39; }
+  .flow .ar { color: #c9a227; font-size: 15pt; font-weight: 700; width: 18px; }
+  .content { padding: 11mm 13mm 3mm; }
+  .cover { height: 286mm; position: relative; overflow: hidden; background: #154a39; color: #fff; }
+  .cover .band { background: #c9a227; height: 9mm; }
+  .cover .inner { padding: 14mm 14mm 0; text-align: center; }
+  .cover .brandmark { display: inline-block; background: #fff; color: #154a39; font-size: 24pt; font-weight: 800; letter-spacing: 1px; padding: 10px 22px; border-radius: 10px; }
+  .cover .kicker { margin-top: 8mm; letter-spacing: 2px; font-size: 10pt; color: #c9a227; }
+  .cover h1 { color: #fff; font-size: 20pt; margin-top: 4mm; line-height: 1.2; }
+  .cover .sub { font-size: 12pt; margin-top: 3mm; color: #d8e6eb; }
+  .cover .scope { margin: 7mm auto 0; width: 162mm; text-align: left; background: rgba(255,255,255,.07); border: 1px solid #c9a227; border-radius: 8px; padding: 8px 12px; font-size: 9.5pt; }
+  .cover .scope td { padding: 2px 4px; vertical-align: top; color: #fff; }
+  .cover .scope td.k { color: #c9a227; font-weight: 700; width: 44mm; }
+  .cover .trainer { margin: 7mm auto 0; width: 162mm; background: #fff; color: #154a39; border-radius: 8px; padding: 9px 12px; text-align: left; }
+  .cover .trainer td { padding: 3px 4px; }
+  .cover .trainer td.k { font-weight: 700; width: 48mm; color: #1f6b4f; }
+  .cover .foot { position: absolute; bottom: 11mm; left: 0; right: 0; text-align: center; font-size: 9.3pt; color: #b9cdd4; }
+  table.att th, table.att td { border: 1.2px solid #154a39; padding: 0 6px; font-size: 10.2pt; }
+  table.att th { background: #154a39; color: #fff; height: 9.5mm; text-align: center; }
+  table.att td { height: 13mm; }
+  table.att td.n { text-align: center; font-weight: 700; width: 11mm; }
+  .toc td { padding: 4px 3px; border-bottom: 1px dotted #b9c7cd; font-size: 10pt; }
+  .toc td.n { width: 11mm; font-weight: 700; color: #1f6b4f; }
+</style></head><body>
+
+<div class="page cover">
+  <div class="band"></div>
+  <div class="inner">
+    <div class="brandmark">SOVAN</div>
+    <div class="kicker">USER GUIDE — TRAINING MANUAL (ENGLISH)</div>
+    <h1>SOVAN SOFTWARE</h1>
+    <div class="sub">Production, Stocks, Billing, HR &amp; Accounting</div>
+    <div class="sub" style="font-size:11pt;margin-top:2mm;">Flour mill / milling company</div>
+    <table class="scope">
+      <tr><td class="k">Stocks</td><td>Raw materials, Materials, Finished goods, Merchandise</td></tr>
+      <tr><td class="k">Production</td><td>Plan → Requisition → Transfer → Production Order</td></tr>
+      <tr><td class="k">Billing</td><td>Proforma → Sales Order → Invoice → Delivery Note (no invoice, no DN)</td></tr>
+      <tr><td class="k">HR</td><td>Employee file + documents, leave, salary advances, payroll</td></tr>
+      <tr><td class="k">Accounting</td><td>Chart of accounts, treasury, journals, depreciation, year-end close</td></tr>
+    </table>
+    <table class="trainer">
+      <tr><td class="k">Trainer</td><td><b>AMBAZA Marcellin</b></td></tr>
+      <tr><td class="k">Title</td><td>Managing Director, EGOTEK</td></tr>
+      <tr><td class="k">Training date</td><td>&nbsp;</td></tr>
+      <tr><td class="k">Venue</td><td>&nbsp;</td></tr>
+    </table>
+  </div>
+  <div class="foot">SOVAN — Flour mill — Internal training document — Trainer: AMBAZA Marcellin, Managing Director, EGOTEK</div>
+</div>
+
+<div class="page"><div class="content">
+  <h2>Attendance sheet</h2>
+  <table class="grid" style="margin-bottom:8px">
+    <tr><th style="width:38%">Training</th><td>SOVAN software — Production, Stocks, Billing, HR &amp; Accounting</td></tr>
+    <tr><th>Trainer</th><td><b>AMBAZA Marcellin</b>, Managing Director, EGOTEK</td></tr>
+    <tr><th>Date / Time</th><td>&nbsp;</td></tr>
+    <tr><th>Venue</th><td>&nbsp;</td></tr>
+  </table>
+  <p class="muted">To be completed by hand by each participant.</p>
+  <table class="att">
+    <tr><th style="width:11mm">No.</th><th style="width:56mm">Full name</th><th style="width:40mm">Position / Dept</th><th style="width:30mm">Phone</th><th>Signature</th></tr>
+    <tr><td class="n">1</td><td></td><td></td><td></td><td></td></tr><tr><td class="n">2</td><td></td><td></td><td></td><td></td></tr><tr><td class="n">3</td><td></td><td></td><td></td><td></td></tr><tr><td class="n">4</td><td></td><td></td><td></td><td></td></tr><tr><td class="n">5</td><td></td><td></td><td></td><td></td></tr><tr><td class="n">6</td><td></td><td></td><td></td><td></td></tr><tr><td class="n">7</td><td></td><td></td><td></td><td></td></tr><tr><td class="n">8</td><td></td><td></td><td></td><td></td></tr><tr><td class="n">9</td><td></td><td></td><td></td><td></td></tr><tr><td class="n">10</td><td></td><td></td><td></td><td></td></tr>
+  </table>
+  <table style="margin-top:9mm"><tr>
+    <td style="width:50%"><b>Trainer</b><br>AMBAZA Marcellin<br>Managing Director, EGOTEK<br><br>Signature: ______________________</td>
+    <td style="width:50%"><b>Management endorsement</b><br><br><br><br>Signature: ______________________</td>
+  </tr></table>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2>Table of contents</h2>
+  <table class="toc">
+    <tr><td class="n">1</td><td>Login and main menus</td></tr>
+    <tr><td class="n">2</td><td>Stock organisation (RM, materials, FG, merchandise)</td></tr>
+    <tr><td class="n">3</td><td>Master data</td></tr>
+    <tr><td class="n">4</td><td>Procurement</td></tr>
+    <tr><td class="n">5</td><td>Stock in / out, inventory and transfers</td></tr>
+    <tr><td class="n">6</td><td>Production module</td></tr>
+    <tr><td class="n">7</td><td>Billing process (proforma → invoice → delivery note)</td></tr>
+    <tr><td class="n">8</td><td>Human Resources (file, documents, advances, payroll)</td></tr>
+    <tr><td class="n">9</td><td>Accounting (treasury, journals, depreciation, year-end)</td></tr>
+    <tr><td class="n">10</td><td>Approval workflow &amp; reports</td></tr>
+    <tr><td class="n">11</td><td>Best practices, exercises and evaluation</td></tr>
+  </table>
+  <div class="box" style="margin-top:6mm">
+    <b class="t">Objectives</b>
+    Manage stocks and production; bill customers (proforma → invoice → delivery note); administer HR (complete file + attached documents, advances, payroll); master English double-entry accounting (treasury, journals, depreciation, balance sheet, year-end close).
+  </div>
+  <div class="box warn"><b class="t">Access rights</b>Visible menus depend on permissions. Contact the administrator if a menu is missing.</div>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2><span class="num">1</span>Login and menus</h2>
+  <ol class="steps">
+    <li>Enter your <b>email or username</b>.</li>
+    <li>Enter your <b>password</b>.</li>
+    <li>Click <span class="btn" style="background:#1f6b4f">LOGIN</span>.</li>
+  </ol>
+  <table class="grid">
+    <tr><th style="width:28%">Menu</th><th>Content</th></tr>
+    <tr><td><span class="menu">Basic files</span></td><td>Suppliers, Customers, Raw materials, Materials, Items (FG / merchandise)</td></tr>
+    <tr><td><span class="menu">Stock</span></td><td>Raw materials, Materials, Finished goods, Merchandise</td></tr>
+    <tr><td><span class="menu">Production</span></td><td>Plan, Requisition, Transfer, Production Order</td></tr>
+    <tr><td><span class="menu">Purchases</span></td><td>Request, Order, Receipt</td></tr>
+    <tr><td><span class="menu">Sales</span></td><td>Proforma, Sales orders, Invoices, Delivery notes, Credit notes</td></tr>
+    <tr><td><span class="menu">Employees / Leave / Payroll</span></td><td>HR: records, attached documents, leave, advances, payslips</td></tr>
+    <tr><td><span class="menu">Accounting</span></td><td>Chart of accounts, advances, fund transfers, cash outflow, journals, balance sheets</td></tr>
+  </table>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2><span class="num">2</span>Stock organisation</h2>
+  <table class="grid">
+    <tr><th style="width:24%">Family</th><th>Stores</th><th>Examples</th></tr>
+    <tr><td><b>Raw materials (RM)</b></td><td>Main / Intermediate / Small</td><td>maize, wheat, grain, packaging (bags…)</td></tr>
+    <tr><td><b>Materials</b></td><td>Main / Intermediate / Small</td><td>machine parts, maintenance tools, PPE</td></tr>
+    <tr><td><b>Finished goods (FG)</b></td><td>FG stock + Small FG stock</td><td>flour (various pack sizes)</td></tr>
+    <tr><td><b>Merchandise</b></td><td>Merchandise stock</td><td>bought-for-resale items (if any)</td></tr>
+  </table>
+  <table class="flow"><tr>
+    <td><div class="st">PURCHASE</div></td><td class="ar">&#10140;</td>
+    <td><div class="st alt">PRODUCTION</div></td><td class="ar">&#10140;</td>
+    <td><div class="st gold">FINISHED GOODS</div></td><td class="ar">&#10140;</td>
+    <td><div class="st">INVOICE → DN</div></td>
+  </tr></table>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2><span class="num">3</span>Master data</h2>
+  <ol class="steps">
+    <li>Suppliers and Customers.</li>
+    <li>Categories and units of measure (RM / Materials).</li>
+    <li>Raw material and Material item cards.</li>
+    <li><b>Items</b>: finished goods (with RM bill of materials) or merchandise.</li>
+  </ol>
+  <div class="box warn"><b class="t">Important</b>A finished good without linked raw materials cannot be manufactured correctly via the Production Order.</div>
+
+  <h2 style="margin-top:8mm"><span class="num">4</span>Procurement</h2>
+  <table class="flow"><tr>
+    <td><div class="st">Purchase request</div></td><td class="ar">&#10140;</td>
+    <td><div class="st alt">Purchase order</div></td><td class="ar">&#10140;</td>
+    <td><div class="st gold">Receipt</div></td>
+  </tr></table>
+  <p>Menu <span class="menu">Purchases</span> (RM and Materials). Validate → Confirm → Approve. On receipt approval, stock increases.</p>
+  <div class="box ok"><b class="t">SOVAN example</b>Purchase request for 20 t of maize → order → receipt into Main RM stock.</div>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2><span class="num">5</span>Stock in / out, inventory, transfers</h2>
+  <table class="grid">
+    <tr><th>Document</th><th>Purpose</th></tr>
+    <tr><td>Stock in / Stock out (RM, FG, Materials, Merchandise)</td><td>Movements outside the purchase / production / sales chain</td></tr>
+    <tr><td>Inventory</td><td>Adjust book stock to physical count</td></tr>
+    <tr><td>Requisition / Transfer (Materials)</td><td>Movement between material stores</td></tr>
+  </table>
+
+  <h2 style="margin-top:8mm"><span class="num">6</span>Production module</h2>
+  <table class="flow"><tr>
+    <td><div class="st">Plan</div></td><td class="ar">&#10140;</td>
+    <td><div class="st alt">RM Requisition</div></td><td class="ar">&#10140;</td>
+    <td><div class="st alt">RM Transfer</div></td><td class="ar">&#10140;</td>
+    <td><div class="st gold">Production Order</div></td>
+  </tr></table>
+  <ol class="steps">
+    <li><b>Production plan</b>: FG and planned quantities → approval.</li>
+    <li><b>RM requisition</b> then <b>Transfer</b> to the workshop.</li>
+    <li><b>Production Order</b>: on approval, RM are consumed and FG enter FG stock.</li>
+  </ol>
+  <div class="box ok"><b class="t">SOVAN example</b>Plan 5 t of flour → grain requisition/transfer → approved Production Order → flour enters FG stock.</div>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2><span class="num">7</span>Billing process</h2>
+  <p>Menu <span class="menu">Sales</span>. Factory commercial chain — <b>the invoice always comes before the delivery note</b>:</p>
+  <table class="flow"><tr>
+    <td><div class="st">Proforma</div></td><td class="ar">&#10140;</td>
+    <td><div class="st alt">Sales Order</div></td><td class="ar">&#10140;</td>
+    <td><div class="st gold">Invoice</div></td><td class="ar">&#10140;</td>
+    <td><div class="st alt">Delivery Note</div></td>
+  </tr></table>
+  <div class="box warn"><b class="t">Mandatory rule</b><b>No invoice, no delivery note.</b> The DN is issued only after the invoice (from the invoiced order). Never deliver without a prior invoice.</div>
+  <ol class="steps">
+    <li><b>Proforma invoice</b>: quotation / offer → Validate → Confirm → Approve.</li>
+    <li><b>Sales order</b>: customer order confirmation.</li>
+    <li><b>Invoice</b>: starts the real sale; print for the customer; settle cash or credit.</li>
+    <li><b>Delivery note</b>: created <b>after</b> the invoice; authorises shipment of FG / merchandise; impacts stock on approval.</li>
+  </ol>
+  <h3>7.1 Cash or credit settlement</h3>
+  <table class="grid">
+    <tr><th style="width:22%">Mode</th><th>Procedure</th></tr>
+    <tr><td><b>Cash</b></td><td>Immediate collection on the invoice. Select the account: <b>cash or bank</b>.</td></tr>
+    <tr><td><b>Credit</b></td><td>Invoice on account. Customer needs a ledger account. Then DN to deliver. Follow-up under Credits / Recovery.</td></tr>
+  </table>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2><span class="num">7</span>Billing — document rules</h2>
+  <table class="grid">
+    <tr><th style="width:22%">Rule</th><th>Detail</th></tr>
+    <tr><td><b>Original</b></td><td>First print of a voucher / invoice shows <b>Original</b>.</td></tr>
+    <tr><td><b>Copy</b></td><td>Reprint shows <b>Copy</b> + prior signatures + clear reason.</td></tr>
+    <tr><td><b>Signatures</b></td><td>Any voucher or invoice: <b>at least two signatures</b>; clear reason for cancel / correction.</td></tr>
+    <tr><td><b>Credit note</b></td><td>Menu <span class="menu">Credit Note</span> for error / return / correction.</td></tr>
+  </table>
+  <h3>7.2 Petty cash (if used)</h3>
+  <ol class="steps">
+    <li>Cashiers manage <b>petty cash</b> for daily cash collections.</li>
+    <li>End of day: transfer the total to <b>main cash</b> (Accounting &rsaquo; Fund Transfer).</li>
+    <li>Transfer voucher <b>signed</b> (2 signatures) and <b>filed</b>.</li>
+  </ol>
+  <div class="box warn"><b class="t">Errors</b>Document cancellation or Credit Note: always a clear reason + at least two signatures.</div>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2><span class="num">8</span>Human Resources</h2>
+  <p>HR centralises organisation, the <b>complete employee file</b>, leave, salary advances and payroll.</p>
+  <table class="grid">
+    <tr><th style="width:30%">Menu</th><th>Content</th></tr>
+    <tr><td><span class="menu">Employees</span></td><td>Companies, Departments, Services, Positions, Grades, Banks, employee records + <b>attached documents</b></td></tr>
+    <tr><td><span class="menu">Leave</span></td><td>Leave types, Leave, Paid leave, attendance / timekeeping</td></tr>
+    <tr><td><span class="menu">Payroll</span></td><td>Salary advance, Pay journal, Payslips, Settings</td></tr>
+    <tr><td><span class="menu">Journals</span></td><td>Pay journal, Contribution journal, Tax journal (as configured)</td></tr>
+  </table>
+  <h3>8.1 Organisation &amp; employee record</h3>
+  <ol class="steps">
+    <li>Set up <b>Company → Department → Service → Position / Grade → Banks</b>.</li>
+    <li>Create the employee: identity, staff number, assignment, basic salary, bank account, contacts.</li>
+    <li>Update the record on transfer, promotion or salary change.</li>
+  </ol>
+  <div class="box ok"><b class="t">Digital personnel file</b>Each employee has a system file: master data + attachments — so HR does not rely only on paper folders.</div>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2><span class="num">8</span>HR — employee documents</h2>
+  <p>On the employee form you can <b>attach personnel documents</b> to keep the <b>complete staff file</b> in the system.</p>
+  <table class="grid">
+    <tr><th style="width:32%">Typical documents</th><th>Purpose</th></tr>
+    <tr><td>CV / résumé</td><td>Career and skills</td></tr>
+    <tr><td>Employment contract</td><td>Terms of engagement</td></tr>
+    <tr><td>ID / Passport</td><td>Official identity</td></tr>
+    <tr><td>Diplomas / certificates</td><td>Qualifications</td></tr>
+    <tr><td>Other (letter, photo…)</td><td>Additional HR file items</td></tr>
+  </table>
+  <h3>8.2 How to attach documents</h3>
+  <ol class="steps">
+    <li>Open <span class="menu">Employees</span> → employee create/edit form.</li>
+    <li>In <b>Documents</b>, select one or more files.</li>
+    <li>Accepted formats: <b>PDF, DOC, DOCX, JPG, PNG</b>.</li>
+    <li>Save — documents stay linked (view / download / delete per rights).</li>
+  </ol>
+  <div class="box warn"><b class="t">Good practice</b>Name files clearly (e.g. Contract_Name_2026.pdf). Delete only with HR authorisation. Protect personal data confidentiality.</div>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2><span class="num">8</span>HR — salary advances &amp; payroll</h2>
+  <p>Menu <span class="menu">Payroll</span> &rsaquo; <b>Salary Advance</b>. An advance is paid out and recovered through payroll deductions.</p>
+  <table class="flow"><tr>
+    <td><div class="st">Request</div></td><td class="ar">&#10140;</td>
+    <td><div class="st alt">Approval</div></td><td class="ar">&#10140;</td>
+    <td><div class="st gold">Payment</div></td><td class="ar">&#10140;</td>
+    <td><div class="st alt">Payroll deductions</div></td>
+  </tr></table>
+  <ol class="steps">
+    <li>Create a <b>salary advance request</b>: employee, amount, reason, instalment schedule.</li>
+    <li>Validate / approve per HR workflow.</li>
+    <li>Payment may generate a <b>cash outflow request</b> (link to treasury / accounting).</li>
+    <li>On payroll, the <b>loan / advance deduction</b> is applied for the planned months.</li>
+    <li>Monitor the outstanding balance until fully settled.</li>
+  </ol>
+  <div class="box warn"><b class="t">Important rule</b>An employee <b>cannot</b> take a new advance while a previous debt is pending or partly paid. All instalments must be cleared first.</div>
+  <h3>8.3 Leave &amp; payslips</h3>
+  <ol class="steps">
+    <li>Record leave <b>before</b> running the month’s payroll.</li>
+    <li>Check open advances (correct deductions on the payslip).</li>
+    <li>Generate Pay journal → Payslips; print / archive.</li>
+    <li>Consult contribution and tax journals for declarations.</li>
+  </ol>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2><span class="num">9</span>Accounting module (English)</h2>
+  <p>SOVAN uses <b>anglophone double-entry accounting</b>: every transaction posts balanced Debit and Credit lines.</p>
+  <table class="grid">
+    <tr><th style="width:36%">Sub-menu</th><th>Role</th></tr>
+    <tr><td>Chart of Accounts</td><td>Account tree (assets, liabilities, equity, income, expenses)</td></tr>
+    <tr><td>Advance Payment</td><td>Cash advances / prepayments</td></tr>
+    <tr><td>Fund Transfer</td><td>Movements between cash and bank accounts</td></tr>
+    <tr><td>Expense Category / Expenses</td><td>Operating expense classification and posting</td></tr>
+    <tr><td>Cash Outflow Request</td><td>Payment request (supplier, salary advance, other)</td></tr>
+    <tr><td>Cash Outflow</td><td>Actual payment after request approval</td></tr>
+    <tr><td>Return Fund</td><td>Return of unused cash</td></tr>
+    <tr><td>Journal Entry</td><td>Manual entries and review of automatic postings</td></tr>
+    <tr><td>Accounts Balance (Trial Balance)</td><td>Debit / Credit balances of all accounts</td></tr>
+    <tr><td>Active / Passive Balance Sheet</td><td>Assets side / Equity &amp; liabilities side</td></tr>
+    <tr><td>Account parameters</td><td>Default accounts (VAT, sales, purchases, FG, depreciation…)</td></tr>
+  </table>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2><span class="num">9</span>Accounting — chart &amp; treasury</h2>
+  <h3>9.1 Chart of Accounts</h3>
+  <ol class="steps">
+    <li>Open <span class="menu">Chart of Accounts</span> and review the hierarchy.</li>
+    <li>Each account has a code, name and type: <b>Asset, Liability, Equity, Income, Expense</b>.</li>
+    <li>Account parameters map operations (sales, stock, VAT, cash, bank) to the correct codes.</li>
+    <li>Do not rename or delete an account that already has movements without Finance approval.</li>
+  </ol>
+  <h3>9.2 Daily treasury</h3>
+  <table class="flow"><tr>
+    <td><div class="st">Cash Out Request</div></td><td class="ar">&#10140;</td>
+    <td><div class="st alt">Approval</div></td><td class="ar">&#10140;</td>
+    <td><div class="st gold">Cash Outflow</div></td>
+  </tr></table>
+  <ol class="steps">
+    <li><b>Supplier payment</b>: after stock receipt → Cash Outflow Request → Cash Outflow (<b>cash or bank</b>).</li>
+    <li><b>Fund transfer</b>: petty cash → main cash, or between bank accounts (voucher signed, two signatures).</li>
+    <li><b>Sales collection</b>: on cash settlement of the invoice, choose cash or bank.</li>
+    <li><b>Salary advance</b>: may create a cash outflow request linked to the employee.</li>
+    <li>Attach supporting documents; after approval check Debit = Credit.</li>
+  </ol>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2><span class="num">9</span>Accounting — journal entries &amp; posting</h2>
+  <h3>9.3 Journal Entry</h3>
+  <ol class="steps">
+    <li>Open <span class="menu">Journal Entry</span> to review postings from stock, sales, payroll and cash movements.</li>
+    <li>Manual entry (if authorised): date, narrative, debit and credit lines — totals must balance.</li>
+    <li>Never leave an unbalanced entry; reverse with a clear reason if needed.</li>
+  </ol>
+  <table class="grid">
+    <tr><th>Operation</th><th>Debit</th><th>Credit</th></tr>
+    <tr><td>Purchase receipt</td><td>Inventory / store (+ input VAT if applicable)</td><td>Accounts Payable</td></tr>
+    <tr><td>Supplier payment</td><td>Accounts Payable</td><td>Cash or Bank</td></tr>
+    <tr><td>Sales invoice (cash)</td><td>Cash or Bank (gross)</td><td>Sales revenue + output VAT</td></tr>
+    <tr><td>Sales invoice (credit)</td><td>Accounts Receivable</td><td>Sales revenue + output VAT</td></tr>
+    <tr><td>Collection of receivable</td><td>Cash or Bank</td><td>Accounts Receivable</td></tr>
+    <tr><td>DN / stock out (after invoice)</td><td>Cost of sales / item account</td><td>FG / merchandise store</td></tr>
+    <tr><td>Production Order</td><td>FG stock</td><td>RM consumption (as configured)</td></tr>
+    <tr><td>Salary advance paid</td><td>Staff advance / receivable</td><td>Cash or Bank</td></tr>
+    <tr><td>Advance recovered on payroll</td><td>Payroll / salary accounts</td><td>Staff advance (reduce balance)</td></tr>
+    <tr><td>Depreciation charge</td><td>Depreciation expense</td><td>Accumulated depreciation</td></tr>
+    <tr><td>Year-end — profit</td><td>Income summary / P&amp;L</td><td>Retained earnings / reserves</td></tr>
+    <tr><td>Year-end — loss</td><td>Retained earnings</td><td>Income summary / P&amp;L</td></tr>
+  </table>
+  <div class="box"><b class="t">Control</b>After each approval: Journal Entry (Debit = Credit) + cash/bank/AR/AP balances.</div>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2><span class="num">9</span>Accounting — depreciation</h2>
+  <p><b>Fixed assets</b> (mills, vehicles, buildings, production equipment) lose value over time. <b>Depreciation</b> recognises that expense each period.</p>
+  <table class="grid">
+    <tr><th style="width:30%">Concept</th><th>Detail</th></tr>
+    <tr><td><b>Fixed asset / PPE</b></td><td>Long-term asset used in operations (e.g. mill, truck, building).</td></tr>
+    <tr><td><b>Cost</b></td><td>Acquisition cost (purchase + capitalised incidental costs if configured).</td></tr>
+    <tr><td><b>Useful life</b></td><td>Years (or months) over which cost is allocated.</td></tr>
+    <tr><td><b>Depreciation charge</b></td><td>Period expense: Debit Depreciation expense / Credit Accumulated depreciation.</td></tr>
+    <tr><td><b>Net book value (NBV)</b></td><td>Cost − Accumulated depreciation.</td></tr>
+  </table>
+  <h3>9.4 Practical steps</h3>
+  <ol class="steps">
+    <li>Register the fixed asset in the asset / account structure as configured.</li>
+    <li>Set useful life and method (straight-line is usual for training).</li>
+    <li>At period or year end, post the <b>depreciation charge</b>.</li>
+    <li>Check the charge on the <b>income statement (P&amp;L)</b> and NBV on the <b>balance sheet</b>.</li>
+  </ol>
+  <div class="box warn"><b class="t">Note</b>Do not depreciate inventory (RM, FG, merchandise). Only fixed assets are depreciated. Inventory is valued at cost / production cost.</div>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2><span class="num">9</span>Accounting — year-end closing</h2>
+  <p><b>Year-end closing</b> closes one financial period and opens the next. Restricted to Finance / authorised administrators.</p>
+  <h3>9.5 Closing checklist</h3>
+  <ol class="steps">
+    <li><b>Physical inventory</b> of RM, materials, FG, merchandise — reconcile to the system.</li>
+    <li><b>Bank reconciliation</b> and cash count (balances = reality).</li>
+    <li>Post <b>adjusting entries</b>: accruals, prepayments, provisions if required.</li>
+    <li>Post <b>depreciation charges</b> for the period.</li>
+    <li>Review <b>AR / AP</b> balances (customers and suppliers).</li>
+    <li>Print / export: <b>Trial balance</b>, <b>Income statement (P&amp;L)</b>, <b>Balance sheet</b> (Active + Passive).</li>
+    <li><b>Close the year</b>: income and expense accounts are closed; net profit or loss goes to retained earnings.</li>
+    <li>Open the new year: balance-sheet balances are brought forward as opening balances.</li>
+  </ol>
+  <table class="grid">
+    <tr><th style="width:34%">Report</th><th>Use</th></tr>
+    <tr><td><b>Accounts Balance (Trial Balance)</b></td><td>All accounts with Debit / Credit balances — first control before close.</td></tr>
+    <tr><td><b>Income statement (P&amp;L)</b></td><td>Income − Expenses = profit or loss for the period.</td></tr>
+    <tr><td><b>Active Balance Sheet</b></td><td>Assets: inventory, receivables, cash/bank, fixed assets at NBV.</td></tr>
+    <tr><td><b>Passive Balance Sheet</b></td><td>Equity, payables, tax/social liabilities, other liabilities.</td></tr>
+  </table>
+  <div class="box warn"><b class="t">Security</b>Never close without written Finance approval. Take a backup before final closing. After close, do not alter closed-period movements without an authorised reopening procedure.</div>
+</div></div>
+
+<div class="page"><div class="content">
+  <h2><span class="num">10</span>Approval workflow &amp; reports</h2>
+  <table class="flow"><tr>
+    <td><div class="st">Created</div></td><td class="ar">&#10140;</td>
+    <td><div class="st alt">Validated</div></td><td class="ar">&#10140;</td>
+    <td><div class="st alt">Confirmed</div></td><td class="ar">&#10140;</td>
+    <td><div class="st gold">Approved</div></td>
+  </tr></table>
+  <p>Stock and accounting are impacted permanently only after <b>approval</b>. Stock reports: RM, materials, FG, merchandise.</p>
+
+  <h2 style="margin-top:8mm"><span class="num">11</span>Best practices and exercises</h2>
+  <table class="grid">
+    <tr><th style="width:6%">#</th><th>Rule</th></tr>
+    <tr><td>1</td><td>Respect Plan → Requisition → Transfer → Production Order.</td></tr>
+    <tr><td>2</td><td>Billing: Proforma → Sales Order → <b>Invoice → Delivery Note</b>; no invoice, no DN; Original / Copy + signatures.</td></tr>
+    <tr><td>3</td><td>Cash settlement: always select <b>cash or bank</b>.</td></tr>
+    <tr><td>4</td><td>HR: complete employee file (data + attached documents); no new advance if debt remains.</td></tr>
+    <tr><td>5</td><td>Payroll: leave and advance deductions checked before payslips.</td></tr>
+    <tr><td>6</td><td>Accounting: review journals; depreciation and year-end close = Finance only; backup before close.</td></tr>
+    <tr><td>7</td><td>Never share login credentials.</td></tr>
+  </table>
+  <h3>Exercises (SOVAN)</h3>
+  <ol class="steps">
+    <li>Create RM card “Maize” and FG item “Flour 25 kg” with bill of materials.</li>
+    <li>Purchase request for RM + order + receipt into Main RM stock.</li>
+    <li>Production plan + requisition + transfer of RM to the workshop.</li>
+    <li>Approve a Production Order and check flour stock (FG).</li>
+    <li>Create a proforma then an <b>invoice</b>; settle cash (bank); then create the <b>delivery note</b>; check the journal entry.</li>
+    <li>Create an employee, attach CV + contract (PDF), create a salary advance; open the pay journal.</li>
+    <li>Explain a depreciation charge and the year-end closing steps (trial balance, P&amp;L, balance sheet).</li>
+  </ol>
+  <h3>Evaluation</h3>
+  <table class="grid">
+    <tr><th>Criterion</th><th style="width:14%">Excellent</th><th style="width:14%">Good</th><th style="width:14%">Average</th><th style="width:14%">Weak</th></tr>
+    <tr><td>Clarity of explanations</td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>Useful for my job</td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>Practical exercises</td><td></td><td></td><td></td><td></td></tr>
+  </table>
+  <p style="margin-top:4mm;text-align:right"><b>Trainer: AMBAZA Marcellin</b><br>Managing Director, EGOTEK</p>
+</div></div>
+
+</body></html>

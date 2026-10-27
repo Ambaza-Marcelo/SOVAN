@@ -49,7 +49,7 @@ class JournalPaieExport implements FromCollection, WithMapping, WithHeadings
         }
 
         $total_deductions = (float)$data->somme_cotisation_inss
-            + (float)$data->assurance_maladie_employe
+            // + (float)$data->assurance_maladie_employe
             + (float)$data->somme_impot
             + (float)$data->retenue_pret
             + (float)$data->soins_medicaux
